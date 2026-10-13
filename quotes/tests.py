@@ -16,7 +16,7 @@ class QuoteEndpointTests(TestCase):
             created_at="1977-05-25",
         )
 
-        response = self.client.get("/quote")
+        response = self.client.get("/quotes/random")
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -48,15 +48,15 @@ class QuoteEndpointTests(TestCase):
 
         texts = {f"Quote {i}" for i in range(5)}
         for _ in range(10):
-            self.assertIn(self.client.get("/quote").json()["text"], texts)
+            self.assertIn(self.client.get("/quotes/random").json()["text"], texts)
 
     def test_quote_does_not_create_quotes(self):
-        self.client.get("/quote")
+        self.client.get("/quotes/random")
 
         self.assertEqual(Quote.objects.count(), 0)
 
     def test_quote_returns_404_when_no_quotes_exist(self):
-        response = self.client.get("/quote")
+        response = self.client.get("/quotes/random")
 
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json(), {"error": "No quotes available"})

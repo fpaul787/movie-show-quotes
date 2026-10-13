@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from .models import Quote
 
 
-def quote(request):
+def random_quote(request):
     quote = Quote.objects.order_by("?").first()
     if quote is None:
         return JsonResponse({"error": "No quotes available"}, status=404)
