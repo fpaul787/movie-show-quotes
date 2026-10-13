@@ -1,21 +1,12 @@
-from datetime import date
-
 from django.http import JsonResponse
 
 from .models import Quote
 
 
 def quote(request):
-    quote, _ = Quote.objects.get_or_create(
-        text="May the Force be with you.",
-        year=1977,
-        title="Star Wars",
-        character="Han Solo",
-        source="Movie",
-        language="English",
-        tags=["classic", "sci-fi"],
-        created_at=date(1977, 5, 25),
-    )
+    quote = Quote.objects.order_by("?").first()
+    if quote is None:
+        return JsonResponse({"error": "No quotes available"}, status=404)
     return JsonResponse(
         {
             "text": quote.text,
