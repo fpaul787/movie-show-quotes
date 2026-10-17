@@ -32,7 +32,12 @@ class QuoteAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["created_at"].initial = datetime.date.today
+        self.fields["tags"].required = False
         self.fields["tags"].help_text = 'JSON list, e.g. ["drama", "classic"]'
+
+    def clean_tags(self):
+        tags = self.cleaned_data["tags"]
+        return [] if tags is None else tags
 
 
 @admin.register(Quote)
