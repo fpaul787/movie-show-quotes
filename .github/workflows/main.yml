@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout current branch
         uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.branch || github.ref}}
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
