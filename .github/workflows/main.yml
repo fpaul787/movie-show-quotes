@@ -4,21 +4,35 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch to deploy'
-        required: false
-        default: 'main'
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    env:
+      SECRET_KEY: ci-only-secret
+      DEBUG: "False"
+      POSTGRES_DB: ci_db
+      POSTGRES_DB_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST: localhost
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: ci_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - name: Checkout current branch
         uses: actions/checkout@v5
-        with:
-          ref: ${{ inputs.branch || github.ref}}
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
@@ -48,7 +62,7 @@ jobs:
           port: ${{ secrets.LINODE_PORT }}
           script: |
             set -euo pipefail
-            BRANCH=${{ github.event.inputs.branch || github.ref_name }}
+            BRANCH=${{ github.ref_name }}
             echo "Deploying branch: $BRANCH"
             cd /applications/movie-show-quotes
             git fetch origin "$BRANCH"
