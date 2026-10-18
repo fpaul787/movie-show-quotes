@@ -19,7 +19,8 @@ import environ
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
-environ.Env.read_env(BASE_DIR / ".env")
+APP_ENV = os.environ.get("APP_ENV", "dev")
+environ.Env.read_env(BASE_DIR / f".env.{APP_ENV}")
 
 
 # Quick-start development settings - unsuitable for production
@@ -105,10 +106,9 @@ else:
         "default": {
             "ENGINE": "django.db.backends.postgresql",
             "NAME": env("POSTGRES_DB"),
-            "USER": env("POSTGRES_USER"),
+            "USER": env("POSTGRES_DB_USER"),
             "PASSWORD": env("POSTGRES_PASSWORD"),
-            "HOST": env("POSTGRES_HOST", default="localhost"),
-            "PORT": env("POSTGRES_PORT", default="5432"),
+            "HOST": env("POSTGRES_HOST", default="localhost")
         }
     }
 
