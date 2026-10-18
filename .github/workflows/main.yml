@@ -28,3 +28,7 @@ jobs:
       - name: Run tests
         run: |
           python manage.py test
+      - name: Add environment variables to .env
+        run: |
+          echo "SECRET_KEY=fake-secret" >> .env
+          echo "DEBUG=0" >> .env
