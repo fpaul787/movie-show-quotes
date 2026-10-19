@@ -1,0 +1,52 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#10100f">
+    <meta name="description" content="A simple API for memorable quotes from movies and shows.">
+    <title>Movie &amp; Show Quotes API</title>
+    <link rel="stylesheet" href="{% static 'quotes/home.css' %}">
+</head>
+<body>
+    <div class="shell">
+        <header>
+            <a class="brand" href="/" aria-label="Movie and Show Quotes API home">
+                <span class="brand-mark" aria-hidden="true">“</span>
+                <span>Movie &amp; Show Quotes</span>
+            </a>
+            <a class="nav-link" href="#getting-started">API guide</a>
+        </header>
+
+        <main>
+            <section class="hero" aria-labelledby="page-title">
+                <div>
+                    <div class="eyebrow">A little inspiration, on demand</div>
+                    <h1 id="page-title">Great lines.<br><span>One simple API.</span></h1>
+                    <p class="intro">
+                        Bring memorable words from movies and shows into your next project.
+                        One request gets you a quote worth remembering.
+                    </p>
+                </div>
+            </section>
+
+            <section class="details" id="getting-started" aria-labelledby="getting-started-title">
+                <div>
+                    <h2 id="getting-started-title">Ready for your next line?</h2>
+                    <p class="detail-copy">
+                        Make a GET request to the random quote endpoint. Include your API key
+                        in either supported header to get a JSON response.
+                    </p>
+                </div>
+                <div class="code-card">
+                    <div class="code-heading"><span class="method">GET</span> /quotes/random</div>
+                    <pre><span class="code-muted">curl</span> https://api.movie-quotes-api.com/quotes/random \
+  -H <span class="code-gold">"X-API-Key: YOUR_API_KEY"</span></pre>
+                </div>
+            </section>
+        </main>
+
+        <footer>Movie &amp; Show Quotes API</footer>
+    </div>
+</body>
+</html>

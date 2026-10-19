@@ -1,7 +1,12 @@
 from django.http import JsonResponse
+from django.shortcuts import render
 
 from .auth import api_key_required
 from .models import Quote
+
+
+def home(request):
+    return render(request, "quotes/home.html")
 
 
 @api_key_required

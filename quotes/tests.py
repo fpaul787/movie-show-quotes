@@ -6,6 +6,16 @@ from django.utils import timezone
 from .models import APIKey, Quote
 
 
+class HomepageTests(TestCase):
+    def test_homepage_renders_api_overview(self):
+        response = self.client.get("/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Great lines.")
+        self.assertContains(response, "/quotes/random")
+        self.assertContains(response, "X-API-Key: YOUR_API_KEY")
+
+
 class APIKeyTests(TestCase):
     def setUp(self):
         self.apikey = APIKey(name="test")
