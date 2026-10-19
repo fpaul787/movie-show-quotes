@@ -44,3 +44,29 @@ jobs:
       - name: Run tests
         run: |
           python manage.py test
+      - name: Add environment variables to .env
+        run: |
+          echo "SECRET_KEY=fake-secret" >> .env
+          echo "DEBUG=0" >> .env
+  deploy:
+    name: Deploy
+    needs: "build"
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands using key
+        uses: appleboy/ssh-action@v1.2.5
+        with:
+          host: ${{ secrets.LINODE_HOST }}
+          username: ${{ secrets.LINODE_USERNAME }}
+          key: ${{ secrets.LINODE_PRIVATE_KEY }}
+          port: ${{ secrets.LINODE_PORT }}
+          script: |
+            set -euo pipefail
+            BRANCH=${{ github.ref_name }}
+            echo "Deploying branch: $BRANCH"
+            cd /applications/movie-show-quotes
+            git fetch origin "$BRANCH"
+            git checkout -B "$BRANCH" "origin/$BRANCH"
+            git reset --hard "origin/$BRANCH"
+            chmod +x deploy.sh
+            bash ./deploy.sh
