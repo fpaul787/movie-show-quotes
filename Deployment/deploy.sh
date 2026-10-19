@@ -13,9 +13,10 @@ if [ ! -x "$VENV_PY" ]; then
 fi
 
 "$VENV_PY" -m pip install -r requirements.txt
-"$VENV_PY" manage.py check --deploy
-"$VENV_PY" manage.py migrate --noinput
-"$VENV_PY" manage.py collectstatic --noinput
+
+APP_ENV=prod "$VENV_PY" manage.py check --deploy
+APP_ENV=prod "$VENV_PY" manage.py migrate --noinput
+APP_ENV=prod "$VENV_PY" manage.py collectstatic --noinput
 
 sudo apache2ctl configtest
 sudo systemctl reload apache2
