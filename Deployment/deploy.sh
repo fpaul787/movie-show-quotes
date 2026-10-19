@@ -1,17 +1,21 @@
-#!/usr/bin/env bash
-set -e
 
-VENV_PY="env/bin/python"
+#!/usr/bin/env bash
+set -euo pipefail
+
+APP_DIR="/applications/movie-show-quotes"
+VENV_PY="$APP_DIR/env/bin/python"
+
+cd "$APP_DIR"
 
 if [ ! -x "$VENV_PY" ]; then
-	echo "Virtual environment python not found at $VENV_PY"
-	exit 1
+    echo "Virtual environment Python not found at $VENV_PY"
+    exit 1
 fi
 
 "$VENV_PY" -m pip install -r requirements.txt
-"$VENV_PY" movie-show-quotes/manage.py migrate
-if [ -d "movie-show-quotes/static" ]; then
-  rm -rf movie-show-quotes/static
-fi
-"$VENV_PY" movie-show-quotes/manage.py collectstatic --noinput
+"$VENV_PY" manage.py check --deploy
+"$VENV_PY" manage.py migrate --noinput
+"$VENV_PY" manage.py collectstatic --noinput
+
+sudo apache2ctl configtest
 sudo systemctl reload apache2
