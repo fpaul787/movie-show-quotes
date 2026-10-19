@@ -20,7 +20,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
 APP_ENV = os.environ.get("APP_ENV", "dev")
-environ.Env.read_env(BASE_DIR / f".env.{APP_ENV}")
+
+if APP_ENV == "prod":
+    environ.Env.read_env("/etc/movie-show-quotes/.env")
+else:
+    environ.Env.read_env(BASE_DIR / f".env.{APP_ENV}")
 
 
 # Quick-start development settings - unsuitable for production
