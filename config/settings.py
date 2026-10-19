@@ -23,6 +23,10 @@ APP_ENV = os.environ.get("APP_ENV", "dev")
 
 if APP_ENV == "prod":
     environ.Env.read_env("/etc/movie-show-quotes/.env")
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = env.int("SECURE_HSTS_SECONDS", default=3600)
+    CSRF_COOKIE_SECURE = env.bool("CSRF_COOKIE_SECURE", default=False)
 else:
     environ.Env.read_env(BASE_DIR / f".env.{APP_ENV}")
 
@@ -154,5 +158,3 @@ MAILERS = {
         "BACKEND": "django.core.mail.backends.console.EmailBackend",
     },
 }
-
-CSRF_COOKIE_SECURE = env.bool("CSRF_COOKIE_SECURE", default=False)
