@@ -11,7 +11,7 @@ function App() {
   async function fetchQuote(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!apiKey.trim()) {
-      setError("Enter an API key to try the endpoint.");
+      setError("Please enter an API key to try the endpoint.");
       return;
     }
 
