@@ -15,6 +15,13 @@ class HomepageTests(TestCase):
         self.assertContains(response, "/quotes/random")
         self.assertContains(response, "X-API-Key: YOUR_API_KEY")
 
+    def test_react_homepage_is_available_without_replacing_the_original(self):
+        response = self.client.get("/homepage/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<div id="root"></div>', html=False)
+        self.assertEqual(self.client.get("/").status_code, 200)
+
 
 class APIKeyTests(TestCase):
     def setUp(self):

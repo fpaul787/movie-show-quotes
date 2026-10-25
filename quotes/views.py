@@ -9,6 +9,10 @@ def home(request):
     return render(request, "quotes/home.html")
 
 
+def react_homepage(request):
+    return render(request, "quotes/homepage.html")
+
+
 @api_key_required
 def random_quote(request):
     quote = Quote.objects.order_by("?").first()
