@@ -14,6 +14,9 @@ fi
 
 "$VENV_PY" -m pip install -r requirements.txt
 
+npm --prefix frontend install
+npm --prefix frontend run build
+
 APP_ENV=prod "$VENV_PY" manage.py check --deploy
 APP_ENV=prod "$VENV_PY" manage.py migrate --noinput
 APP_ENV=prod "$VENV_PY" manage.py collectstatic --noinput
