@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import Client, TestCase
 
 from quotes.models import APIKey
 
@@ -14,3 +14,62 @@ class UserModelTests(TestCase):
 
         self.assertEqual(api_key.owner, user)
         self.assertEqual(user.apikey_set.get(), api_key)
+
+
+class SignupApiTests(TestCase):
+    payload = {
+        "username": "newuser",
+        "email": "new@example.com",
+        "password1": "a-Long-unusual-pass-123",
+        "password2": "a-Long-unusual-pass-123",
+    }
+
+    def post(self, data, client=None):
+        return (client or self.client).post(
+            "/api/auth/signup", data=data, content_type="application/json"
+        )
+
+    def test_signup_creates_user_with_hashed_password(self):
+        response = self.post(self.payload)
+
+        self.assertEqual(response.status_code, 201)
+        user = get_user_model().objects.get(username="newuser")
+        self.assertEqual(response.json(), {"id": user.pk, "username": "newuser"})
+        self.assertNotEqual(user.password, self.payload["password1"])
+        self.assertTrue(user.check_password(self.payload["password1"]))
+        self.assertFalse(user.is_staff)
+
+    def test_signup_validates_input(self):
+        weak = {**self.payload, "password1": "12345678", "password2": "12345678"}
+        response = self.post(weak)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("password2", response.json()["errors"])
+        self.assertEqual(get_user_model().objects.count(), 0)
+
+    def test_duplicate_username_is_rejected(self):
+        self.post(self.payload)
+        response = self.post(self.payload)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("username", response.json()["errors"])
+
+    def test_invalid_json_returns_400(self):
+        response = self.post("not json")
+        self.assertEqual(response.status_code, 400)
+
+    def test_get_is_not_allowed(self):
+        self.assertEqual(self.client.get("/api/auth/signup").status_code, 405)
+
+    def test_csrf_is_enforced_and_token_endpoint_works(self):
+        client = Client(enforce_csrf_checks=True)
+        self.assertEqual(self.post(self.payload, client).status_code, 403)
+
+        token = client.get("/api/auth/csrf").json()["csrfToken"]
+        response = client.post(
+            "/api/auth/signup",
+            data=self.payload,
+            content_type="application/json",
+            headers={"X-CSRFToken": token},
+        )
+        self.assertEqual(response.status_code, 201)
