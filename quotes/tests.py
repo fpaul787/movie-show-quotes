@@ -22,6 +22,12 @@ class HomepageTests(TestCase):
         self.assertContains(response, '<div id="root"></div>', html=False)
         self.assertEqual(self.client.get("/").status_code, 200)
 
+    def test_signup_page_serves_the_react_app(self):
+        response = self.client.get("/signup/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<div id="root"></div>', html=False)
+
 
 class APIKeyTests(TestCase):
     def setUp(self):

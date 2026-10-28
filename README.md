@@ -30,4 +30,7 @@ after changing files under `frontend/src/`. The deployment script builds the
 frontend before running Django's `collectstatic`, so Node.js and npm must also be
 installed on the deployment host.
 
+## User signup
 
+The React signup page is available at `/signup/`. It submits to the Django
+signup API and uses the CSRF token endpoint automatically.
