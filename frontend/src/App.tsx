@@ -1,8 +1,14 @@
 import { useState, type SubmitEvent } from "react";
 import Homepage from "./Homepage";
+import SignupPage from "./SignupPage";
 import type { Quote } from "./models";
 
 function App() {
+  const path = window.location.pathname.replace(/\/+$/, "");
+  return path === "/signup" ? <SignupPage /> : <HomepageApp />;
+}
+
+function HomepageApp() {
   const [apiKey, setApiKey] = useState("");
   const [quote, setQuote] = useState<Quote | null>(null);
   const [error, setError] = useState("");
