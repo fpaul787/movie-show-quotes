@@ -1,4 +1,4 @@
-import { useEffect, useState, type SubmitEvent } from "react";
+import { useState, type SubmitEvent } from "react";
 import Homepage from "./Homepage";
 import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
@@ -19,41 +19,49 @@ function HomepageApp() {
   const [quote, setQuote] = useState<Quote | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [username, setUsername] = useState<string | null>(null);
-  const [authChecked, setAuthChecked] = useState(false);
-  const [authError, setAuthError] = useState("");
+  const [username, setUsername] = useState<string | null>(
+    () => document.getElementById("root")?.getAttribute("data-username") || null,
+  );
+  const [logoutLoading, setLogoutLoading] = useState(false);
+  const [logoutError, setLogoutError] = useState("");
 
-  useEffect(() => {
-    async function loadCurrentUser() {
-      try {
-        const response = await fetch("/api/auth/me", {
-          credentials: "same-origin",
-        });
-        if (!response.ok) {
-          throw new Error("Could not check login status.");
-        }
+  async function logout() {
+    setLogoutLoading(true);
+    setLogoutError("");
 
-        const data: unknown = await response.json();
-        if (!isRecord(data) || !("user" in data)) {
-          throw new Error("Could not check login status.");
-        }
-
-        if (data.user === null) {
-          setUsername(null);
-        } else if (isRecord(data.user) && typeof data.user.username === "string") {
-          setUsername(data.user.username);
-        } else {
-          throw new Error("Could not check login status.");
-        }
-      } catch {
-        setAuthError("Could not check login status.");
-      } finally {
-        setAuthChecked(true);
+    try {
+      const csrfResponse = await fetch("/api/auth/csrf", {
+        credentials: "same-origin",
+      });
+      if (!csrfResponse.ok) {
+        throw new Error("Could not start logout. Please try again.");
       }
-    }
 
-    void loadCurrentUser();
-  }, []);
+      const csrfData: unknown = await csrfResponse.json();
+      if (!isRecord(csrfData) || typeof csrfData.csrfToken !== "string") {
+        throw new Error("Could not start logout. Please try again.");
+      }
+
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "X-CSRFToken": csrfData.csrfToken },
+      });
+      if (!response.ok) {
+        throw new Error("Could not log out. Please try again.");
+      }
+
+      setUsername(null);
+    } catch (requestError) {
+      setLogoutError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Could not log out. Please try again.",
+      );
+    } finally {
+      setLogoutLoading(false);
+    }
+  }
 
   async function fetchQuote(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -94,8 +102,9 @@ function HomepageApp() {
       loading={loading}
       onFetchQuote={fetchQuote}
       username={username}
-      authChecked={authChecked}
-      authError={authError}
+      logoutLoading={logoutLoading}
+      logoutError={logoutError}
+      onLogout={logout}
     />
   );
 }

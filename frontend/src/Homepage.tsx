@@ -9,8 +9,9 @@ type HomepageProps = {
   loading: boolean;
   onFetchQuote: (event: SubmitEvent<HTMLFormElement>) => void;
   username: string | null;
-  authChecked: boolean;
-  authError: string;
+  logoutLoading: boolean;
+  logoutError: string;
+  onLogout: () => void;
 };
 
 function Homepage({
@@ -21,8 +22,9 @@ function Homepage({
   loading,
   onFetchQuote,
   username,
-  authChecked,
-  authError,
+  logoutLoading,
+  logoutError,
+  onLogout,
 }: HomepageProps) {
   const [copied, setCopied] = useState(false);
   const curlExample = [
@@ -50,14 +52,24 @@ function Homepage({
         <nav aria-label="Main navigation">
           <a href="#try-it">Try the API. Please</a>
           {username ? (
-            <span className="user-greeting">Hi {username}!</span>
-          ) : authChecked ? (
+            <>
+              <span className="user-greeting">Hi {username}!</span>
+              <button
+                className="logout-button"
+                type="button"
+                onClick={onLogout}
+                disabled={logoutLoading}
+              >
+                {logoutLoading ? "Logging out…" : "Log out"}
+              </button>
+            </>
+          ) : (
             <>
               <a href="/login/">Log in</a>
               <a href="/signup/">Sign up</a>
             </>
-          ) : null}
-          {authError && <span className="auth-error" role="status">{authError}</span>}
+          )}
+          {logoutError && <span className="auth-error" role="alert">{logoutError}</span>}
         </nav>
       </header>
 
