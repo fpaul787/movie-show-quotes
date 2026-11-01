@@ -50,10 +50,10 @@ function Homepage({
           <span>Movie <span className="brand-amp">&amp;</span> Show Quotes</span>
         </a>
         <nav aria-label="Main navigation">
-          <a href="#try-it">Try the API. Please</a>
+          <a className="nav-try" href="#try-it">Try the API. Please</a>
           {username ? (
             <>
-              <span className="user-greeting">Hi {username}!</span>
+              <span className="user-greeting" title={username}>Hi {username}!</span>
               <button
                 className="logout-button"
                 type="button"
