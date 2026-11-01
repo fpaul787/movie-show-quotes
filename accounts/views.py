@@ -30,6 +30,16 @@ def current_user(request):
     )
 
 
+@require_GET
+def profile(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Authentication required"}, status=401)
+
+    return JsonResponse(
+        {"username": request.user.username, "email": request.user.email or None}
+    )
+
+
 @require_POST
 def signup(request):
     try:

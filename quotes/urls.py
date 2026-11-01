@@ -8,5 +8,6 @@ urlpatterns = [
     re_path(r"^homepage/?$", RedirectView.as_view(url="/", permanent=True)),
     re_path(r"^login/?$", views.react_homepage, name="login"),
     re_path(r"^signup/?$", views.react_homepage, name="signup"),
+    re_path(r"^profile/?$", views.react_homepage, name="profile"),
     path("quotes/random", views.random_quote, name="random-quote"),
 ]

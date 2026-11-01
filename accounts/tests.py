@@ -187,6 +187,38 @@ class CurrentUserApiTests(TestCase):
         )
 
 
+class ProfileApiTests(TestCase):
+    def test_anonymous_request_returns_401(self):
+        response = self.client.get("/api/auth/profile")
+
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.json(), {"error": "Authentication required"})
+
+    def test_returns_username_and_email(self):
+        user = get_user_model().objects.create_user(
+            username="profile-user", email="p@example.com", password="x"
+        )
+        self.client.force_login(user)
+
+        response = self.client.get("/api/auth/profile")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"username": "profile-user", "email": "p@example.com"}
+        )
+
+    def test_missing_email_is_null(self):
+        user = get_user_model().objects.create_user(username="no-email", password="x")
+        self.client.force_login(user)
+
+        response = self.client.get("/api/auth/profile")
+
+        self.assertEqual(response.json(), {"username": "no-email", "email": None})
+
+    def test_post_is_not_allowed(self):
+        self.assertEqual(self.client.post("/api/auth/profile").status_code, 405)
+
+
 class LogoutApiTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
