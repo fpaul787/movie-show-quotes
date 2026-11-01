@@ -47,6 +47,14 @@ class SignupApiTests(TestCase):
         self.assertIn("password2", response.json()["errors"])
         self.assertEqual(get_user_model().objects.count(), 0)
 
+    def test_duplicate_email_is_rejected_on_signup(self):
+        self.post(self.payload)
+        other = {**self.payload, "username": "another", "email": "NEW@example.com"}
+        response = self.post(other)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("email", response.json()["errors"])
+
     def test_duplicate_username_is_rejected(self):
         self.post(self.payload)
         response = self.post(self.payload)
@@ -266,6 +274,28 @@ class ProfileApiTests(TestCase):
 
         self.assertEqual(self.patch("not json").status_code, 400)
         self.assertEqual(self.patch({}).status_code, 400)
+
+    def test_patch_rejects_email_used_by_another_user_case_insensitively(self):
+        get_user_model().objects.create_user(
+            username="other", email="Taken@Example.com", password="x"
+        )
+        user = self.login("old@example.com")
+
+        response = self.patch({"email": "taken@example.com"})
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("email", response.json()["errors"])
+        user.refresh_from_db()
+        self.assertEqual(user.email, "old@example.com")
+
+    def test_patch_allows_resaving_own_email(self):
+        self.login("mine@example.com")
+        self.assertEqual(self.patch({"email": "mine@example.com"}).status_code, 200)
+
+    def test_many_users_may_have_no_email(self):
+        get_user_model().objects.create_user(username="a", password="x")
+        get_user_model().objects.create_user(username="b", password="x")
+        self.assertEqual(get_user_model().objects.filter(email="").count(), 2)
 
     def test_patch_requires_login(self):
         self.assertEqual(self.patch({"email": "a@example.com"}).status_code, 401)

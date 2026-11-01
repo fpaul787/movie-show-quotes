@@ -43,7 +43,7 @@ def profile(request):
         if not isinstance(data, dict) or "email" not in data:
             return JsonResponse({"error": "Invalid JSON"}, status=400)
 
-        form = EmailUpdateForm(data)
+        form = EmailUpdateForm(data, user=request.user)
         if not form.is_valid():
             return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
 
