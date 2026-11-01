@@ -63,6 +63,7 @@ def login_view(request):
             {"error": "Username and password are required"}, status=400
         )
 
+    username = SignupForm.base_fields["username"].to_python(username)
     user = authenticate(request, username=username, password=password)
     if user is None:
         return JsonResponse({"error": "Invalid username or password"}, status=401)
