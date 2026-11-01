@@ -87,6 +87,48 @@ class APIKeyTests(TestCase):
         self.assertEqual(self.client.get("/quotes/random", headers=headers).status_code, 403)
 
 
+class UserAPIKeyEndpointTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="keyuser", password="pw-12345-xyz"
+        )
+
+    def test_requires_authentication(self):
+        self.assertEqual(self.client.get("/api/keys").status_code, 401)
+        self.assertEqual(self.client.post("/api/keys").status_code, 401)
+
+    def test_no_key_initially(self):
+        self.client.force_login(self.user)
+        self.assertEqual(self.client.get("/api/keys").json(), {"api_key": None})
+
+    def test_create_key_shows_it_once_and_it_works(self):
+        self.client.force_login(self.user)
+        created = self.client.post("/api/keys")
+        self.assertEqual(created.status_code, 201)
+        raw = created.json()["api_key"]["key"]
+        self.assertEqual(APIKey.objects.get(owner=self.user).hashed_key, APIKey._hash(raw))
+
+        listed = self.client.get("/api/keys").json()["api_key"]
+        self.assertNotIn("key", listed)
+        self.assertEqual(listed["prefix"], raw.split(".")[0])
+        self.client.logout()
+        response = self.client.get("/quotes/random", headers={"X-API-Key": raw})
+        self.assertEqual(response.status_code, 404)
+
+    def test_second_key_is_rejected(self):
+        self.client.force_login(self.user)
+        self.client.post("/api/keys")
+        self.assertEqual(self.client.post("/api/keys").status_code, 409)
+        self.assertEqual(APIKey.objects.filter(owner=self.user).count(), 1)
+
+    def test_keys_are_per_user(self):
+        other = get_user_model().objects.create_user(username="other", password="pw-12345-xyz")
+        self.client.force_login(other)
+        self.client.post("/api/keys")
+        self.client.force_login(self.user)
+        self.assertEqual(self.client.get("/api/keys").json(), {"api_key": None})
+
+
 class QuoteEndpointTests(TestCase):
     def setUp(self):
         key = APIKey(name="test")

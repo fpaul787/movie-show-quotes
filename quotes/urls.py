@@ -9,5 +9,6 @@ urlpatterns = [
     re_path(r"^login/?$", views.react_homepage, name="login"),
     re_path(r"^signup/?$", views.react_homepage, name="signup"),
     re_path(r"^profile/?$", views.react_homepage, name="profile"),
+    path("api/keys", views.api_key, name="api-key"),
     path("quotes/random", views.random_quote, name="random-quote"),
 ]
