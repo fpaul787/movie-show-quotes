@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
 
@@ -7,20 +8,43 @@ from .models import APIKey, Quote
 
 
 class HomepageTests(TestCase):
-    def test_homepage_renders_api_overview(self):
+    def test_root_serves_react_homepage(self):
         response = self.client.get("/")
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Great lines.")
-        self.assertContains(response, "/quotes/random")
-        self.assertContains(response, "X-API-Key: YOUR_API_KEY")
+        self.assertContains(
+            response, '<div id="root" data-username=""></div>', html=False
+        )
 
-    def test_react_homepage_is_available_without_replacing_the_original(self):
-        response = self.client.get("/homepage/")
+    def test_root_includes_logged_in_username(self):
+        user = get_user_model().objects.create_user(
+            username="homepage-user", password="a-Long-unusual-pass-123"
+        )
+        self.client.force_login(user)
+
+        response = self.client.get("/")
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '<div id="root"></div>', html=False)
-        self.assertEqual(self.client.get("/").status_code, 200)
+        self.assertContains(response, 'data-username="homepage-user"')
+
+    def test_legacy_homepage_url_redirects_to_root(self):
+        response = self.client.get("/homepage/")
+
+        self.assertRedirects(
+            response, "/", status_code=301, fetch_redirect_response=False
+        )
+
+    def test_signup_page_serves_the_react_app(self):
+        response = self.client.get("/signup/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<div id="root"')
+
+    def test_login_page_serves_the_react_app(self):
+        response = self.client.get("/login/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<div id="root"')
 
 
 class APIKeyTests(TestCase):

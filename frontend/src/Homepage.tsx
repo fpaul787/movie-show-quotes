@@ -8,6 +8,10 @@ type HomepageProps = {
   error: string;
   loading: boolean;
   onFetchQuote: (event: SubmitEvent<HTMLFormElement>) => void;
+  username: string | null;
+  logoutLoading: boolean;
+  logoutError: string;
+  onLogout: () => void;
 };
 
 function Homepage({
@@ -17,6 +21,10 @@ function Homepage({
   error,
   loading,
   onFetchQuote,
+  username,
+  logoutLoading,
+  logoutError,
+  onLogout,
 }: HomepageProps) {
   const [copied, setCopied] = useState(false);
   const curlExample = [
@@ -37,13 +45,31 @@ function Homepage({
   return (
     <div className="site-shell">
       <header className="site-header">
-        <a className="brand" href="/homepage/" aria-label="Movie and Show Quotes homepage">
+        <a className="brand" href="/" aria-label="Movie and Show Quotes homepage">
           <span className="brand-mark" aria-hidden="true">“</span>
           <span>Movie <span className="brand-amp">&amp;</span> Show Quotes</span>
         </a>
         <nav aria-label="Main navigation">
-          <a href="#try-it">Try the API. Please</a>
-          <a className="nav-old" href="/">Original page <span aria-hidden="true">↗</span></a>
+          <a className="nav-try" href="#try-it">Try the API. Please</a>
+          {username ? (
+            <>
+              <span className="user-greeting" title={username}>Hi {username}!</span>
+              <button
+                className="logout-button"
+                type="button"
+                onClick={onLogout}
+                disabled={logoutLoading}
+              >
+                {logoutLoading ? "Logging out…" : "Log out"}
+              </button>
+            </>
+          ) : (
+            <>
+              <a href="/login/">Log in</a>
+              <a href="/signup/">Sign up</a>
+            </>
+          )}
+          {logoutError && <span className="auth-error" role="alert">{logoutError}</span>}
         </nav>
       </header>
 
@@ -138,7 +164,7 @@ function Homepage({
         </section>
       </main>
 
-      <footer className="site-footer"><a className="footer-brand" href="/homepage/">Movie <span>&amp;</span> Show Quotes</a><span>For the love of a good story.</span><a href="/" className="footer-original">Visit the original page ↗</a></footer>
+      <footer className="site-footer"><a className="footer-brand" href="/">Movie <span>&amp;</span> Show Quotes</a><span>For the love of a good story.</span></footer>
     </div>
   );
 }
