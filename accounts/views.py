@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -29,3 +30,27 @@ def signup(request):
 
     user = form.save()
     return JsonResponse({"id": user.pk, "username": user.username}, status=201)
+
+
+@require_POST
+def login_view(request):
+    try:
+        data = json.loads(request.body)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+    if not isinstance(data, dict):
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+    username = data.get("username")
+    password = data.get("password")
+    if not isinstance(username, str) or not isinstance(password, str):
+        return JsonResponse(
+            {"error": "Username and password are required"}, status=400
+        )
+
+    user = authenticate(request, username=username, password=password)
+    if user is None:
+        return JsonResponse({"error": "Invalid username or password"}, status=401)
+
+    login(request, user)
+    return JsonResponse({"id": user.pk, "username": user.username})

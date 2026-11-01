@@ -73,3 +73,93 @@ class SignupApiTests(TestCase):
             headers={"X-CSRFToken": token},
         )
         self.assertEqual(response.status_code, 201)
+
+
+class LoginApiTests(TestCase):
+    username = "existing-user"
+    password = "a-Long-unusual-pass-123"
+
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username=self.username, password=self.password
+        )
+
+    def post(self, data, client=None):
+        return (client or self.client).post(
+            "/api/auth/login", data=data, content_type="application/json"
+        )
+
+    def test_valid_credentials_create_a_session(self):
+        response = self.post(
+            {"username": self.username, "password": self.password}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"id": self.user.pk, "username": self.username}
+        )
+        self.assertEqual(
+            self.client.session["_auth_user_id"], str(self.user.pk)
+        )
+
+    def test_invalid_credentials_return_the_same_generic_error(self):
+        wrong_password = self.post(
+            {"username": self.username, "password": "incorrect"}
+        )
+        unknown_user = self.post(
+            {"username": "unknown-user", "password": self.password}
+        )
+
+        self.assertEqual(wrong_password.status_code, 401)
+        self.assertEqual(unknown_user.status_code, 401)
+        self.assertEqual(
+            wrong_password.json(), {"error": "Invalid username or password"}
+        )
+        self.assertEqual(wrong_password.json(), unknown_user.json())
+        self.assertNotIn("_auth_user_id", self.client.session)
+
+    def test_inactive_user_cannot_log_in(self):
+        self.user.is_active = False
+        self.user.save()
+
+        response = self.post(
+            {"username": self.username, "password": self.password}
+        )
+
+        self.assertEqual(response.status_code, 401)
+        self.assertNotIn("_auth_user_id", self.client.session)
+
+    def test_invalid_json_and_missing_credentials_return_400(self):
+        malformed = self.post("not json")
+        missing_password = self.post({"username": self.username})
+
+        self.assertEqual(malformed.status_code, 400)
+        self.assertEqual(malformed.json(), {"error": "Invalid JSON"})
+        self.assertEqual(missing_password.status_code, 400)
+        self.assertEqual(
+            missing_password.json(), {"error": "Username and password are required"}
+        )
+
+    def test_get_is_not_allowed(self):
+        self.assertEqual(self.client.get("/api/auth/login").status_code, 405)
+
+    def test_csrf_is_enforced_and_token_endpoint_works(self):
+        client = Client(enforce_csrf_checks=True)
+        payload = {"username": self.username, "password": self.password}
+        self.assertEqual(self.post(payload, client).status_code, 403)
+
+        token = client.get("/api/auth/csrf").json()["csrfToken"]
+        response = client.post(
+            "/api/auth/login",
+            data=payload,
+            content_type="application/json",
+            headers={"X-CSRFToken": token},
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"id": self.user.pk, "username": self.username}
+        )
+        self.assertEqual(
+            client.session["_auth_user_id"], str(self.user.pk)
+        )
