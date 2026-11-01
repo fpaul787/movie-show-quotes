@@ -111,7 +111,7 @@ DATABASES = {
         "NAME": env("POSTGRES_DB"),
         "USER": env("POSTGRES_DB_USER"),
         "PASSWORD": env("POSTGRES_PASSWORD"),
-        "HOST": env("POSTGRES_HOST", default="localhost")
+        "HOST": env("POSTGRES_HOST", default="127.0.0.1")
     }
 }
 
