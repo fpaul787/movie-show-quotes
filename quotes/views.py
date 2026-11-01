@@ -6,7 +6,8 @@ from .models import Quote
 
 
 def react_homepage(request):
-    return render(request, "quotes/homepage.html")
+    username = request.user.username if request.user.is_authenticated else ""
+    return render(request, "quotes/homepage.html", {"username": username})
 
 
 @api_key_required

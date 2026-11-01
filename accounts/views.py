@@ -1,6 +1,6 @@
 import json
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout as django_logout
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -69,3 +69,9 @@ def login_view(request):
 
     login(request, user)
     return JsonResponse({"id": user.pk, "username": user.username})
+
+
+@require_POST
+def logout_view(request):
+    django_logout(request)
+    return JsonResponse({"success": True})

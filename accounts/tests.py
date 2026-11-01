@@ -185,3 +185,34 @@ class CurrentUserApiTests(TestCase):
             response.json(),
             {"user": {"id": user.pk, "username": user.username}},
         )
+
+
+class LogoutApiTests(TestCase):
+    def setUp(self):
+        self.user = get_user_model().objects.create_user(
+            username="logout-user", password="a-Long-unusual-pass-123"
+        )
+        self.client.force_login(self.user)
+
+    def test_logout_clears_the_session(self):
+        response = self.client.post("/api/auth/logout")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"success": True})
+        self.assertNotIn("_auth_user_id", self.client.session)
+
+    def test_get_is_not_allowed(self):
+        self.assertEqual(self.client.get("/api/auth/logout").status_code, 405)
+
+    def test_csrf_is_enforced(self):
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(self.user)
+        self.assertEqual(client.post("/api/auth/logout").status_code, 403)
+
+        token = client.get("/api/auth/csrf").json()["csrfToken"]
+        response = client.post(
+            "/api/auth/logout", headers={"X-CSRFToken": token}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("_auth_user_id", client.session)
