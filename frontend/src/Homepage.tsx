@@ -53,7 +53,7 @@ function Homepage({
           <a className="nav-try" href="#try-it">Try the API. Please</a>
           {username ? (
             <>
-              <span className="user-greeting" title={username}>Hi {username}!</span>
+              <a className="user-greeting" href="/profile/" title={username} style={{ flexShrink: 1 }}>Hi {username}!</a>
               <button
                 className="logout-button"
                 type="button"

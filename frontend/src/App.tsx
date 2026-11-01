@@ -1,6 +1,7 @@
 import { useState, type SubmitEvent } from "react";
 import Homepage from "./Homepage";
 import LoginPage from "./LoginPage";
+import ProfilePage from "./ProfilePage";
 import SignupPage from "./SignupPage";
 import type { Quote } from "./models";
 
@@ -11,6 +12,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function App() {
   const path = window.location.pathname.replace(/\/+$/, "");
   if (path === "/login") return <LoginPage />;
+  if (path === "/profile") return <ProfilePage />;
   return path === "/signup" ? <SignupPage /> : <HomepageApp />;
 }
 

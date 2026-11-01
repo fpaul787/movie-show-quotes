@@ -1,12 +1,26 @@
 import json
 
 from django.contrib.auth import authenticate, login, logout as django_logout
+from django.db import IntegrityError, transaction
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
-from .forms import SignupForm
+from .forms import EMAIL_TAKEN, EmailUpdateForm, SignupForm
+
+EMAIL_CONSTRAINT = "unique_user_email_ci"
+
+
+def is_email_conflict(error):
+    return EMAIL_CONSTRAINT in str(error)
+
+
+def email_conflict_response():
+    return JsonResponse(
+        {"errors": {"email": [{"message": EMAIL_TAKEN, "code": "unique"}]}},
+        status=400,
+    )
 
 
 @require_GET
@@ -30,6 +44,37 @@ def current_user(request):
     )
 
 
+@require_http_methods(["GET", "PATCH"])
+def profile(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"error": "Authentication required"}, status=401)
+
+    if request.method == "PATCH":
+        try:
+            data = json.loads(request.body)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+        if not isinstance(data, dict) or "email" not in data:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+        form = EmailUpdateForm(data, user=request.user)
+        if not form.is_valid():
+            return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
+
+        request.user.email = form.cleaned_data["email"]
+        try:
+            with transaction.atomic():
+                request.user.save(update_fields=["email"])
+        except IntegrityError as error:
+            if not is_email_conflict(error):
+                raise
+            return email_conflict_response()
+
+    return JsonResponse(
+        {"username": request.user.username, "email": request.user.email or None}
+    )
+
+
 @require_POST
 def signup(request):
     try:
@@ -43,7 +88,13 @@ def signup(request):
     if not form.is_valid():
         return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
 
-    user = form.save()
+    try:
+        with transaction.atomic():
+            user = form.save()
+    except IntegrityError as error:
+        if not is_email_conflict(error):
+            raise
+        return email_conflict_response()
     return JsonResponse({"id": user.pk, "username": user.username}, status=201)
 
 
