@@ -5,10 +5,6 @@ from .auth import api_key_required
 from .models import Quote
 
 
-def home(request):
-    return render(request, "quotes/home.html")
-
-
 def react_homepage(request):
     return render(request, "quotes/homepage.html")
 

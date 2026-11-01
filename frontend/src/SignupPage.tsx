@@ -91,7 +91,7 @@ function SignupPage() {
         throw new Error(getErrorMessage(data));
       }
 
-      window.location.assign("/homepage/");
+      window.location.assign("/");
     } catch (requestError) {
       setError(
         requestError instanceof Error
@@ -108,15 +108,14 @@ function SignupPage() {
       <header className="site-header">
         <a
           className="brand"
-          href="/homepage/"
+          href="/"
           aria-label="Movie and Show Quotes homepage"
         >
           <span className="brand-mark" aria-hidden="true">“</span>
           <span>Movie <span className="brand-amp">&amp;</span> Show Quotes</span>
         </a>
         <nav aria-label="Main navigation">
-          <a href="/homepage/">Home</a>
-          <a className="nav-old" href="/">Original page <span aria-hidden="true">↗</span></a>
+          <a href="/">Home</a>
         </nav>
       </header>
 
@@ -184,9 +183,8 @@ function SignupPage() {
       </main>
 
       <footer className="site-footer">
-        <a className="footer-brand" href="/homepage/">Movie <span>&amp;</span> Show Quotes</a>
+        <a className="footer-brand" href="/">Movie <span>&amp;</span> Show Quotes</a>
         <span>For the love of a good story.</span>
-        <a href="/" className="footer-original">Visit the original page ↗</a>
       </footer>
     </div>
   );

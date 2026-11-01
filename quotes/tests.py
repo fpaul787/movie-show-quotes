@@ -7,20 +7,18 @@ from .models import APIKey, Quote
 
 
 class HomepageTests(TestCase):
-    def test_homepage_renders_api_overview(self):
+    def test_root_serves_react_homepage(self):
         response = self.client.get("/")
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Great lines.")
-        self.assertContains(response, "/quotes/random")
-        self.assertContains(response, "X-API-Key: YOUR_API_KEY")
+        self.assertContains(response, '<div id="root"></div>', html=False)
 
-    def test_react_homepage_is_available_without_replacing_the_original(self):
+    def test_legacy_homepage_url_redirects_to_root(self):
         response = self.client.get("/homepage/")
 
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '<div id="root"></div>', html=False)
-        self.assertEqual(self.client.get("/").status_code, 200)
+        self.assertRedirects(
+            response, "/", status_code=301, fetch_redirect_response=False
+        )
 
     def test_signup_page_serves_the_react_app(self):
         response = self.client.get("/signup/")

@@ -37,14 +37,13 @@ function Homepage({
   return (
     <div className="site-shell">
       <header className="site-header">
-        <a className="brand" href="/homepage/" aria-label="Movie and Show Quotes homepage">
+        <a className="brand" href="/" aria-label="Movie and Show Quotes homepage">
           <span className="brand-mark" aria-hidden="true">“</span>
           <span>Movie <span className="brand-amp">&amp;</span> Show Quotes</span>
         </a>
         <nav aria-label="Main navigation">
           <a href="#try-it">Try the API. Please</a>
           <a href="/signup/">Sign up</a>
-          <a className="nav-old" href="/">Original page <span aria-hidden="true">↗</span></a>
         </nav>
       </header>
 
@@ -139,7 +138,7 @@ function Homepage({
         </section>
       </main>
 
-      <footer className="site-footer"><a className="footer-brand" href="/homepage/">Movie <span>&amp;</span> Show Quotes</a><span>For the love of a good story.</span><a href="/" className="footer-original">Visit the original page ↗</a></footer>
+      <footer className="site-footer"><a className="footer-brand" href="/">Movie <span>&amp;</span> Show Quotes</a><span>For the love of a good story.</span></footer>
     </div>
   );
 }
