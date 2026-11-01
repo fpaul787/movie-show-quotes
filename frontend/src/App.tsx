@@ -1,10 +1,12 @@
 import { useState, type SubmitEvent } from "react";
 import Homepage from "./Homepage";
+import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
 import type { Quote } from "./models";
 
 function App() {
   const path = window.location.pathname.replace(/\/+$/, "");
+  if (path === "/login") return <LoginPage />;
   return path === "/signup" ? <SignupPage /> : <HomepageApp />;
 }
 

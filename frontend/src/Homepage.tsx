@@ -43,6 +43,7 @@ function Homepage({
         </a>
         <nav aria-label="Main navigation">
           <a href="#try-it">Try the API. Please</a>
+          <a href="/login/">Log in</a>
           <a href="/signup/">Sign up</a>
         </nav>
       </header>

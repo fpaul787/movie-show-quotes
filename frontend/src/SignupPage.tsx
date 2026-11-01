@@ -116,6 +116,7 @@ function SignupPage() {
         </a>
         <nav aria-label="Main navigation">
           <a href="/">Home</a>
+          <a href="/login/">Log in</a>
         </nav>
       </header>
 
@@ -179,6 +180,9 @@ function SignupPage() {
               {loading ? "Creating account…" : "Create account"}
             </button>
           </form>
+          <p className="signup-description">
+            Already have an account? <a href="/login/">Log in</a>
+          </p>
         </section>
       </main>
 

@@ -26,6 +26,12 @@ class HomepageTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, '<div id="root"></div>', html=False)
 
+    def test_login_page_serves_the_react_app(self):
+        response = self.client.get("/login/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<div id="root"></div>', html=False)
+
 
 class APIKeyTests(TestCase):
     def setUp(self):
