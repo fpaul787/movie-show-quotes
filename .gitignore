@@ -161,6 +161,10 @@ env.bak/
 venv.bak/
 frontend/node_modules/
 
+# Frontend build output (generated on deploy by Deployment/deploy.sh)
+quotes/static/quotes/homepage/
+frontend/tsconfig.tsbuildinfo
+
 # Spyder project settings
 .spyderproject
 .spyproject
