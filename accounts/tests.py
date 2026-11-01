@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 
@@ -54,6 +56,20 @@ class SignupApiTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertIn("email", response.json()["errors"])
+
+    def test_signup_race_on_email_returns_400_not_500(self):
+        get_user_model().objects.create_user(
+            username="first", email="new@example.com", password="x"
+        )
+
+        with patch("accounts.forms.email_in_use", return_value=False), patch(
+            "django.db.models.Model.validate_constraints"
+        ):
+            response = self.post(self.payload)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("email", response.json()["errors"])
+        self.assertFalse(get_user_model().objects.filter(username="newuser").exists())
 
     def test_duplicate_username_is_rejected(self):
         self.post(self.payload)
@@ -282,6 +298,20 @@ class ProfileApiTests(TestCase):
         user = self.login("old@example.com")
 
         response = self.patch({"email": "taken@example.com"})
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("email", response.json()["errors"])
+        user.refresh_from_db()
+        self.assertEqual(user.email, "old@example.com")
+
+    def test_patch_race_on_email_returns_400_not_500(self):
+        get_user_model().objects.create_user(
+            username="other", email="taken@example.com", password="x"
+        )
+        user = self.login("old@example.com")
+
+        with patch("accounts.forms.email_in_use", return_value=False):
+            response = self.patch({"email": "taken@example.com"})
 
         self.assertEqual(response.status_code, 400)
         self.assertIn("email", response.json()["errors"])
