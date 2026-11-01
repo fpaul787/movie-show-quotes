@@ -218,6 +218,73 @@ class ProfileApiTests(TestCase):
     def test_post_is_not_allowed(self):
         self.assertEqual(self.client.post("/api/auth/profile").status_code, 405)
 
+    def patch(self, data, client=None):
+        return (client or self.client).patch(
+            "/api/auth/profile", data=data, content_type="application/json"
+        )
+
+    def login(self, email=""):
+        user = get_user_model().objects.create_user(
+            username="editor", email=email, password="x"
+        )
+        self.client.force_login(user)
+        return user
+
+    def test_patch_updates_email(self):
+        user = self.login("old@example.com")
+
+        response = self.patch({"email": "new@example.com"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"username": "editor", "email": "new@example.com"}
+        )
+        user.refresh_from_db()
+        self.assertEqual(user.email, "new@example.com")
+
+    def test_patch_can_clear_email(self):
+        user = self.login("old@example.com")
+
+        response = self.patch({"email": ""})
+
+        self.assertEqual(response.json()["email"], None)
+        user.refresh_from_db()
+        self.assertEqual(user.email, "")
+
+    def test_patch_rejects_invalid_email(self):
+        user = self.login("old@example.com")
+
+        response = self.patch({"email": "not-an-email"})
+
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("email", response.json()["errors"])
+        user.refresh_from_db()
+        self.assertEqual(user.email, "old@example.com")
+
+    def test_patch_rejects_bad_json_and_missing_email(self):
+        self.login()
+
+        self.assertEqual(self.patch("not json").status_code, 400)
+        self.assertEqual(self.patch({}).status_code, 400)
+
+    def test_patch_requires_login(self):
+        self.assertEqual(self.patch({"email": "a@example.com"}).status_code, 401)
+
+    def test_patch_enforces_csrf(self):
+        user = self.login()
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(user)
+        self.assertEqual(self.patch({"email": "a@example.com"}, client).status_code, 403)
+
+        token = client.get("/api/auth/csrf").json()["csrfToken"]
+        response = client.patch(
+            "/api/auth/profile",
+            data={"email": "a@example.com"},
+            content_type="application/json",
+            headers={"X-CSRFToken": token},
+        )
+        self.assertEqual(response.status_code, 200)
+
 
 class LogoutApiTests(TestCase):
     def setUp(self):

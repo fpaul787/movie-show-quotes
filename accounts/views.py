@@ -4,9 +4,9 @@ from django.contrib.auth import authenticate, login, logout as django_logout
 from django.http import JsonResponse
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
-from .forms import SignupForm
+from .forms import EmailUpdateForm, SignupForm
 
 
 @require_GET
@@ -30,10 +30,25 @@ def current_user(request):
     )
 
 
-@require_GET
+@require_http_methods(["GET", "PATCH"])
 def profile(request):
     if not request.user.is_authenticated:
         return JsonResponse({"error": "Authentication required"}, status=401)
+
+    if request.method == "PATCH":
+        try:
+            data = json.loads(request.body)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+        if not isinstance(data, dict) or "email" not in data:
+            return JsonResponse({"error": "Invalid JSON"}, status=400)
+
+        form = EmailUpdateForm(data)
+        if not form.is_valid():
+            return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
+
+        request.user.email = form.cleaned_data["email"]
+        request.user.save(update_fields=["email"])
 
     return JsonResponse(
         {"username": request.user.username, "email": request.user.email or None}
