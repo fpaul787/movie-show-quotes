@@ -8,6 +8,9 @@ type HomepageProps = {
   error: string;
   loading: boolean;
   onFetchQuote: (event: SubmitEvent<HTMLFormElement>) => void;
+  username: string | null;
+  authChecked: boolean;
+  authError: string;
 };
 
 function Homepage({
@@ -17,6 +20,9 @@ function Homepage({
   error,
   loading,
   onFetchQuote,
+  username,
+  authChecked,
+  authError,
 }: HomepageProps) {
   const [copied, setCopied] = useState(false);
   const curlExample = [
@@ -43,8 +49,15 @@ function Homepage({
         </a>
         <nav aria-label="Main navigation">
           <a href="#try-it">Try the API. Please</a>
-          <a href="/login/">Log in</a>
-          <a href="/signup/">Sign up</a>
+          {username ? (
+            <span className="user-greeting">Hi {username}!</span>
+          ) : authChecked ? (
+            <>
+              <a href="/login/">Log in</a>
+              <a href="/signup/">Sign up</a>
+            </>
+          ) : null}
+          {authError && <span className="auth-error" role="status">{authError}</span>}
         </nav>
       </header>
 

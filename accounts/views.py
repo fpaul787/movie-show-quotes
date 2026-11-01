@@ -15,6 +15,21 @@ def csrf(request):
     return JsonResponse({"csrfToken": get_token(request)})
 
 
+@require_GET
+def current_user(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({"user": None})
+
+    return JsonResponse(
+        {
+            "user": {
+                "id": request.user.pk,
+                "username": request.user.username,
+            }
+        }
+    )
+
+
 @require_POST
 def signup(request):
     try:

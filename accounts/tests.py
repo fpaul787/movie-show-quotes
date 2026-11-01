@@ -163,3 +163,25 @@ class LoginApiTests(TestCase):
         self.assertEqual(
             client.session["_auth_user_id"], str(self.user.pk)
         )
+
+
+class CurrentUserApiTests(TestCase):
+    def test_anonymous_request_returns_no_user(self):
+        response = self.client.get("/api/auth/me")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"user": None})
+
+    def test_authenticated_request_returns_current_user(self):
+        user = get_user_model().objects.create_user(
+            username="current-user", password="a-Long-unusual-pass-123"
+        )
+        self.client.force_login(user)
+
+        response = self.client.get("/api/auth/me")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {"user": {"id": user.pk, "username": user.username}},
+        )
