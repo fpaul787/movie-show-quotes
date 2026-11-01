@@ -91,7 +91,7 @@ function SignupPage() {
         throw new Error(getErrorMessage(data));
       }
 
-      window.location.assign("/");
+      window.location.assign("/login/");
     } catch (requestError) {
       setError(
         requestError instanceof Error
