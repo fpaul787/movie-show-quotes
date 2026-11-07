@@ -64,6 +64,85 @@ function ProfilePage() {
   const [apiKeyRevealed, setApiKeyRevealed] = useState(false);
   const [copyMessage, setCopyMessage] = useState("");
 
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
+
+  function startChangingPassword() {
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setPasswordError("");
+    setPasswordSuccess("");
+    setChangingPassword(true);
+  }
+
+  async function savePassword(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setPasswordError("");
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError("New passwords do not match.");
+      return;
+    }
+
+    setPasswordSaving(true);
+    try {
+      const csrfResponse = await fetch("/api/auth/csrf", {
+        credentials: "same-origin",
+      });
+      const csrfData: unknown = await csrfResponse.json().catch(() => null);
+      if (!csrfResponse.ok || !isRecord(csrfData) || typeof csrfData.csrfToken !== "string") {
+        throw new Error("Could not change password. Please try again.");
+      }
+
+      const response = await fetch("/api/auth/password", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfData.csrfToken,
+        },
+        body: JSON.stringify({
+          current_password: currentPassword,
+          new_password: newPassword,
+        }),
+      });
+      const data = await response.json().catch(() => null);
+
+      if (response.status === 401) {
+        window.location.replace("/login/");
+        return;
+      }
+      if (!response.ok) {
+        const errors = isRecord(data) && isRecord(data.errors) ? data.errors : {};
+        const first = Object.values(errors)
+          .flatMap((list) => (Array.isArray(list) ? list : []))
+          .map((item) => (isRecord(item) ? item.message : undefined))
+          .find((message): message is string => typeof message === "string");
+        throw new Error(first ?? "Could not change password. Please try again.");
+      }
+
+      setChangingPassword(false);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setPasswordSuccess("Your password has been changed.");
+    } catch (requestError) {
+      setPasswordError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Could not change password. Please try again.",
+      );
+    } finally {
+      setPasswordSaving(false);
+    }
+  }
+
   function startEditing() {
     setEmailInput(profile?.email ?? "");
     setSaveError("");
@@ -424,7 +503,8 @@ function ProfilePage() {
               <h1 id="profile-title" className="signup-title">Profile.</h1>
 
               {error && <p className="signup-error" role="alert">{error}</p>}
-              {profile && !editing && (
+              {passwordSuccess && <p className="api-key-copy-message" role="status">{passwordSuccess}</p>}
+              {profile && !editing && !changingPassword && (
                 <>
                   <dl className="profile-details">
                     <dt>Username</dt>
@@ -435,7 +515,59 @@ function ProfilePage() {
                   <button className="signup-submit" type="button" onClick={startEditing}>
                     Change email
                   </button>
+                  <button className="signup-submit" type="button" onClick={startChangingPassword}>
+                    Change password
+                  </button>
                 </>
+              )}
+              {profile && changingPassword && (
+                <form className="signup-form" onSubmit={savePassword}>
+                  <label className="signup-field">
+                    <span>Current password</span>
+                    <input
+                      type="password"
+                      name="current_password"
+                      autoComplete="current-password"
+                      required
+                      value={currentPassword}
+                      onChange={(event) => setCurrentPassword(event.target.value)}
+                    />
+                  </label>
+                  <label className="signup-field">
+                    <span>New password</span>
+                    <input
+                      type="password"
+                      name="new_password"
+                      autoComplete="new-password"
+                      required
+                      value={newPassword}
+                      onChange={(event) => setNewPassword(event.target.value)}
+                    />
+                  </label>
+                  <label className="signup-field">
+                    <span>Confirm new password</span>
+                    <input
+                      type="password"
+                      name="confirm_password"
+                      autoComplete="new-password"
+                      required
+                      value={confirmPassword}
+                      onChange={(event) => setConfirmPassword(event.target.value)}
+                    />
+                  </label>
+                  {passwordError && <p className="signup-error" role="alert">{passwordError}</p>}
+                  <button className="signup-submit" type="submit" disabled={passwordSaving}>
+                    {passwordSaving ? "Saving…" : "Save password"}
+                  </button>
+                  <button
+                    className="signup-submit"
+                    type="button"
+                    onClick={() => setChangingPassword(false)}
+                    disabled={passwordSaving}
+                  >
+                    Cancel
+                  </button>
+                </form>
               )}
               {profile && editing && (
                 <form className="signup-form" onSubmit={saveEmail}>
