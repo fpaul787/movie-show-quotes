@@ -12,7 +12,7 @@ def _key_payload(key, raw_key=None):
     payload = {
         "name": key.name,
         "prefix": key.prefix,
-        "is_active": key.is_active,
+        "is_active": key.is_usable(),
         "created_at": key.created_at.isoformat(),
         "last_used_at": key.last_used_at.isoformat() if key.last_used_at else None,
     }
