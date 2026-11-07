@@ -5,6 +5,45 @@ type Profile = {
   email: string | null;
 };
 
+type UserApiKey = {
+  name: string;
+  is_active: boolean;
+  created_at: string;
+  last_used_at: string | null;
+  key?: string;
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function parseApiKey(data: unknown): UserApiKey | null {
+  if (!isRecord(data) || !("api_key" in data)) {
+    throw new Error("Could not load your API key. Please try again.");
+  }
+  if (data.api_key === null) return null;
+
+  const key = data.api_key;
+  if (
+    !isRecord(key) ||
+    typeof key.name !== "string" ||
+    typeof key.is_active !== "boolean" ||
+    typeof key.created_at !== "string" ||
+    !(key.last_used_at === null || typeof key.last_used_at === "string") ||
+    ("key" in key && typeof key.key !== "string")
+  ) {
+    throw new Error("Could not load your API key. Please try again.");
+  }
+
+  return {
+    name: key.name,
+    is_active: key.is_active,
+    created_at: key.created_at,
+    last_used_at: key.last_used_at,
+    ...(typeof key.key === "string" ? { key: key.key } : {}),
+  };
+}
+
 function ProfilePage() {
   const isApiKeysPage =
     window.location.pathname.replace(/\/+$/, "") === "/profile/api-keys";
@@ -14,6 +53,12 @@ function ProfilePage() {
   const [emailInput, setEmailInput] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const [apiKey, setApiKey] = useState<UserApiKey | null>(null);
+  const [apiKeyLoading, setApiKeyLoading] = useState(true);
+  const [apiKeyCreating, setApiKeyCreating] = useState(false);
+  const [apiKeyError, setApiKeyError] = useState("");
+  const [newApiKeySecret, setNewApiKeySecret] = useState<string | null>(null);
+  const [copyMessage, setCopyMessage] = useState("");
 
   function startEditing() {
     setEmailInput(profile?.email ?? "");
@@ -76,7 +121,34 @@ function ProfilePage() {
   }
 
   useEffect(() => {
-    if (isApiKeysPage) return;
+    if (isApiKeysPage) {
+      async function loadApiKey() {
+        try {
+          const response = await fetch("/api/keys", {
+            credentials: "same-origin",
+          });
+          if (response.status === 401) {
+            window.location.replace("/login/");
+            return;
+          }
+          if (!response.ok) {
+            throw new Error("Could not load your API key. Please try again.");
+          }
+          setApiKey(parseApiKey(await response.json()));
+        } catch (requestError) {
+          setApiKeyError(
+            requestError instanceof Error
+              ? requestError.message
+              : "Could not load your API key. Please try again.",
+          );
+        } finally {
+          setApiKeyLoading(false);
+        }
+      }
+
+      void loadApiKey();
+      return;
+    }
 
     async function load() {
       try {
@@ -96,6 +168,66 @@ function ProfilePage() {
     }
     void load();
   }, [isApiKeysPage]);
+
+  async function createApiKey() {
+    setApiKeyCreating(true);
+    setApiKeyError("");
+    setCopyMessage("");
+
+    try {
+      const csrfResponse = await fetch("/api/auth/csrf", {
+        credentials: "same-origin",
+      });
+      if (!csrfResponse.ok) {
+        throw new Error("Could not start API key creation. Please try again.");
+      }
+      const csrfData: unknown = await csrfResponse.json();
+      if (!isRecord(csrfData) || typeof csrfData.csrfToken !== "string") {
+        throw new Error("Could not start API key creation. Please try again.");
+      }
+
+      const response = await fetch("/api/keys", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "X-CSRFToken": csrfData.csrfToken },
+      });
+      if (response.status === 401) {
+        window.location.replace("/login/");
+        return;
+      }
+      if (response.status === 409) {
+        throw new Error("An API key already exists for your account.");
+      }
+      if (!response.ok) {
+        throw new Error("Could not create your API key. Please try again.");
+      }
+
+      const createdKey = parseApiKey(await response.json());
+      if (!createdKey?.key) {
+        throw new Error("Could not create your API key. Please try again.");
+      }
+      setApiKey(createdKey);
+      setNewApiKeySecret(createdKey.key);
+    } catch (requestError) {
+      setApiKeyError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Could not create your API key. Please try again.",
+      );
+    } finally {
+      setApiKeyCreating(false);
+    }
+  }
+
+  async function copyApiKey() {
+    if (!newApiKeySecret) return;
+    try {
+      await navigator.clipboard.writeText(newApiKeySecret);
+      setCopyMessage("Copied to clipboard.");
+    } catch {
+      setApiKeyError("Could not copy the API key. Please allow clipboard access and try again.");
+    }
+  }
 
   return (
     <div className="site-shell">
@@ -125,7 +257,61 @@ function ProfilePage() {
             </a>
           </nav>
 
-          {!isApiKeysPage && (
+          {isApiKeysPage ? (
+            <section className="signup-card profile-card" aria-labelledby="api-keys-title">
+              <div className="eyebrow"><span className="eyebrow-dot" /> Developer access</div>
+              <h1 id="api-keys-title" className="signup-title">API Keys.</h1>
+              <p className="signup-description">
+                Use your key to authenticate requests to the quotes API.
+              </p>
+
+              {apiKeyError && <p className="signup-error" role="alert">{apiKeyError}</p>}
+              {apiKeyLoading && <p className="signup-description">Loading your API key…</p>}
+              {!apiKeyLoading && !apiKeyError && !apiKey && (
+                <>
+                  <p className="signup-description">You don’t have an API key yet.</p>
+                  <button
+                    className="signup-submit"
+                    type="button"
+                    onClick={createApiKey}
+                    disabled={apiKeyCreating}
+                  >
+                    {apiKeyCreating ? "Creating…" : "Create API key"}
+                  </button>
+                </>
+              )}
+              {apiKey && (
+                <div className="api-key-details">
+                  <dl className="profile-details">
+                    <dt>Name</dt>
+                    <dd>{apiKey.name}</dd>
+                    <dt>Status</dt>
+                    <dd>{apiKey.is_active ? "Active" : "Inactive"}</dd>
+                    <dt>Created</dt>
+                    <dd>{new Date(apiKey.created_at).toLocaleString()}</dd>
+                    <dt>Last used</dt>
+                    <dd>{apiKey.last_used_at ? new Date(apiKey.last_used_at).toLocaleString() : "Never"}</dd>
+                  </dl>
+                  {newApiKeySecret ? (
+                    <div className="api-key-secret">
+                      <p className="signup-description">
+                        Your key is hidden. Copy it now; it won’t be available again after you leave this page.
+                      </p>
+                      <code aria-label="Hidden API key" aria-live="polite">••••••••••••••••</code>
+                      <button className="signup-submit" type="button" onClick={copyApiKey}>
+                        Copy key
+                      </button>
+                      {copyMessage && <p className="api-key-copy-message" role="status">{copyMessage}</p>}
+                    </div>
+                  ) : (
+                    <p className="signup-description">
+                      The full key is only shown when it’s first created.
+                    </p>
+                  )}
+                </div>
+              )}
+            </section>
+          ) : (
             <section className="signup-card profile-card" aria-labelledby="profile-title">
               <div className="eyebrow"><span className="eyebrow-dot" /> Your account</div>
               <h1 id="profile-title" className="signup-title">Profile.</h1>

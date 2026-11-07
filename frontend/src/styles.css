@@ -112,6 +112,13 @@ h2 { margin: 13px 0 0; font: 400 32px/1.2 "Playfair Display", Georgia, serif; le
 .profile-details { margin: 0 0 26px; color: var(--muted); font-size: 11px; }
 .profile-details dt { margin-top: 8px; }
 .profile-details dd { margin: 5px 0 0 36px; color: #c5bfb2; }
+.api-key-details { overflow-wrap: anywhere; }
+.api-key-details code { color: #e6dfd2; font: 11px "DM Mono", monospace; }
+.api-key-secret { display: grid; gap: 12px; padding-top: 18px; border-top: 1px solid var(--line); }
+.api-key-secret .signup-description { margin: 0; }
+.api-key-secret > code { padding: 12px; border: 1px solid rgb(255 255 255 / 12%); border-radius: 3px; background: #141412; }
+.api-key-secret .signup-submit { justify-self: start; padding: 0 14px; }
+.api-key-copy-message { margin: 0; color: #9fcca8; font-size: 11px; }
 .signup-title { margin: 18px 0 10px; font-size: clamp(38px, 7vw, 52px); }
 .signup-description { margin: 0 0 26px; color: var(--muted); font-size: 13px; line-height: 1.7; }
 .signup-form { display: grid; gap: 17px; }
