@@ -6,6 +6,8 @@ type Profile = {
 };
 
 function ProfilePage() {
+  const isApiKeysPage =
+    window.location.pathname.replace(/\/+$/, "") === "/profile/api-keys";
   const [profile, setProfile] = useState<Profile | null>(null);
   const [error, setError] = useState("");
   const [editing, setEditing] = useState(false);
@@ -74,6 +76,8 @@ function ProfilePage() {
   }
 
   useEffect(() => {
+    if (isApiKeysPage) return;
+
     async function load() {
       try {
         const response = await fetch("/api/auth/profile", {
@@ -91,7 +95,7 @@ function ProfilePage() {
       }
     }
     void load();
-  }, []);
+  }, [isApiKeysPage]);
 
   return (
     <div className="site-shell">
@@ -100,58 +104,76 @@ function ProfilePage() {
           <span className="brand-mark" aria-hidden="true">“</span>
           <span>Movie <span className="brand-amp">&amp;</span> Show Quotes</span>
         </a>
-        <nav aria-label="Main navigation">
-          <a href="/">Home</a>
-        </nav>
       </header>
 
-      <main className="signup-main">
-        <section className="signup-card" aria-labelledby="profile-title">
-          <div className="eyebrow"><span className="eyebrow-dot" /> Your account</div>
-          <h1 id="profile-title" className="signup-title">Profile.</h1>
+      <main className="profile-main">
+        <div className="profile-layout">
+          <nav className="profile-sidebar" aria-label="Account navigation">
+            <a
+              className={`profile-nav-link${isApiKeysPage ? "" : " is-active"}`}
+              href="/profile/"
+              aria-current={isApiKeysPage ? undefined : "page"}
+            >
+              Profile
+            </a>
+            <a
+              className={`profile-nav-link${isApiKeysPage ? " is-active" : ""}`}
+              href="/profile/api-keys/"
+              aria-current={isApiKeysPage ? "page" : undefined}
+            >
+              API Keys
+            </a>
+          </nav>
 
-          {error && <p className="signup-error" role="alert">{error}</p>}
-          {profile && !editing && (
-            <>
-              <dl className="signup-description">
-                <dt>Username</dt>
-                <dd>{profile.username}</dd>
-                <dt>Email</dt>
-                <dd>{profile.email ?? "Not provided"}</dd>
-              </dl>
-              <button className="signup-submit" type="button" onClick={startEditing}>
-                Change email
-              </button>
-            </>
+          {!isApiKeysPage && (
+            <section className="signup-card profile-card" aria-labelledby="profile-title">
+              <div className="eyebrow"><span className="eyebrow-dot" /> Your account</div>
+              <h1 id="profile-title" className="signup-title">Profile.</h1>
+
+              {error && <p className="signup-error" role="alert">{error}</p>}
+              {profile && !editing && (
+                <>
+                  <dl className="profile-details">
+                    <dt>Username</dt>
+                    <dd>{profile.username}</dd>
+                    <dt>Email</dt>
+                    <dd>{profile.email ?? "Not provided"}</dd>
+                  </dl>
+                  <button className="signup-submit" type="button" onClick={startEditing}>
+                    Change email
+                  </button>
+                </>
+              )}
+              {profile && editing && (
+                <form className="signup-form" onSubmit={saveEmail}>
+                  <label className="signup-field">
+                    <span>Email (leave blank to remove)</span>
+                    <input
+                      type="email"
+                      name="email"
+                      autoComplete="email"
+                      maxLength={254}
+                      value={emailInput}
+                      onChange={(event) => setEmailInput(event.target.value)}
+                    />
+                  </label>
+                  {saveError && <p className="signup-error" role="alert">{saveError}</p>}
+                  <button className="signup-submit" type="submit" disabled={saving}>
+                    {saving ? "Saving…" : "Save"}
+                  </button>
+                  <button
+                    className="signup-submit"
+                    type="button"
+                    onClick={() => setEditing(false)}
+                    disabled={saving}
+                  >
+                    Cancel
+                  </button>
+                </form>
+              )}
+            </section>
           )}
-          {profile && editing && (
-            <form className="signup-form" onSubmit={saveEmail}>
-              <label className="signup-field">
-                <span>Email (leave blank to remove)</span>
-                <input
-                  type="email"
-                  name="email"
-                  autoComplete="email"
-                  maxLength={254}
-                  value={emailInput}
-                  onChange={(event) => setEmailInput(event.target.value)}
-                />
-              </label>
-              {saveError && <p className="signup-error" role="alert">{saveError}</p>}
-              <button className="signup-submit" type="submit" disabled={saving}>
-                {saving ? "Saving…" : "Save"}
-              </button>
-              <button
-                className="signup-submit"
-                type="button"
-                onClick={() => setEditing(false)}
-                disabled={saving}
-              >
-                Cancel
-              </button>
-            </form>
-          )}
-        </section>
+        </div>
       </main>
 
       <footer className="site-footer">

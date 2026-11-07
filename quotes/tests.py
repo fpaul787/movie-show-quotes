@@ -46,6 +46,12 @@ class HomepageTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, '<div id="root"')
 
+    def test_profile_api_keys_page_serves_the_react_app(self):
+        response = self.client.get("/profile/api-keys/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<div id="root"')
+
 
 class APIKeyTests(TestCase):
     def setUp(self):
