@@ -123,6 +123,21 @@ class UserAPIKeyEndpointTests(TestCase):
         response = self.client.get("/quotes/random", headers={"X-API-Key": raw})
         self.assertEqual(response.status_code, 404)
 
+    def test_create_key_name_fits_for_long_usernames(self):
+        self.client.force_login(self.user)
+        for username_length in (95, 96, 97, 150):
+            with self.subTest(username_length=username_length):
+                self.user.username = "u" * username_length
+                self.user.save(update_fields=["username"])
+
+                response = self.client.post("/api/keys")
+
+                self.assertEqual(response.status_code, 201)
+                expected_name = "u" * min(username_length, 96) + " key"
+                self.assertEqual(response.json()["api_key"]["name"], expected_name)
+                self.assertEqual(APIKey.objects.get(owner=self.user).name, expected_name)
+                APIKey.objects.filter(owner=self.user).delete()
+
     def test_second_key_is_rejected(self):
         self.client.force_login(self.user)
         self.client.post("/api/keys")

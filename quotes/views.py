@@ -40,7 +40,12 @@ def api_key(request):
             get_user_model().objects.select_for_update().get(pk=request.user.pk)
             if APIKey.objects.filter(owner=request.user).exists():
                 return JsonResponse({"error": "API key already exists"}, status=409)
-            key = APIKey(name=f"{request.user.username} key", owner=request.user)
+            suffix = " key"
+            max_username_length = APIKey._meta.get_field("name").max_length - len(suffix)
+            key = APIKey(
+                name=f"{request.user.username[:max_username_length]}{suffix}",
+                owner=request.user,
+            )
             raw_key = key.set_new_key()
             key.save()
         return JsonResponse({"api_key": _key_payload(key, raw_key)}, status=201)
