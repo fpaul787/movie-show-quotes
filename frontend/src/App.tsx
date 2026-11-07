@@ -12,7 +12,9 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function App() {
   const path = window.location.pathname.replace(/\/+$/, "");
   if (path === "/login") return <LoginPage />;
-  if (path === "/profile") return <ProfilePage />;
+  if (path === "/profile" || path === "/profile/api-keys") {
+    return <ProfilePage />;
+  }
   return path === "/signup" ? <SignupPage /> : <HomepageApp />;
 }
 

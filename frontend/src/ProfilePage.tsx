@@ -5,13 +5,64 @@ type Profile = {
   email: string | null;
 };
 
+type UserApiKey = {
+  name: string;
+  is_active: boolean;
+  created_at: string;
+  last_used_at: string | null;
+  key?: string;
+};
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function parseApiKey(data: unknown): UserApiKey | null {
+  if (!isRecord(data) || !("api_key" in data)) {
+    throw new Error("Could not load your API key. Please try again.");
+  }
+  if (data.api_key === null) return null;
+
+  const key = data.api_key;
+  if (
+    !isRecord(key) ||
+    typeof key.name !== "string" ||
+    typeof key.is_active !== "boolean" ||
+    typeof key.created_at !== "string" ||
+    !(key.last_used_at === null || typeof key.last_used_at === "string") ||
+    ("key" in key && typeof key.key !== "string")
+  ) {
+    throw new Error("Could not load your API key. Please try again.");
+  }
+
+  return {
+    name: key.name,
+    is_active: key.is_active,
+    created_at: key.created_at,
+    last_used_at: key.last_used_at,
+    ...(typeof key.key === "string" ? { key: key.key } : {}),
+  };
+}
+
 function ProfilePage() {
+  const isApiKeysPage =
+    window.location.pathname.replace(/\/+$/, "") === "/profile/api-keys";
   const [profile, setProfile] = useState<Profile | null>(null);
   const [error, setError] = useState("");
   const [editing, setEditing] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
+  const [apiKey, setApiKey] = useState<UserApiKey | null>(null);
+  const [apiKeyLoading, setApiKeyLoading] = useState(true);
+  const [apiKeyCreating, setApiKeyCreating] = useState(false);
+  const [apiKeyDeleting, setApiKeyDeleting] = useState(false);
+  const [confirmApiKeyDelete, setConfirmApiKeyDelete] = useState(false);
+  const [apiKeyLoadError, setApiKeyLoadError] = useState("");
+  const [apiKeyError, setApiKeyError] = useState("");
+  const [newApiKeySecret, setNewApiKeySecret] = useState<string | null>(null);
+  const [apiKeyRevealed, setApiKeyRevealed] = useState(false);
+  const [copyMessage, setCopyMessage] = useState("");
 
   function startEditing() {
     setEmailInput(profile?.email ?? "");
@@ -74,6 +125,35 @@ function ProfilePage() {
   }
 
   useEffect(() => {
+    if (isApiKeysPage) {
+      async function loadApiKey() {
+        try {
+          const response = await fetch("/api/keys", {
+            credentials: "same-origin",
+          });
+          if (response.status === 401) {
+            window.location.replace("/login/");
+            return;
+          }
+          if (!response.ok) {
+            throw new Error("Could not load your API key. Please try again.");
+          }
+          setApiKey(parseApiKey(await response.json()));
+        } catch (requestError) {
+          setApiKeyLoadError(
+            requestError instanceof Error
+              ? requestError.message
+              : "Could not load your API key. Please try again.",
+          );
+        } finally {
+          setApiKeyLoading(false);
+        }
+      }
+
+      void loadApiKey();
+      return;
+    }
+
     async function load() {
       try {
         const response = await fetch("/api/auth/profile", {
@@ -91,7 +171,122 @@ function ProfilePage() {
       }
     }
     void load();
-  }, []);
+  }, [isApiKeysPage]);
+
+  async function createApiKey() {
+    setApiKeyCreating(true);
+    setApiKeyError("");
+    setCopyMessage("");
+
+    try {
+      const csrfResponse = await fetch("/api/auth/csrf", {
+        credentials: "same-origin",
+      });
+      if (!csrfResponse.ok) {
+        throw new Error("Could not start API key creation. Please try again.");
+      }
+      const csrfData: unknown = await csrfResponse.json();
+      if (!isRecord(csrfData) || typeof csrfData.csrfToken !== "string") {
+        throw new Error("Could not start API key creation. Please try again.");
+      }
+
+      const response = await fetch("/api/keys", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "X-CSRFToken": csrfData.csrfToken },
+      });
+      if (response.status === 401) {
+        window.location.replace("/login/");
+        return;
+      }
+      if (response.status === 409) {
+        throw new Error("An API key already exists for your account.");
+      }
+      if (!response.ok) {
+        throw new Error("Could not create your API key. Please try again.");
+      }
+
+      const createdKey = parseApiKey(await response.json());
+      if (!createdKey?.key) {
+        throw new Error("Could not create your API key. Please try again.");
+      }
+      setApiKey(createdKey);
+      setNewApiKeySecret(createdKey.key);
+      setApiKeyRevealed(false);
+    } catch (requestError) {
+      setApiKeyError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Could not create your API key. Please try again.",
+      );
+    } finally {
+      setApiKeyCreating(false);
+    }
+  }
+
+  async function copyApiKey() {
+    if (!newApiKeySecret) return;
+    setApiKeyError("");
+    setCopyMessage("");
+    try {
+      await navigator.clipboard.writeText(newApiKeySecret);
+      setCopyMessage("Copied to clipboard.");
+    } catch {
+      setApiKeyError("Could not copy the API key. Reveal it to copy it manually, or allow clipboard access and try again.");
+    }
+  }
+
+  async function deleteApiKey() {
+    setApiKeyDeleting(true);
+    setApiKeyError("");
+
+    try {
+      const csrfResponse = await fetch("/api/auth/csrf", {
+        credentials: "same-origin",
+      });
+      if (!csrfResponse.ok) {
+        throw new Error("Could not start API key deletion. Please try again.");
+      }
+      const csrfData: unknown = await csrfResponse.json();
+      if (!isRecord(csrfData) || typeof csrfData.csrfToken !== "string") {
+        throw new Error("Could not start API key deletion. Please try again.");
+      }
+
+      const response = await fetch("/api/keys", {
+        method: "DELETE",
+        credentials: "same-origin",
+        headers: { "X-CSRFToken": csrfData.csrfToken },
+      });
+      if (response.status === 401) {
+        window.location.replace("/login/");
+        return;
+      }
+      if (response.status === 404) {
+        setApiKey(null);
+        setNewApiKeySecret(null);
+        setApiKeyRevealed(false);
+        setConfirmApiKeyDelete(false);
+        return;
+      }
+      if (!response.ok) {
+        throw new Error("Could not delete your API key. Please try again.");
+      }
+
+      setApiKey(null);
+      setNewApiKeySecret(null);
+      setApiKeyRevealed(false);
+      setConfirmApiKeyDelete(false);
+      setCopyMessage("");
+    } catch (requestError) {
+      setApiKeyError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Could not delete your API key. Please try again.",
+      );
+    } finally {
+      setApiKeyDeleting(false);
+    }
+  }
 
   return (
     <div className="site-shell">
@@ -100,58 +295,178 @@ function ProfilePage() {
           <span className="brand-mark" aria-hidden="true">“</span>
           <span>Movie <span className="brand-amp">&amp;</span> Show Quotes</span>
         </a>
-        <nav aria-label="Main navigation">
-          <a href="/">Home</a>
-        </nav>
       </header>
 
-      <main className="signup-main">
-        <section className="signup-card" aria-labelledby="profile-title">
-          <div className="eyebrow"><span className="eyebrow-dot" /> Your account</div>
-          <h1 id="profile-title" className="signup-title">Profile.</h1>
+      <main className="profile-main">
+        <div className="profile-layout">
+          <nav className="profile-sidebar" aria-label="Account navigation">
+            <a
+              className={`profile-nav-link${isApiKeysPage ? "" : " is-active"}`}
+              href="/profile/"
+              aria-current={isApiKeysPage ? undefined : "page"}
+            >
+              Profile
+            </a>
+            <a
+              className={`profile-nav-link${isApiKeysPage ? " is-active" : ""}`}
+              href="/profile/api-keys/"
+              aria-current={isApiKeysPage ? "page" : undefined}
+            >
+              API Keys
+            </a>
+          </nav>
 
-          {error && <p className="signup-error" role="alert">{error}</p>}
-          {profile && !editing && (
-            <>
-              <dl className="signup-description">
-                <dt>Username</dt>
-                <dd>{profile.username}</dd>
-                <dt>Email</dt>
-                <dd>{profile.email ?? "Not provided"}</dd>
-              </dl>
-              <button className="signup-submit" type="button" onClick={startEditing}>
-                Change email
-              </button>
-            </>
+          {isApiKeysPage ? (
+            <section className="signup-card profile-card" aria-labelledby="api-keys-title">
+              <div className="eyebrow"><span className="eyebrow-dot" /> Developer access</div>
+              <h1 id="api-keys-title" className="signup-title">API Keys.</h1>
+              <p className="signup-description">
+                Use your key to authenticate requests to the quotes API.
+              </p>
+
+              {apiKeyLoadError && <p className="signup-error" role="alert">{apiKeyLoadError}</p>}
+              {apiKeyError && <p className="signup-error" role="alert">{apiKeyError}</p>}
+              {apiKeyLoading && <p className="signup-description">Loading your API key…</p>}
+              {!apiKeyLoading && !apiKeyLoadError && !apiKey && (
+                <>
+                  <p className="signup-description">You don’t have an API key yet.</p>
+                  <button
+                    className="signup-submit"
+                    type="button"
+                    onClick={createApiKey}
+                    disabled={apiKeyCreating}
+                  >
+                    {apiKeyCreating ? "Creating…" : "Create API key"}
+                  </button>
+                </>
+              )}
+              {apiKey && (
+                <div className="api-key-details">
+                  <dl className="profile-details">
+                    <dt>Name</dt>
+                    <dd>{apiKey.name}</dd>
+                    <dt>Status</dt>
+                    <dd>{apiKey.is_active ? "Active" : "Inactive"}</dd>
+                    <dt>Created</dt>
+                    <dd>{new Date(apiKey.created_at).toLocaleString()}</dd>
+                    <dt>Last used</dt>
+                    <dd>{apiKey.last_used_at ? new Date(apiKey.last_used_at).toLocaleString() : "Never"}</dd>
+                  </dl>
+                  {newApiKeySecret ? (
+                    <div className="api-key-secret">
+                      <p className="signup-description">
+                        Copy your key now; it won’t be available again after you leave this page.
+                      </p>
+                      <code id="new-api-key" aria-label={apiKeyRevealed ? "API key" : "Hidden API key"}>
+                        {apiKeyRevealed ? newApiKeySecret : "••••••••••••••••"}
+                      </code>
+                      <button
+                        className="api-key-cancel-button"
+                        type="button"
+                        aria-expanded={apiKeyRevealed}
+                        aria-controls="new-api-key"
+                        onClick={() => setApiKeyRevealed(!apiKeyRevealed)}
+                      >
+                        {apiKeyRevealed ? "Hide key" : "Reveal key"}
+                      </button>
+                      <button className="signup-submit" type="button" onClick={copyApiKey}>
+                        Copy key
+                      </button>
+                      {copyMessage && <p className="api-key-copy-message" role="status">{copyMessage}</p>}
+                    </div>
+                  ) : (
+                    <p className="signup-description">
+                      The full key is only shown when it’s first created.
+                    </p>
+                  )}
+                  {confirmApiKeyDelete ? (
+                    <div className="api-key-delete-confirmation" role="group" aria-label="Confirm API key deletion">
+                      <p className="signup-description">
+                        Deleting this key immediately revokes it. You’ll be able to create a new key afterward.
+                      </p>
+                      <div className="api-key-delete-actions">
+                        <button
+                          className="api-key-delete-button"
+                          type="button"
+                          onClick={deleteApiKey}
+                          disabled={apiKeyDeleting}
+                        >
+                          {apiKeyDeleting ? "Deleting…" : "Confirm delete"}
+                        </button>
+                        <button
+                          className="api-key-cancel-button"
+                          type="button"
+                          onClick={() => setConfirmApiKeyDelete(false)}
+                          disabled={apiKeyDeleting}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      className="api-key-delete-button"
+                      type="button"
+                      onClick={() => {
+                        setApiKeyError("");
+                        setConfirmApiKeyDelete(true);
+                      }}
+                    >
+                      Delete API key
+                    </button>
+                  )}
+                </div>
+              )}
+            </section>
+          ) : (
+            <section className="signup-card profile-card" aria-labelledby="profile-title">
+              <div className="eyebrow"><span className="eyebrow-dot" /> Your account</div>
+              <h1 id="profile-title" className="signup-title">Profile.</h1>
+
+              {error && <p className="signup-error" role="alert">{error}</p>}
+              {profile && !editing && (
+                <>
+                  <dl className="profile-details">
+                    <dt>Username</dt>
+                    <dd>{profile.username}</dd>
+                    <dt>Email</dt>
+                    <dd>{profile.email ?? "Not provided"}</dd>
+                  </dl>
+                  <button className="signup-submit" type="button" onClick={startEditing}>
+                    Change email
+                  </button>
+                </>
+              )}
+              {profile && editing && (
+                <form className="signup-form" onSubmit={saveEmail}>
+                  <label className="signup-field">
+                    <span>Email (leave blank to remove)</span>
+                    <input
+                      type="email"
+                      name="email"
+                      autoComplete="email"
+                      maxLength={254}
+                      value={emailInput}
+                      onChange={(event) => setEmailInput(event.target.value)}
+                    />
+                  </label>
+                  {saveError && <p className="signup-error" role="alert">{saveError}</p>}
+                  <button className="signup-submit" type="submit" disabled={saving}>
+                    {saving ? "Saving…" : "Save"}
+                  </button>
+                  <button
+                    className="signup-submit"
+                    type="button"
+                    onClick={() => setEditing(false)}
+                    disabled={saving}
+                  >
+                    Cancel
+                  </button>
+                </form>
+              )}
+            </section>
           )}
-          {profile && editing && (
-            <form className="signup-form" onSubmit={saveEmail}>
-              <label className="signup-field">
-                <span>Email (leave blank to remove)</span>
-                <input
-                  type="email"
-                  name="email"
-                  autoComplete="email"
-                  maxLength={254}
-                  value={emailInput}
-                  onChange={(event) => setEmailInput(event.target.value)}
-                />
-              </label>
-              {saveError && <p className="signup-error" role="alert">{saveError}</p>}
-              <button className="signup-submit" type="submit" disabled={saving}>
-                {saving ? "Saving…" : "Save"}
-              </button>
-              <button
-                className="signup-submit"
-                type="button"
-                onClick={() => setEditing(false)}
-                disabled={saving}
-              >
-                Cancel
-              </button>
-            </form>
-          )}
-        </section>
+        </div>
       </main>
 
       <footer className="site-footer">

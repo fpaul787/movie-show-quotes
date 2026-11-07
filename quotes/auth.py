@@ -11,7 +11,7 @@ def _extract_key(request):
     scheme, _, value = header.partition(" ")
     if scheme.lower() == "api-key" and value:
         return value.strip()
-    return request.headers.get("X-API-Key")
+    return request.headers.get("X-API-Key", "").strip()
 
 
 def api_key_required(view):
