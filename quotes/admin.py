@@ -1,9 +1,7 @@
-import datetime
-
 from django import forms
 from django.contrib import admin, messages
 
-from .models import APIKey, Quote
+from .models import APIKey, Character, Media, Quote
 
 
 @admin.register(APIKey)
@@ -24,6 +22,20 @@ class APIKeyAdmin(admin.ModelAdmin):
             )
 
 
+@admin.register(Media)
+class MediaAdmin(admin.ModelAdmin):
+    list_display = ("title", "media_type", "release_year", "external_id")
+    list_filter = ("media_type", "release_year")
+    search_fields = ("title", "external_id")
+
+
+@admin.register(Character)
+class CharacterAdmin(admin.ModelAdmin):
+    list_display = ("name", "media")
+    search_fields = ("name", "media__title")
+    autocomplete_fields = ("media",)
+
+
 class QuoteAdminForm(forms.ModelForm):
     class Meta:
         model = Quote
@@ -31,7 +43,6 @@ class QuoteAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["created_at"].initial = datetime.date.today
         self.fields["tags"].required = False
         self.fields["tags"].help_text = 'JSON list, e.g. ["drama", "classic"]'
 
@@ -43,7 +54,9 @@ class QuoteAdminForm(forms.ModelForm):
 @admin.register(Quote)
 class QuoteAdmin(admin.ModelAdmin):
     form = QuoteAdminForm
-    list_display = ("title", "character", "year", "source", "language", "created_at")
-    list_filter = ("source", "language", "year")
-    search_fields = ("text", "title", "character")
+    list_display = ("media", "character", "language", "created_at")
+    list_filter = ("media__media_type", "language", "media__release_year")
+    search_fields = ("text", "media__title", "character__name")
+    list_select_related = ("media", "character")
+    autocomplete_fields = ("media", "character")
     ordering = ("-created_at",)

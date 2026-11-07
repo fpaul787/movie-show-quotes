@@ -61,18 +61,18 @@ def react_homepage(request):
 
 @api_key_required
 def random_quote(request):
-    quote = Quote.objects.order_by("?").first()
+    quote = Quote.objects.select_related("media", "character").order_by("?").first()
     if quote is None:
         return JsonResponse({"error": "No quotes available"}, status=404)
     return JsonResponse(
         {
             "text": quote.text,
-            "year": quote.year,
-            "title": quote.title,
-            "character": quote.character,
-            "source": quote.source,
+            "year": quote.media.release_year,
+            "title": quote.media.title,
+            "character": quote.character.name if quote.character else "",
+            "source": quote.media.get_media_type_display(),
             "language": quote.language,
             "tags": quote.tags,
-            "created_at": quote.created_at.isoformat(),
+            "created_at": quote.original_date.isoformat() if quote.original_date else None,
         }
     )

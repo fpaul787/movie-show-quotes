@@ -1,16 +1,287 @@
 [
   {
+    "model": "quotes.media",
+    "pk": 1,
+    "fields": {
+      "title": "The Far Meridian",
+      "media_type": "MOVIE",
+      "release_year": 2021,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 2,
+    "fields": {
+      "title": "Northbound",
+      "media_type": "TV_SHOW",
+      "release_year": 2020,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 3,
+    "fields": {
+      "title": "Quiet Orbit",
+      "media_type": "MOVIE",
+      "release_year": 2023,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 4,
+    "fields": {
+      "title": "The Glass Archive",
+      "media_type": "TV_SHOW",
+      "release_year": 2022,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 5,
+    "fields": {
+      "title": "Red Valley Road",
+      "media_type": "MOVIE",
+      "release_year": 2019,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 6,
+    "fields": {
+      "title": "Room for One More",
+      "media_type": "TV_SHOW",
+      "release_year": 2024,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 7,
+    "fields": {
+      "title": "Copper Skies",
+      "media_type": "MOVIE",
+      "release_year": 2022,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 8,
+    "fields": {
+      "title": "Second Shift",
+      "media_type": "TV_SHOW",
+      "release_year": 2021,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 9,
+    "fields": {
+      "title": "Saltwater Letters",
+      "media_type": "MOVIE",
+      "release_year": 2020,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 10,
+    "fields": {
+      "title": "Juniper Street",
+      "media_type": "TV_SHOW",
+      "release_year": 2023,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 11,
+    "fields": {
+      "title": "Last Train to Bellweather",
+      "media_type": "MOVIE",
+      "release_year": 2018,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 12,
+    "fields": {
+      "title": "Common Ground",
+      "media_type": "TV_SHOW",
+      "release_year": 2024,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 13,
+    "fields": {
+      "title": "Beacon Hill",
+      "media_type": "MOVIE",
+      "release_year": 2019,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 14,
+    "fields": {
+      "title": "After the Applause",
+      "media_type": "TV_SHOW",
+      "release_year": 2022,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 15,
+    "fields": {
+      "title": "The Cartographer's Night",
+      "media_type": "MOVIE",
+      "release_year": 2021,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 1,
+    "fields": {
+      "name": "Mara Venn",
+      "media": 1
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 2,
+    "fields": {
+      "name": "Eli Mercer",
+      "media": 2
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 3,
+    "fields": {
+      "name": "Dr. Sanaa Bell",
+      "media": 3
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 4,
+    "fields": {
+      "name": "Ivo Chen",
+      "media": 4
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 5,
+    "fields": {
+      "name": "June Calder",
+      "media": 5
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 6,
+    "fields": {
+      "name": "Tess Rowan",
+      "media": 6
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 7,
+    "fields": {
+      "name": "Niko Vale",
+      "media": 7
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 8,
+    "fields": {
+      "name": "Rae Okafor",
+      "media": 8
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 9,
+    "fields": {
+      "name": "Noah Pike",
+      "media": 9
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 10,
+    "fields": {
+      "name": "Mina Flores",
+      "media": 10
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 11,
+    "fields": {
+      "name": "Cal Rusk",
+      "media": 11
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 12,
+    "fields": {
+      "name": "Leah Park",
+      "media": 12
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 13,
+    "fields": {
+      "name": "Oren Bell",
+      "media": 13
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 14,
+    "fields": {
+      "name": "Dara Quinn",
+      "media": 14
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 15,
+    "fields": {
+      "name": "Amir Sol",
+      "media": 15
+    }
+  },
+  {
     "model": "quotes.quote",
     "pk": 2,
     "fields": {
       "text": "Every map is a promise that the world is smaller than it looks.",
-      "year": 2021,
-      "title": "The Far Meridian",
-      "character": "Mara Venn",
-      "source": "Movie",
-      "language": "English",
-      "tags": ["adventure", "hope"],
-      "created_at": "2021-04-16"
+      "media": 1,
+      "character": 1,
+      "language": "en",
+      "tags": [
+        "adventure",
+        "hope"
+      ],
+      "original_date": "2021-04-16"
     }
   },
   {
@@ -18,13 +289,14 @@
     "pk": 3,
     "fields": {
       "text": "You can be afraid and still be the one who opens the door.",
-      "year": 2020,
-      "title": "Northbound",
-      "character": "Eli Mercer",
-      "source": "TV Show",
-      "language": "English",
-      "tags": ["courage", "family"],
-      "created_at": "2020-09-08"
+      "media": 2,
+      "character": 2,
+      "language": "en",
+      "tags": [
+        "courage",
+        "family"
+      ],
+      "original_date": "2020-09-08"
     }
   },
   {
@@ -32,13 +304,14 @@
     "pk": 4,
     "fields": {
       "text": "The stars don't give directions. They just remind us to look up.",
-      "year": 2023,
-      "title": "Quiet Orbit",
-      "character": "Dr. Sanaa Bell",
-      "source": "Movie",
-      "language": "English",
-      "tags": ["science-fiction", "wonder"],
-      "created_at": "2023-02-24"
+      "media": 3,
+      "character": 3,
+      "language": "en",
+      "tags": [
+        "science-fiction",
+        "wonder"
+      ],
+      "original_date": "2023-02-24"
     }
   },
   {
@@ -46,13 +319,14 @@
     "pk": 5,
     "fields": {
       "text": "A good secret is just a truth waiting for the right company.",
-      "year": 2022,
-      "title": "The Glass Archive",
-      "character": "Ivo Chen",
-      "source": "TV Show",
-      "language": "English",
-      "tags": ["mystery", "friendship"],
-      "created_at": "2022-06-03"
+      "media": 4,
+      "character": 4,
+      "language": "en",
+      "tags": [
+        "mystery",
+        "friendship"
+      ],
+      "original_date": "2022-06-03"
     }
   },
   {
@@ -60,13 +334,14 @@
     "pk": 6,
     "fields": {
       "text": "We didn't come this far to let a locked gate have the last word.",
-      "year": 2019,
-      "title": "Red Valley Road",
-      "character": "June Calder",
-      "source": "Movie",
-      "language": "English",
-      "tags": ["determination", "adventure"],
-      "created_at": "2019-11-15"
+      "media": 5,
+      "character": 5,
+      "language": "en",
+      "tags": [
+        "determination",
+        "adventure"
+      ],
+      "original_date": "2019-11-15"
     }
   },
   {
@@ -74,13 +349,14 @@
     "pk": 7,
     "fields": {
       "text": "Maybe home is less a place than the people who save you a seat.",
-      "year": 2024,
-      "title": "Room for One More",
-      "character": "Tess Rowan",
-      "source": "TV Show",
-      "language": "English",
-      "tags": ["belonging", "warmth"],
-      "created_at": "2024-01-19"
+      "media": 6,
+      "character": 6,
+      "language": "en",
+      "tags": [
+        "belonging",
+        "warmth"
+      ],
+      "original_date": "2024-01-19"
     }
   },
   {
@@ -88,13 +364,14 @@
     "pk": 8,
     "fields": {
       "text": "If the machine can dream, someone has to teach it kindness.",
-      "year": 2022,
-      "title": "Copper Skies",
-      "character": "Niko Vale",
-      "source": "Movie",
-      "language": "English",
-      "tags": ["technology", "ethics"],
-      "created_at": "2022-08-12"
+      "media": 7,
+      "character": 7,
+      "language": "en",
+      "tags": [
+        "technology",
+        "ethics"
+      ],
+      "original_date": "2022-08-12"
     }
   },
   {
@@ -102,13 +379,14 @@
     "pk": 9,
     "fields": {
       "text": "I know the plan changed. I also know we're still here.",
-      "year": 2021,
-      "title": "Second Shift",
-      "character": "Rae Okafor",
-      "source": "TV Show",
-      "language": "English",
-      "tags": ["resilience", "teamwork"],
-      "created_at": "2021-10-01"
+      "media": 8,
+      "character": 8,
+      "language": "en",
+      "tags": [
+        "resilience",
+        "teamwork"
+      ],
+      "original_date": "2021-10-01"
     }
   },
   {
@@ -116,13 +394,14 @@
     "pk": 10,
     "fields": {
       "text": "Somewhere between the storm and the shore, I stopped running.",
-      "year": 2020,
-      "title": "Saltwater Letters",
-      "character": "Noah Pike",
-      "source": "Movie",
-      "language": "English",
-      "tags": ["growth", "drama"],
-      "created_at": "2020-05-22"
+      "media": 9,
+      "character": 9,
+      "language": "en",
+      "tags": [
+        "growth",
+        "drama"
+      ],
+      "original_date": "2020-05-22"
     }
   },
   {
@@ -130,13 +409,14 @@
     "pk": 11,
     "fields": {
       "text": "A little wonder is a perfectly practical thing to carry.",
-      "year": 2023,
-      "title": "Juniper Street",
-      "character": "Mina Flores",
-      "source": "TV Show",
-      "language": "English",
-      "tags": ["optimism", "comedy"],
-      "created_at": "2023-07-14"
+      "media": 10,
+      "character": 10,
+      "language": "en",
+      "tags": [
+        "optimism",
+        "comedy"
+      ],
+      "original_date": "2023-07-14"
     }
   },
   {
@@ -144,13 +424,14 @@
     "pk": 12,
     "fields": {
       "text": "The past can ride along, but it doesn't get to steer.",
-      "year": 2018,
-      "title": "Last Train to Bellweather",
-      "character": "Cal Rusk",
-      "source": "Movie",
-      "language": "English",
-      "tags": ["redemption", "journey"],
-      "created_at": "2018-03-30"
+      "media": 11,
+      "character": 11,
+      "language": "en",
+      "tags": [
+        "redemption",
+        "journey"
+      ],
+      "original_date": "2018-03-30"
     }
   },
   {
@@ -158,13 +439,14 @@
     "pk": 13,
     "fields": {
       "text": "You don't have to win the argument to understand the person.",
-      "year": 2024,
-      "title": "Common Ground",
-      "character": "Leah Park",
-      "source": "TV Show",
-      "language": "English",
-      "tags": ["empathy", "relationships"],
-      "created_at": "2024-03-08"
+      "media": 12,
+      "character": 12,
+      "language": "en",
+      "tags": [
+        "empathy",
+        "relationships"
+      ],
+      "original_date": "2024-03-08"
     }
   },
   {
@@ -172,13 +454,14 @@
     "pk": 14,
     "fields": {
       "text": "We built a lighthouse because the dark deserved an answer.",
-      "year": 2019,
-      "title": "Beacon Hill",
-      "character": "Oren Bell",
-      "source": "Movie",
-      "language": "English",
-      "tags": ["community", "hope"],
-      "created_at": "2019-08-23"
+      "media": 13,
+      "character": 13,
+      "language": "en",
+      "tags": [
+        "community",
+        "hope"
+      ],
+      "original_date": "2019-08-23"
     }
   },
   {
@@ -186,13 +469,14 @@
     "pk": 15,
     "fields": {
       "text": "One honest minute is a better start than a perfect year.",
-      "year": 2022,
-      "title": "After the Applause",
-      "character": "Dara Quinn",
-      "source": "TV Show",
-      "language": "English",
-      "tags": ["honesty", "new-beginnings"],
-      "created_at": "2022-12-02"
+      "media": 14,
+      "character": 14,
+      "language": "en",
+      "tags": [
+        "honesty",
+        "new-beginnings"
+      ],
+      "original_date": "2022-12-02"
     }
   },
   {
@@ -200,13 +484,14 @@
     "pk": 16,
     "fields": {
       "text": "When the road disappears, we get to decide what counts as forward.",
-      "year": 2021,
-      "title": "The Cartographer's Night",
-      "character": "Amir Sol",
-      "source": "Movie",
-      "language": "English",
-      "tags": ["choice", "adventure"],
-      "created_at": "2021-01-29"
+      "media": 15,
+      "character": 15,
+      "language": "en",
+      "tags": [
+        "choice",
+        "adventure"
+      ],
+      "original_date": "2021-01-29"
     }
   }
 ]

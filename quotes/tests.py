@@ -1,10 +1,15 @@
 from datetime import timedelta
 
+from django.core.exceptions import ValidationError
+from django.core.management import call_command
+from django.db import IntegrityError, connection, transaction
+from django.db.migrations.executor import MigrationExecutor
+from django.test import TransactionTestCase
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.utils import timezone
 
-from .models import APIKey, Quote
+from .models import APIKey, Character, Media, Quote
 
 
 class HomepageTests(TestCase):
@@ -242,15 +247,17 @@ class QuoteEndpointTests(TestCase):
         key.save()
         self.client.defaults["HTTP_X_API_KEY"] = raw_key
     def test_quote_returns_a_quote_from_the_database_as_json(self):
+        media = Media.objects.create(
+            title="Star Wars", media_type="MOVIE", release_year=1977
+        )
+        han = Character.objects.create(name="Han Solo", media=media)
         Quote.objects.create(
             text="May the Force be with you.",
-            year=1977,
-            title="Star Wars",
-            character="Han Solo",
-            source="Movie",
-            language="English",
+            media=media,
+            character=han,
+            language="en",
             tags=["classic", "sci-fi"],
-            created_at="1977-05-25",
+            original_date="1977-05-25",
         )
 
         response = self.client.get("/quotes/random")
@@ -264,23 +271,33 @@ class QuoteEndpointTests(TestCase):
                 "title": "Star Wars",
                 "character": "Han Solo",
                 "source": "Movie",
-                "language": "English",
+                "language": "en",
                 "tags": ["classic", "sci-fi"],
                 "created_at": "1977-05-25",
             },
         )
 
+    def test_quote_without_character_returns_empty_character(self):
+        media = Media.objects.create(
+            title="Star Wars", media_type="MOVIE", release_year=1977
+        )
+        Quote.objects.create(text="Hi", media=media, language="en")
+
+        data = self.client.get("/quotes/random").json()
+
+        self.assertEqual(data["character"], "")
+        self.assertIsNone(data["created_at"])
+
     def test_quote_returns_one_of_the_stored_quotes(self):
         for i in range(5):
+            media = Media.objects.create(
+                title=f"Title {i}", media_type="MOVIE", release_year=2000 + i
+            )
             Quote.objects.create(
                 text=f"Quote {i}",
-                year=2000 + i,
-                title=f"Title {i}",
-                character="Someone",
-                source="Movie",
-                language="English",
-                tags=[],
-                created_at="2000-01-01",
+                media=media,
+                character=Character.objects.create(name="Someone", media=media),
+                language="en",
             )
 
         texts = {f"Quote {i}" for i in range(5)}
@@ -297,3 +314,115 @@ class QuoteEndpointTests(TestCase):
 
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json(), {"error": "No quotes available"})
+
+
+class NormalizedModelTests(TestCase):
+    def setUp(self):
+        self.media = Media.objects.create(
+            title="Dune", media_type="MOVIE", release_year=2021
+        )
+        self.other = Media.objects.create(
+            title="Dune", media_type="MOVIE", release_year=1984
+        )
+
+    def test_media_type_is_normalized_on_save(self):
+        media = Media.objects.create(title="Fargo", media_type="tv-show", release_year=2014)
+        self.assertEqual(media.media_type, Media.MediaType.TV_SHOW)
+
+    def test_media_duplicate_title_type_year_rejected(self):
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            Media.objects.create(title="Dune", media_type="MOVIE", release_year=2021)
+
+    def test_external_id_unique_when_set_but_optional(self):
+        Media.objects.create(title="A", media_type="MOVIE", release_year=2000)
+        Media.objects.create(title="B", media_type="MOVIE", release_year=2000)
+        Media.objects.create(title="C", media_type="MOVIE", release_year=2000, external_id="tt1")
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            Media.objects.create(title="D", media_type="MOVIE", release_year=2000, external_id="tt1")
+
+    def test_character_unique_within_media_only(self):
+        Character.objects.create(name="Paul", media=self.media)
+        Character.objects.create(name="Paul", media=self.other)
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            Character.objects.create(name="Paul", media=self.media)
+
+    def test_quote_character_must_belong_to_same_media(self):
+        paul = Character.objects.create(name="Paul", media=self.other)
+        quote = Quote(text="x", media=self.media, character=paul, language="en")
+        with self.assertRaises(ValidationError):
+            quote.full_clean()
+
+    def test_quote_validates_language_and_tags(self):
+        for kwargs in ({"language": "English"}, {"language": "en", "tags": "nope"}, {"language": "en", "tags": [1]}):
+            with self.assertRaises(ValidationError):
+                Quote(text="x", media=self.media, **kwargs).full_clean()
+        Quote(text="x", media=self.media, language="pt-BR", tags=["a"]).full_clean()
+
+    def test_deleting_character_keeps_quote(self):
+        paul = Character.objects.create(name="Paul", media=self.media)
+        quote = Quote.objects.create(text="x", media=self.media, character=paul, language="en")
+        paul.delete()
+        quote.refresh_from_db()
+        self.assertIsNone(quote.character)
+
+    def test_deleting_media_cascades(self):
+        Quote.objects.create(text="x", media=self.media, language="en")
+        self.media.delete()
+        self.assertEqual(Quote.objects.count(), 0)
+
+
+class LegacyDataMigrationTests(TransactionTestCase):
+    migrate_from = [("quotes", "0003_media_character_quote_relations")]
+    migrate_to = [("quotes", "0005_remove_legacy_quote_fields")]
+
+    def tearDown(self):
+        call_command("migrate", verbosity=0)
+
+    def _legacy_quote(self, apps, **overrides):
+        data = dict(
+            text="t", year=2021, title="Dune", character="Paul", source="Movie",
+            language="English", tags=["a"], created_at="2021-10-22",
+        )
+        data.update(overrides)
+        return apps.get_model("quotes", "Quote").objects.create(**data)
+
+    def _go_to_legacy(self):
+        executor = MigrationExecutor(connection)
+        executor.migrate([("quotes", "0002_apikey")])
+        return executor.loader.project_state([("quotes", "0002_apikey")]).apps
+
+    def _migrate_forward(self):
+        executor = MigrationExecutor(connection)
+        executor.migrate(self.migrate_to)
+        return executor.loader.project_state(self.migrate_to).apps
+
+    def test_data_is_preserved_and_deduplicated(self):
+        apps = self._go_to_legacy()
+        self._legacy_quote(apps, text="one")
+        self._legacy_quote(apps, text="two", title="dune", character="paul")
+        self._legacy_quote(apps, text="three", character="")
+        self._legacy_quote(apps, text="four", title="Fargo", source="TV Show", year=2014, character="Lester")
+
+        apps = self._migrate_forward()
+        Quote_, Media_, Character_ = (apps.get_model("quotes", n) for n in ("Quote", "Media", "Character"))
+
+        self.assertEqual(Media_.objects.count(), 2)
+        self.assertEqual(Character_.objects.count(), 2)
+        one, two, three, four = (Quote_.objects.get(text=t) for t in ("one", "two", "three", "four"))
+        self.assertEqual(one.media_id, two.media_id)
+        self.assertEqual(one.character_id, two.character_id)
+        self.assertIsNone(three.character_id)
+        self.assertEqual(four.media.media_type, "TV_SHOW")
+        self.assertEqual(one.language, "en")
+        self.assertEqual(one.tags, ["a"])
+        self.assertEqual(str(one.original_date), "2021-10-22")
+
+    def test_unmappable_legacy_values_abort_migration(self):
+        apps = self._go_to_legacy()
+        self._legacy_quote(apps, source="Podcast")
+        with self.assertRaises(ValueError):
+            self._migrate_forward()
+        apps = MigrationExecutor(connection).loader.project_state([("quotes", "0003_media_character_quote_relations")]).apps
+        Quote_ = apps.get_model("quotes", "Quote")
+        self.assertEqual(Quote_.objects.count(), 1)
+        Quote_.objects.all().delete()
