@@ -58,8 +58,10 @@ function ProfilePage() {
   const [apiKeyCreating, setApiKeyCreating] = useState(false);
   const [apiKeyDeleting, setApiKeyDeleting] = useState(false);
   const [confirmApiKeyDelete, setConfirmApiKeyDelete] = useState(false);
+  const [apiKeyLoadError, setApiKeyLoadError] = useState("");
   const [apiKeyError, setApiKeyError] = useState("");
   const [newApiKeySecret, setNewApiKeySecret] = useState<string | null>(null);
+  const [apiKeyRevealed, setApiKeyRevealed] = useState(false);
   const [copyMessage, setCopyMessage] = useState("");
 
   function startEditing() {
@@ -138,7 +140,7 @@ function ProfilePage() {
           }
           setApiKey(parseApiKey(await response.json()));
         } catch (requestError) {
-          setApiKeyError(
+          setApiKeyLoadError(
             requestError instanceof Error
               ? requestError.message
               : "Could not load your API key. Please try again.",
@@ -210,6 +212,7 @@ function ProfilePage() {
       }
       setApiKey(createdKey);
       setNewApiKeySecret(createdKey.key);
+      setApiKeyRevealed(false);
     } catch (requestError) {
       setApiKeyError(
         requestError instanceof Error
@@ -223,11 +226,13 @@ function ProfilePage() {
 
   async function copyApiKey() {
     if (!newApiKeySecret) return;
+    setApiKeyError("");
+    setCopyMessage("");
     try {
       await navigator.clipboard.writeText(newApiKeySecret);
       setCopyMessage("Copied to clipboard.");
     } catch {
-      setApiKeyError("Could not copy the API key. Please allow clipboard access and try again.");
+      setApiKeyError("Could not copy the API key. Reveal it to copy it manually, or allow clipboard access and try again.");
     }
   }
 
@@ -259,6 +264,7 @@ function ProfilePage() {
       if (response.status === 404) {
         setApiKey(null);
         setNewApiKeySecret(null);
+        setApiKeyRevealed(false);
         setConfirmApiKeyDelete(false);
         return;
       }
@@ -268,6 +274,7 @@ function ProfilePage() {
 
       setApiKey(null);
       setNewApiKeySecret(null);
+      setApiKeyRevealed(false);
       setConfirmApiKeyDelete(false);
       setCopyMessage("");
     } catch (requestError) {
@@ -317,9 +324,10 @@ function ProfilePage() {
                 Use your key to authenticate requests to the quotes API.
               </p>
 
+              {apiKeyLoadError && <p className="signup-error" role="alert">{apiKeyLoadError}</p>}
               {apiKeyError && <p className="signup-error" role="alert">{apiKeyError}</p>}
               {apiKeyLoading && <p className="signup-description">Loading your API key…</p>}
-              {!apiKeyLoading && !apiKeyError && !apiKey && (
+              {!apiKeyLoading && !apiKeyLoadError && !apiKey && (
                 <>
                   <p className="signup-description">You don’t have an API key yet.</p>
                   <button
@@ -347,9 +355,20 @@ function ProfilePage() {
                   {newApiKeySecret ? (
                     <div className="api-key-secret">
                       <p className="signup-description">
-                        Your key is hidden. Copy it now; it won’t be available again after you leave this page.
+                        Copy your key now; it won’t be available again after you leave this page.
                       </p>
-                      <code aria-label="Hidden API key" aria-live="polite">••••••••••••••••</code>
+                      <code id="new-api-key" aria-label={apiKeyRevealed ? "API key" : "Hidden API key"}>
+                        {apiKeyRevealed ? newApiKeySecret : "••••••••••••••••"}
+                      </code>
+                      <button
+                        className="api-key-cancel-button"
+                        type="button"
+                        aria-expanded={apiKeyRevealed}
+                        aria-controls="new-api-key"
+                        onClick={() => setApiKeyRevealed(!apiKeyRevealed)}
+                      >
+                        {apiKeyRevealed ? "Hide key" : "Reveal key"}
+                      </button>
                       <button className="signup-submit" type="button" onClick={copyApiKey}>
                         Copy key
                       </button>

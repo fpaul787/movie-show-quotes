@@ -118,6 +118,7 @@ h2 { margin: 13px 0 0; font: 400 32px/1.2 "Playfair Display", Georgia, serif; le
 .api-key-secret .signup-description { margin: 0; }
 .api-key-secret > code { padding: 12px; border: 1px solid rgb(255 255 255 / 12%); border-radius: 3px; background: #141412; }
 .api-key-secret .signup-submit { justify-self: start; padding: 0 14px; }
+.api-key-secret .api-key-cancel-button { justify-self: start; }
 .api-key-copy-message { margin: 0; color: #9fcca8; font-size: 11px; }
 .api-key-delete-confirmation { display: grid; gap: 12px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
 .api-key-delete-confirmation .signup-description { margin: 0; }
