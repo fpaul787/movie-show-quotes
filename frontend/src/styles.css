@@ -119,6 +119,14 @@ h2 { margin: 13px 0 0; font: 400 32px/1.2 "Playfair Display", Georgia, serif; le
 .api-key-secret > code { padding: 12px; border: 1px solid rgb(255 255 255 / 12%); border-radius: 3px; background: #141412; }
 .api-key-secret .signup-submit { justify-self: start; padding: 0 14px; }
 .api-key-copy-message { margin: 0; color: #9fcca8; font-size: 11px; }
+.api-key-delete-confirmation { display: grid; gap: 12px; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+.api-key-delete-confirmation .signup-description { margin: 0; }
+.api-key-delete-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.api-key-delete-button, .api-key-cancel-button { min-height: 40px; padding: 0 13px; border: 1px solid rgb(255 255 255 / 20%); border-radius: 3px; background: transparent; color: #c7c2b8; cursor: pointer; font-size: 11px; font-weight: 600; transition: .2s ease; }
+.api-key-delete-button { border-color: rgb(228 169 156 / 55%); color: #e4a99c; }
+.api-key-delete-button:hover:not(:disabled) { background: rgb(228 169 156 / 10%); }
+.api-key-cancel-button:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+.api-key-delete-button:disabled, .api-key-cancel-button:disabled { cursor: wait; opacity: .7; }
 .signup-title { margin: 18px 0 10px; font-size: clamp(38px, 7vw, 52px); }
 .signup-description { margin: 0 0 26px; color: var(--muted); font-size: 13px; line-height: 1.7; }
 .signup-form { display: grid; gap: 17px; }

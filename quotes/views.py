@@ -21,11 +21,18 @@ def _key_payload(key, raw_key=None):
     return payload
 
 
-@require_http_methods(["GET", "POST"])
+@require_http_methods(["GET", "POST", "DELETE"])
 def api_key(request):
-    """View metadata for, or create, the current user's (single) API key."""
+    """View, create, or delete the current user's API key."""
     if not request.user.is_authenticated:
         return JsonResponse({"error": "Authentication required"}, status=401)
+
+    if request.method == "DELETE":
+        key = APIKey.objects.filter(owner=request.user).order_by("created_at").first()
+        if key is None:
+            return JsonResponse({"error": "API key not found"}, status=404)
+        key.delete()
+        return JsonResponse({"deleted": True})
 
     if request.method == "POST":
         with transaction.atomic():

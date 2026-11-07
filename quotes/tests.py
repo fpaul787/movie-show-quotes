@@ -74,6 +74,7 @@ class APIKeyTests(TestCase):
         for headers in (
             {"Authorization": f"Api-Key {self.raw_key}"},
             {"X-API-Key": self.raw_key},
+            {"X-API-Key": f"  {self.raw_key}  "},
         ):
             self.assertEqual(
                 self.client.get("/quotes/random", headers=headers).status_code, 404
@@ -102,6 +103,7 @@ class UserAPIKeyEndpointTests(TestCase):
     def test_requires_authentication(self):
         self.assertEqual(self.client.get("/api/keys").status_code, 401)
         self.assertEqual(self.client.post("/api/keys").status_code, 401)
+        self.assertEqual(self.client.delete("/api/keys").status_code, 401)
 
     def test_no_key_initially(self):
         self.client.force_login(self.user)
@@ -126,6 +128,36 @@ class UserAPIKeyEndpointTests(TestCase):
         self.client.post("/api/keys")
         self.assertEqual(self.client.post("/api/keys").status_code, 409)
         self.assertEqual(APIKey.objects.filter(owner=self.user).count(), 1)
+
+    def test_delete_key_allows_creating_a_replacement(self):
+        self.client.force_login(self.user)
+        created = self.client.post("/api/keys")
+        raw_key = created.json()["api_key"]["key"]
+
+        deleted = self.client.delete("/api/keys")
+
+        self.assertEqual(deleted.status_code, 200)
+        self.assertEqual(deleted.json(), {"deleted": True})
+        self.assertFalse(APIKey.objects.filter(owner=self.user).exists())
+        self.assertEqual(
+            self.client.get("/quotes/random", headers={"X-API-Key": raw_key}).status_code,
+            401,
+        )
+        self.assertEqual(self.client.post("/api/keys").status_code, 201)
+
+    def test_cannot_delete_another_users_key(self):
+        other = get_user_model().objects.create_user(
+            username="other", password="test-password"
+        )
+        other_key = APIKey(name="other key", owner=other)
+        other_key.set_new_key()
+        other_key.save()
+        self.client.force_login(self.user)
+
+        response = self.client.delete("/api/keys")
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTrue(APIKey.objects.filter(pk=other_key.pk).exists())
 
     def test_keys_are_per_user(self):
         other = get_user_model().objects.create_user(username="other", password="pw-12345-xyz")

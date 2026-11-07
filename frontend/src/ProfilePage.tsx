@@ -56,6 +56,8 @@ function ProfilePage() {
   const [apiKey, setApiKey] = useState<UserApiKey | null>(null);
   const [apiKeyLoading, setApiKeyLoading] = useState(true);
   const [apiKeyCreating, setApiKeyCreating] = useState(false);
+  const [apiKeyDeleting, setApiKeyDeleting] = useState(false);
+  const [confirmApiKeyDelete, setConfirmApiKeyDelete] = useState(false);
   const [apiKeyError, setApiKeyError] = useState("");
   const [newApiKeySecret, setNewApiKeySecret] = useState<string | null>(null);
   const [copyMessage, setCopyMessage] = useState("");
@@ -229,6 +231,56 @@ function ProfilePage() {
     }
   }
 
+  async function deleteApiKey() {
+    setApiKeyDeleting(true);
+    setApiKeyError("");
+
+    try {
+      const csrfResponse = await fetch("/api/auth/csrf", {
+        credentials: "same-origin",
+      });
+      if (!csrfResponse.ok) {
+        throw new Error("Could not start API key deletion. Please try again.");
+      }
+      const csrfData: unknown = await csrfResponse.json();
+      if (!isRecord(csrfData) || typeof csrfData.csrfToken !== "string") {
+        throw new Error("Could not start API key deletion. Please try again.");
+      }
+
+      const response = await fetch("/api/keys", {
+        method: "DELETE",
+        credentials: "same-origin",
+        headers: { "X-CSRFToken": csrfData.csrfToken },
+      });
+      if (response.status === 401) {
+        window.location.replace("/login/");
+        return;
+      }
+      if (response.status === 404) {
+        setApiKey(null);
+        setNewApiKeySecret(null);
+        setConfirmApiKeyDelete(false);
+        return;
+      }
+      if (!response.ok) {
+        throw new Error("Could not delete your API key. Please try again.");
+      }
+
+      setApiKey(null);
+      setNewApiKeySecret(null);
+      setConfirmApiKeyDelete(false);
+      setCopyMessage("");
+    } catch (requestError) {
+      setApiKeyError(
+        requestError instanceof Error
+          ? requestError.message
+          : "Could not delete your API key. Please try again.",
+      );
+    } finally {
+      setApiKeyDeleting(false);
+    }
+  }
+
   return (
     <div className="site-shell">
       <header className="site-header">
@@ -307,6 +359,42 @@ function ProfilePage() {
                     <p className="signup-description">
                       The full key is only shown when it’s first created.
                     </p>
+                  )}
+                  {confirmApiKeyDelete ? (
+                    <div className="api-key-delete-confirmation" role="group" aria-label="Confirm API key deletion">
+                      <p className="signup-description">
+                        Deleting this key immediately revokes it. You’ll be able to create a new key afterward.
+                      </p>
+                      <div className="api-key-delete-actions">
+                        <button
+                          className="api-key-delete-button"
+                          type="button"
+                          onClick={deleteApiKey}
+                          disabled={apiKeyDeleting}
+                        >
+                          {apiKeyDeleting ? "Deleting…" : "Confirm delete"}
+                        </button>
+                        <button
+                          className="api-key-cancel-button"
+                          type="button"
+                          onClick={() => setConfirmApiKeyDelete(false)}
+                          disabled={apiKeyDeleting}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <button
+                      className="api-key-delete-button"
+                      type="button"
+                      onClick={() => {
+                        setApiKeyError("");
+                        setConfirmApiKeyDelete(true);
+                      }}
+                    >
+                      Delete API key
+                    </button>
                   )}
                 </div>
               )}
