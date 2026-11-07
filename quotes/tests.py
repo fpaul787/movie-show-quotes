@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.utils import timezone
 
 from .models import APIKey, Quote
@@ -104,6 +104,28 @@ class UserAPIKeyEndpointTests(TestCase):
         self.assertEqual(self.client.get("/api/keys").status_code, 401)
         self.assertEqual(self.client.post("/api/keys").status_code, 401)
         self.assertEqual(self.client.delete("/api/keys").status_code, 401)
+
+    def test_create_and_delete_require_csrf_token(self):
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(self.user)
+
+        self.assertEqual(client.post("/api/keys").status_code, 403)
+        self.assertFalse(APIKey.objects.filter(owner=self.user).exists())
+
+        token = client.get("/api/auth/csrf").json()["csrfToken"]
+        self.assertEqual(
+            client.post("/api/keys", headers={"X-CSRFToken": token}).status_code,
+            201,
+        )
+        self.assertTrue(APIKey.objects.filter(owner=self.user).exists())
+
+        self.assertEqual(client.delete("/api/keys").status_code, 403)
+        self.assertTrue(APIKey.objects.filter(owner=self.user).exists())
+        self.assertEqual(
+            client.delete("/api/keys", headers={"X-CSRFToken": token}).status_code,
+            200,
+        )
+        self.assertFalse(APIKey.objects.filter(owner=self.user).exists())
 
     def test_no_key_initially(self):
         self.client.force_login(self.user)
