@@ -1,4 +1,5 @@
 from datetime import timedelta
+from importlib import import_module
 
 from django.core.exceptions import ValidationError
 from django.core.management import call_command
@@ -334,6 +335,35 @@ class QuoteFixtureTests(TestCase):
             self.assertEqual(quote.media_id, quote.character.media_id)
 
 
+class LegacyLanguageConversionTests(TestCase):
+    def test_valid_language_codes_and_names(self):
+        convert = import_module(
+            "quotes.migrations.0004_populate_media_and_characters"
+        )._language_code
+        for value, expected in (
+            ("English", "en"),
+            (" EN ", "en"),
+            ("pt-BR", "pt-BR"),
+            ("PT-BR", "pt-BR"),
+            ("en-abcdefgh-1234", "en-abcdefgh-1234"),
+        ):
+            with self.subTest(value=value):
+                result = convert(value)
+                self.assertEqual(result, expected)
+                Quote._meta.get_field("language").clean(result, None)
+
+    def test_invalid_language_codes_are_rejected(self):
+        convert = import_module(
+            "quotes.migrations.0004_populate_media_and_characters"
+        )._language_code
+        for value in (
+            "\u65e5\u672c\u8a9e", "\u212aK", "en-abcdefgh-12345",
+            "en-x", "en-123456789", "en--US",
+        ):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                convert(value)
+
+
 class NormalizedModelTests(TestCase):
     def setUp(self):
         self.media = Media.objects.create(
@@ -434,6 +464,25 @@ class LegacyDataMigrationTests(TransactionTestCase):
         self.assertEqual(one.language, "en")
         self.assertEqual(one.tags, ["a"])
         self.assertEqual(str(one.original_date), "2021-10-22")
+
+    def test_language_codes_migrate_and_invalid_values_abort_before_writes(self):
+        apps = self._go_to_legacy()
+        self._legacy_quote(apps, text="valid", language="pt-BR")
+        self._legacy_quote(apps, text="invalid", language="\u65e5\u672c\u8a9e")
+
+        with self.assertRaisesRegex(ValueError, "Cannot map legacy language"):
+            self._migrate_forward()
+
+        apps = MigrationExecutor(connection).loader.project_state(self.migrate_from).apps
+        Quote_ = apps.get_model("quotes", "Quote")
+        self.assertIsNone(Quote_.objects.get(text="valid").media_id)
+        self.assertEqual(Quote_.objects.get(text="valid").language, "pt-BR")
+        Quote_.objects.filter(text="invalid").delete()
+
+        apps = self._migrate_forward()
+        quote = apps.get_model("quotes", "Quote").objects.get(text="valid")
+        self.assertEqual(quote.language, "pt-BR")
+        Quote._meta.get_field("language").clean(quote.language, None)
 
     def test_unmappable_legacy_values_abort_migration(self):
         apps = self._go_to_legacy()
