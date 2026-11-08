@@ -6,7 +6,9 @@
       "title": "The Far Meridian",
       "media_type": "MOVIE",
       "release_year": 2021,
-      "external_id": null
+      "external_id": null,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -16,7 +18,9 @@
       "title": "Northbound",
       "media_type": "TV_SHOW",
       "release_year": 2020,
-      "external_id": null
+      "external_id": null,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -26,7 +30,9 @@
       "title": "Quiet Orbit",
       "media_type": "MOVIE",
       "release_year": 2023,
-      "external_id": null
+      "external_id": null,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -36,7 +42,9 @@
       "title": "The Glass Archive",
       "media_type": "TV_SHOW",
       "release_year": 2022,
-      "external_id": null
+      "external_id": null,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -46,7 +54,9 @@
       "title": "Red Valley Road",
       "media_type": "MOVIE",
       "release_year": 2019,
-      "external_id": null
+      "external_id": null,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -56,7 +66,9 @@
       "title": "Room for One More",
       "media_type": "TV_SHOW",
       "release_year": 2024,
-      "external_id": null
+      "external_id": null,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -66,7 +78,9 @@
       "title": "Copper Skies",
       "media_type": "MOVIE",
       "release_year": 2022,
-      "external_id": null
+      "external_id": null,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -76,7 +90,9 @@
       "title": "Second Shift",
       "media_type": "TV_SHOW",
       "release_year": 2021,
-      "external_id": null
+      "external_id": null,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -86,7 +102,9 @@
       "title": "Saltwater Letters",
       "media_type": "MOVIE",
       "release_year": 2020,
-      "external_id": null
+      "external_id": null,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -96,7 +114,9 @@
       "title": "Juniper Street",
       "media_type": "TV_SHOW",
       "release_year": 2023,
-      "external_id": null
+      "external_id": null,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -106,7 +126,9 @@
       "title": "Last Train to Bellweather",
       "media_type": "MOVIE",
       "release_year": 2018,
-      "external_id": null
+      "external_id": null,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -116,7 +138,9 @@
       "title": "Common Ground",
       "media_type": "TV_SHOW",
       "release_year": 2024,
-      "external_id": null
+      "external_id": null,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -126,7 +150,9 @@
       "title": "Beacon Hill",
       "media_type": "MOVIE",
       "release_year": 2019,
-      "external_id": null
+      "external_id": null,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -136,7 +162,9 @@
       "title": "After the Applause",
       "media_type": "TV_SHOW",
       "release_year": 2022,
-      "external_id": null
+      "external_id": null,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -146,7 +174,9 @@
       "title": "The Cartographer's Night",
       "media_type": "MOVIE",
       "release_year": 2021,
-      "external_id": null
+      "external_id": null,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -154,7 +184,9 @@
     "pk": 1,
     "fields": {
       "name": "Mara Venn",
-      "media": 1
+      "media": 1,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -162,7 +194,9 @@
     "pk": 2,
     "fields": {
       "name": "Eli Mercer",
-      "media": 2
+      "media": 2,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -170,7 +204,9 @@
     "pk": 3,
     "fields": {
       "name": "Dr. Sanaa Bell",
-      "media": 3
+      "media": 3,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -178,7 +214,9 @@
     "pk": 4,
     "fields": {
       "name": "Ivo Chen",
-      "media": 4
+      "media": 4,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -186,7 +224,9 @@
     "pk": 5,
     "fields": {
       "name": "June Calder",
-      "media": 5
+      "media": 5,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -194,7 +234,9 @@
     "pk": 6,
     "fields": {
       "name": "Tess Rowan",
-      "media": 6
+      "media": 6,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -202,7 +244,9 @@
     "pk": 7,
     "fields": {
       "name": "Niko Vale",
-      "media": 7
+      "media": 7,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -210,7 +254,9 @@
     "pk": 8,
     "fields": {
       "name": "Rae Okafor",
-      "media": 8
+      "media": 8,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -218,7 +264,9 @@
     "pk": 9,
     "fields": {
       "name": "Noah Pike",
-      "media": 9
+      "media": 9,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -226,7 +274,9 @@
     "pk": 10,
     "fields": {
       "name": "Mina Flores",
-      "media": 10
+      "media": 10,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -234,7 +284,9 @@
     "pk": 11,
     "fields": {
       "name": "Cal Rusk",
-      "media": 11
+      "media": 11,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -242,7 +294,9 @@
     "pk": 12,
     "fields": {
       "name": "Leah Park",
-      "media": 12
+      "media": 12,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -250,7 +304,9 @@
     "pk": 13,
     "fields": {
       "name": "Oren Bell",
-      "media": 13
+      "media": 13,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -258,7 +314,9 @@
     "pk": 14,
     "fields": {
       "name": "Dara Quinn",
-      "media": 14
+      "media": 14,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -266,7 +324,9 @@
     "pk": 15,
     "fields": {
       "name": "Amir Sol",
-      "media": 15
+      "media": 15,
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -281,7 +341,9 @@
         "adventure",
         "hope"
       ],
-      "original_date": "2021-04-16"
+      "original_date": "2021-04-16",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -296,7 +358,9 @@
         "courage",
         "family"
       ],
-      "original_date": "2020-09-08"
+      "original_date": "2020-09-08",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -311,7 +375,9 @@
         "science-fiction",
         "wonder"
       ],
-      "original_date": "2023-02-24"
+      "original_date": "2023-02-24",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -326,7 +392,9 @@
         "mystery",
         "friendship"
       ],
-      "original_date": "2022-06-03"
+      "original_date": "2022-06-03",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -341,7 +409,9 @@
         "determination",
         "adventure"
       ],
-      "original_date": "2019-11-15"
+      "original_date": "2019-11-15",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -356,7 +426,9 @@
         "belonging",
         "warmth"
       ],
-      "original_date": "2024-01-19"
+      "original_date": "2024-01-19",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -371,7 +443,9 @@
         "technology",
         "ethics"
       ],
-      "original_date": "2022-08-12"
+      "original_date": "2022-08-12",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -386,7 +460,9 @@
         "resilience",
         "teamwork"
       ],
-      "original_date": "2021-10-01"
+      "original_date": "2021-10-01",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -401,7 +477,9 @@
         "growth",
         "drama"
       ],
-      "original_date": "2020-05-22"
+      "original_date": "2020-05-22",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -416,7 +494,9 @@
         "optimism",
         "comedy"
       ],
-      "original_date": "2023-07-14"
+      "original_date": "2023-07-14",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -431,7 +511,9 @@
         "redemption",
         "journey"
       ],
-      "original_date": "2018-03-30"
+      "original_date": "2018-03-30",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -446,7 +528,9 @@
         "empathy",
         "relationships"
       ],
-      "original_date": "2024-03-08"
+      "original_date": "2024-03-08",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -461,7 +545,9 @@
         "community",
         "hope"
       ],
-      "original_date": "2019-08-23"
+      "original_date": "2019-08-23",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -476,7 +562,9 @@
         "honesty",
         "new-beginnings"
       ],
-      "original_date": "2022-12-02"
+      "original_date": "2022-12-02",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   },
   {
@@ -491,7 +579,9 @@
         "choice",
         "adventure"
       ],
-      "original_date": "2021-01-29"
+      "original_date": "2021-01-29",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z"
     }
   }
 ]

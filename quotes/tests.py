@@ -316,6 +316,24 @@ class QuoteEndpointTests(TestCase):
         self.assertEqual(response.json(), {"error": "No quotes available"})
 
 
+class QuoteFixtureTests(TestCase):
+    def test_fixture_loads_with_timestamps_and_relationships(self):
+        call_command("loaddata", "quotes", verbosity=0)
+
+        for model in (Media, Character, Quote):
+            with self.subTest(model=model.__name__):
+                self.assertEqual(model.objects.count(), 15)
+                self.assertFalse(
+                    model.objects.filter(created_at__isnull=True).exists()
+                )
+                self.assertFalse(
+                    model.objects.filter(updated_at__isnull=True).exists()
+                )
+
+        for quote in Quote.objects.select_related("character"):
+            self.assertEqual(quote.media_id, quote.character.media_id)
+
+
 class NormalizedModelTests(TestCase):
     def setUp(self):
         self.media = Media.objects.create(
