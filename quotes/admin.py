@@ -35,6 +35,12 @@ class CharacterAdmin(admin.ModelAdmin):
     search_fields = ("name", "media__title")
     autocomplete_fields = ("media",)
 
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = super().get_readonly_fields(request, obj)
+        if obj is not None and obj.quotes.exists():
+            return (*readonly_fields, "media")
+        return readonly_fields
+
 
 class QuoteAdminForm(forms.ModelForm):
     class Meta:
