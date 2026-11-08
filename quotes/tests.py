@@ -445,9 +445,15 @@ class NormalizedModelTests(TestCase):
 
     def test_quote_character_must_belong_to_same_media(self):
         paul = Character.objects.create(name="Paul", media=self.other)
-        quote = Quote(text="x", media=self.media, character=paul, language="en")
-        with self.assertRaises(ValidationError):
+        quote = Quote(
+            text="x", media=self.media, character=paul, language="en", tags=["test"]
+        )
+        with self.assertRaises(ValidationError) as raised:
             quote.full_clean()
+        self.assertEqual(
+            raised.exception.message_dict,
+            {"character": ["Character must belong to the quote's media."]},
+        )
 
     def test_quote_validates_language_and_tags(self):
         for kwargs in ({"language": "English"}, {"language": "en", "tags": "nope"}, {"language": "en", "tags": [1]}):
