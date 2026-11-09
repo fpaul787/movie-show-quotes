@@ -1,6 +1,7 @@
 from datetime import timedelta
 from io import StringIO
 from unittest.mock import patch
+from importlib import import_module
 
 from django.core.exceptions import ValidationError
 from django.core.management import call_command
@@ -9,6 +10,7 @@ from django.db.migrations.executor import MigrationExecutor
 from django.test import TransactionTestCase
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
+from django.urls import reverse
 from django.utils import timezone
 
 from .models import APIKey, Character, Media, Quote
@@ -366,6 +368,101 @@ class QuoteEndpointTests(TestCase):
         self.assertEqual(response.json(), {"error": "No quotes available"})
 
 
+class QuoteFixtureTests(TestCase):
+    def test_fixture_loads_with_timestamps_and_relationships(self):
+        call_command("loaddata", "quotes", verbosity=0)
+
+        for model in (Media, Character, Quote):
+            with self.subTest(model=model.__name__):
+                self.assertEqual(model.objects.count(), 15)
+                self.assertFalse(
+                    model.objects.filter(created_at__isnull=True).exists()
+                )
+                self.assertFalse(
+                    model.objects.filter(updated_at__isnull=True).exists()
+                )
+
+        for quote in Quote.objects.select_related("character"):
+            self.assertEqual(quote.media_id, quote.character.media_id)
+
+
+class CharacterAdminTests(TestCase):
+    def setUp(self):
+        admin = get_user_model().objects.create_superuser(
+            username="admin", password="test-password"
+        )
+        self.client.force_login(admin)
+        self.media = Media.objects.create(
+            title="Original", media_type="MOVIE", release_year=2000
+        )
+        self.other = Media.objects.create(
+            title="Other", media_type="MOVIE", release_year=2001
+        )
+        self.character = Character.objects.create(name="Speaker", media=self.media)
+        self.url = reverse("admin:quotes_character_change", args=[self.character.pk])
+
+    def test_media_is_read_only_when_character_has_quotes(self):
+        quote = Quote.objects.create(
+            text="Hello", media=self.media, character=self.character, language="en"
+        )
+        response = self.client.get(self.url)
+        self.assertNotContains(response, 'name="media"')
+
+        response = self.client.post(
+            self.url, {"name": "Renamed", "media": self.other.pk, "_save": "Save"}
+        )
+        self.assertEqual(response.status_code, 302)
+        self.character.refresh_from_db()
+        quote.refresh_from_db()
+        self.assertEqual(self.character.name, "Renamed")
+        self.assertEqual(self.character.media_id, self.media.pk)
+        self.assertEqual(quote.media_id, self.character.media_id)
+
+    def test_media_can_be_changed_without_quotes(self):
+        response = self.client.get(self.url)
+        self.assertContains(response, 'name="media"')
+
+        response = self.client.post(
+            self.url, {"name": "Speaker", "media": self.other.pk, "_save": "Save"}
+        )
+        self.assertEqual(response.status_code, 302)
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.media_id, self.other.pk)
+
+    def test_media_is_editable_when_adding_character(self):
+        response = self.client.get(reverse("admin:quotes_character_add"))
+        self.assertContains(response, 'name="media"')
+
+
+class LegacyLanguageConversionTests(TestCase):
+    def test_valid_language_codes_and_names(self):
+        convert = import_module(
+            "quotes.migrations.0004_populate_media_and_characters"
+        )._language_code
+        for value, expected in (
+            ("English", "en"),
+            (" EN ", "en"),
+            ("pt-BR", "pt-BR"),
+            ("PT-BR", "pt-BR"),
+            ("en-abcdefgh-1234", "en-abcdefgh-1234"),
+        ):
+            with self.subTest(value=value):
+                result = convert(value)
+                self.assertEqual(result, expected)
+                Quote._meta.get_field("language").clean(result, None)
+
+    def test_invalid_language_codes_are_rejected(self):
+        convert = import_module(
+            "quotes.migrations.0004_populate_media_and_characters"
+        )._language_code
+        for value in (
+            "\u65e5\u672c\u8a9e", "\u212aK", "en-abcdefgh-12345",
+            "en-x", "en-123456789", "en--US",
+        ):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                convert(value)
+
+
 class NormalizedModelTests(TestCase):
     def setUp(self):
         self.media = Media.objects.create(
@@ -398,9 +495,15 @@ class NormalizedModelTests(TestCase):
 
     def test_quote_character_must_belong_to_same_media(self):
         paul = Character.objects.create(name="Paul", media=self.other)
-        quote = Quote(text="x", media=self.media, character=paul, language="en")
-        with self.assertRaises(ValidationError):
+        quote = Quote(
+            text="x", media=self.media, character=paul, language="en", tags=["test"]
+        )
+        with self.assertRaises(ValidationError) as raised:
             quote.full_clean()
+        self.assertEqual(
+            raised.exception.message_dict,
+            {"character": ["Character must belong to the quote's media."]},
+        )
 
     def test_quote_validates_language_and_tags(self):
         for kwargs in ({"language": "English"}, {"language": "en", "tags": "nope"}, {"language": "en", "tags": [1]}):
@@ -466,6 +569,25 @@ class LegacyDataMigrationTests(TransactionTestCase):
         self.assertEqual(one.language, "en")
         self.assertEqual(one.tags, ["a"])
         self.assertEqual(str(one.original_date), "2021-10-22")
+
+    def test_language_codes_migrate_and_invalid_values_abort_before_writes(self):
+        apps = self._go_to_legacy()
+        self._legacy_quote(apps, text="valid", language="pt-BR")
+        self._legacy_quote(apps, text="invalid", language="\u65e5\u672c\u8a9e")
+
+        with self.assertRaisesRegex(ValueError, "Cannot map legacy language"):
+            self._migrate_forward()
+
+        apps = MigrationExecutor(connection).loader.project_state(self.migrate_from).apps
+        Quote_ = apps.get_model("quotes", "Quote")
+        self.assertIsNone(Quote_.objects.get(text="valid").media_id)
+        self.assertEqual(Quote_.objects.get(text="valid").language, "pt-BR")
+        Quote_.objects.filter(text="invalid").delete()
+
+        apps = self._migrate_forward()
+        quote = apps.get_model("quotes", "Quote").objects.get(text="valid")
+        self.assertEqual(quote.language, "pt-BR")
+        Quote._meta.get_field("language").clean(quote.language, None)
 
     def test_unmappable_legacy_values_abort_migration(self):
         apps = self._go_to_legacy()

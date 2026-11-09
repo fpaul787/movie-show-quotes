@@ -1,3 +1,5 @@
+import re
+
 from django.db import migrations
 
 SOURCE_TO_MEDIA_TYPE = {"movie": "MOVIE", "tv show": "TV_SHOW", "tv": "TV_SHOW"}
@@ -14,6 +16,8 @@ LANGUAGE_NAME_TO_CODE = {
     "russian": "ru",
     "hindi": "hi",
 }
+LANGUAGE_CODE_PATTERN = re.compile(r"[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*")
+LANGUAGE_CODE_MAX_LENGTH = 16
 
 
 def _language_code(value):
@@ -21,8 +25,12 @@ def _language_code(value):
     code = LANGUAGE_NAME_TO_CODE.get(cleaned.lower())
     if code:
         return code
-    if len(cleaned) in (2, 3) and cleaned.isalpha():
-        return cleaned.lower()
+    if (
+        len(cleaned) <= LANGUAGE_CODE_MAX_LENGTH
+        and LANGUAGE_CODE_PATTERN.fullmatch(cleaned)
+    ):
+        primary, *subtags = cleaned.split("-")
+        return "-".join([primary.lower(), *subtags])
     raise ValueError(f"Cannot map legacy language {value!r} to an ISO code")
 
 
