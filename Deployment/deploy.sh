@@ -19,6 +19,7 @@ npm --prefix frontend run build
 
 APP_ENV=prod "$VENV_PY" manage.py check --deploy
 APP_ENV=prod "$VENV_PY" manage.py migrate --noinput
+APP_ENV=prod "$VENV_PY" manage.py seed_quotes
 APP_ENV=prod "$VENV_PY" manage.py collectstatic --noinput
 
 sudo apache2ctl configtest
