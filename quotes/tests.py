@@ -429,6 +429,25 @@ class CharacterAdminTests(TestCase):
         self.character.refresh_from_db()
         self.assertEqual(self.character.media_id, self.other.pk)
 
+    def test_duplicate_name_is_rejected_when_media_is_read_only(self):
+        Quote.objects.create(
+            text="Hello", media=self.media, character=self.character, language="en"
+        )
+        Character.objects.create(name="Another", media=self.media)
+
+        response = self.client.post(
+            self.url, {"name": "Another", "_save": "Save"}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(
+            response.context["adminform"].form,
+            "name",
+            "A character with this name already exists for this media.",
+        )
+        self.character.refresh_from_db()
+        self.assertEqual(self.character.name, "Speaker")
+
     def test_media_is_editable_when_adding_character(self):
         response = self.client.get(reverse("admin:quotes_character_add"))
         self.assertContains(response, 'name="media"')

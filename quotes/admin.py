@@ -29,8 +29,38 @@ class MediaAdmin(admin.ModelAdmin):
     search_fields = ("title", "external_id")
 
 
+class CharacterAdminForm(forms.ModelForm):
+    class Meta:
+        model = Character
+        fields = "__all__"
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get("name")
+        media = cleaned_data.get("media")
+        if media is None and self.instance.pk:
+            media = self.instance.media
+
+        if (
+            name
+            and media
+            and Character.objects.filter(media=media, name=name)
+            .exclude(pk=self.instance.pk)
+            .exists()
+        ):
+            self.add_error(
+                "name",
+                forms.ValidationError(
+                    "A character with this name already exists for this media.",
+                    code="unique",
+                ),
+            )
+        return cleaned_data
+
+
 @admin.register(Character)
 class CharacterAdmin(admin.ModelAdmin):
+    form = CharacterAdminForm
     list_display = ("name", "media")
     search_fields = ("name", "media__title")
     autocomplete_fields = ("media",)
