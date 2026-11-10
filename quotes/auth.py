@@ -6,6 +6,9 @@ from .errors import api_error
 from .models import APIKey
 
 
+READ_ONLY_METHODS = ("GET", "HEAD", "OPTIONS")
+
+
 def _extract_key(request):
     header = request.headers.get("Authorization", "")
     scheme, _, value = header.partition(" ")
@@ -24,9 +27,15 @@ def api_key_required(view):
         if key is None:
             return api_error("invalid_api_key", "The provided API key is invalid.", 401)
         if not key.is_usable():
-            if not key.is_active:
+            if key.is_revoked():
                 return api_error("revoked_api_key", "This API key has been revoked.", 403)
             return api_error("expired_api_key", "This API key has expired.", 403)
+        if request.method not in READ_ONLY_METHODS:
+            response = api_error(
+                "method_not_allowed", "This endpoint is read-only.", 405
+            )
+            response["Allow"] = "GET, HEAD, OPTIONS"
+            return response
         APIKey.objects.filter(pk=key.pk).update(last_used_at=timezone.now())
         return view(request, *args, **kwargs)
 

@@ -30,7 +30,10 @@ class APIKey(models.Model):
 
     def set_new_key(self):
         """Generate a key, store its hash, and return the raw key (shown once)."""
-        self.prefix = secrets.token_hex(4)
+        while True:
+            self.prefix = secrets.token_hex(4)
+            if not APIKey.objects.filter(prefix=self.prefix).exists():
+                break
         raw_key = f"{self.prefix}.{secrets.token_urlsafe(32)}"
         self.hashed_key = self._hash(raw_key)
         return raw_key
@@ -41,13 +44,19 @@ class APIKey(models.Model):
         prefix, sep, _ = (raw_key or "").partition(".")
         if not sep:
             return None
-        key = cls.objects.filter(prefix=prefix).first()
+        key = cls.objects.select_related("owner").filter(prefix=prefix).first()
         if key is None or not hmac.compare_digest(key.hashed_key, cls._hash(raw_key)):
             return None
         return key
 
+    def is_revoked(self):
+        # Keys of deactivated users are treated as revoked.
+        return not self.is_active or (
+            self.owner_id is not None and not self.owner.is_active
+        )
+
     def is_usable(self):
-        if not self.is_active:
+        if self.is_revoked():
             return False
         return self.expires_at is None or self.expires_at > timezone.now()
 

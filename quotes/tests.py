@@ -16,6 +16,8 @@ from django.utils import timezone
 from .models import APIKey, Character, Media, Quote
 
 RANDOM_URL = "/api/v1/quotes/random/"
+# Add each new data endpoint here so it is covered by the auth tests.
+DATA_URLS = [RANDOM_URL]
 
 class SeedQuotesTests(TestCase):
     def test_seed_loads_fixture_and_skips_on_repeat(self):
@@ -172,6 +174,50 @@ class APIKeyTests(TestCase):
         response = self.client.get("/api/v1/nope/")
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json()["error"]["code"], "resource_not_found")
+
+    def test_data_endpoints_are_read_only(self):
+        headers = {"X-API-Key": self.raw_key}
+        for url in DATA_URLS:
+            for method in ("post", "put", "patch", "delete"):
+                with self.subTest(url=url, method=method):
+                    response = getattr(self.client, method)(url, headers=headers)
+                    self.assertEqual(response.status_code, 405)
+                    self.assertEqual(response.json()["error"]["code"], "method_not_allowed")
+                    self.assertIn("GET", response["Allow"])
+
+    def test_unauthenticated_write_requests_return_401(self):
+        for url in DATA_URLS:
+            self.assertEqual(self.client.post(url).status_code, 401)
+
+    def test_all_data_endpoints_enforce_key_states(self):
+        for url in DATA_URLS:
+            with self.subTest(url=url):
+                self.assertEqual(self.client.get(url).status_code, 401)
+                self.assertEqual(
+                    self.client.get(url, headers={"X-API-Key": "bad.key"}).status_code,
+                    401,
+                )
+
+    def test_key_of_deactivated_owner_returns_403(self):
+        user = get_user_model().objects.create_user("owner", "o@example.com", "pw")
+        self.apikey.owner = user
+        self.apikey.save()
+        headers = {"X-API-Key": self.raw_key}
+        self.assertEqual(self.client.get(RANDOM_URL, headers=headers).status_code, 404)
+        user.is_active = False
+        user.save()
+        response = self.client.get(RANDOM_URL, headers=headers)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json()["error"]["code"], "revoked_api_key")
+
+    def test_new_key_prefix_avoids_collisions(self):
+        with patch(
+            "quotes.models.secrets.token_hex", side_effect=[self.apikey.prefix, "abcd1234"]
+        ):
+            key = APIKey(name="other")
+            key.set_new_key()
+        self.assertEqual(key.prefix, "abcd1234")
+        key.save()
 
 
 class UserAPIKeyEndpointTests(TestCase):
