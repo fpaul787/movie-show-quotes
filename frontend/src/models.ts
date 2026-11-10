@@ -1,9 +1,13 @@
 export type Quote = {
+  id: number;
   text: string;
-  year: number;
-  title: string;
-  character: string;
-  source: string;
   language: string;
   tags: string[];
+  character: { id: number; name: string } | null;
+  media: {
+    id: number;
+    title: string;
+    media_type: "MOVIE" | "TV_SHOW";
+    release_year: number;
+  };
 };
