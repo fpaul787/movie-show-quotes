@@ -1,9 +1,7 @@
-import datetime
-
 from django import forms
 from django.contrib import admin, messages
 
-from .models import APIKey, Quote
+from .models import APIKey, Character, Media, Quote
 
 
 @admin.register(APIKey)
@@ -24,6 +22,56 @@ class APIKeyAdmin(admin.ModelAdmin):
             )
 
 
+@admin.register(Media)
+class MediaAdmin(admin.ModelAdmin):
+    list_display = ("title", "media_type", "release_year", "external_id")
+    list_filter = ("media_type", "release_year")
+    search_fields = ("title", "external_id")
+
+
+class CharacterAdminForm(forms.ModelForm):
+    class Meta:
+        model = Character
+        fields = "__all__"
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get("name")
+        media = cleaned_data.get("media")
+        if media is None and self.instance.pk:
+            media = self.instance.media
+
+        if (
+            name
+            and media
+            and Character.objects.filter(media=media, name=name)
+            .exclude(pk=self.instance.pk)
+            .exists()
+        ):
+            self.add_error(
+                "name",
+                forms.ValidationError(
+                    "A character with this name already exists for this media.",
+                    code="unique",
+                ),
+            )
+        return cleaned_data
+
+
+@admin.register(Character)
+class CharacterAdmin(admin.ModelAdmin):
+    form = CharacterAdminForm
+    list_display = ("name", "media")
+    search_fields = ("name", "media__title")
+    autocomplete_fields = ("media",)
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = super().get_readonly_fields(request, obj)
+        if obj is not None and obj.quotes.exists():
+            return (*readonly_fields, "media")
+        return readonly_fields
+
+
 class QuoteAdminForm(forms.ModelForm):
     class Meta:
         model = Quote
@@ -31,7 +79,6 @@ class QuoteAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["created_at"].initial = datetime.date.today
         self.fields["tags"].required = False
         self.fields["tags"].help_text = 'JSON list, e.g. ["drama", "classic"]'
 
@@ -43,7 +90,9 @@ class QuoteAdminForm(forms.ModelForm):
 @admin.register(Quote)
 class QuoteAdmin(admin.ModelAdmin):
     form = QuoteAdminForm
-    list_display = ("title", "character", "year", "source", "language", "created_at")
-    list_filter = ("source", "language", "year")
-    search_fields = ("text", "title", "character")
+    list_display = ("media", "character", "language", "created_at")
+    list_filter = ("media__media_type", "language", "media__release_year")
+    search_fields = ("text", "media__title", "character__name")
+    list_select_related = ("media", "character")
+    autocomplete_fields = ("media", "character")
     ordering = ("-created_at",)

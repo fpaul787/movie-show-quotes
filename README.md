@@ -30,6 +30,14 @@ after changing files under `frontend/src/`. The deployment script builds the
 frontend before running Django's `collectstatic`, so Node.js and npm must also be
 installed on the deployment host.
 
+### Seed data
+
+Deployment loads `quotes/fixtures/quotes.json` after migrations only when the
+Media, Character, and Quote tables are all empty. If any contain data, the seed
+is skipped to avoid overwriting existing records. Run
+`python manage.py seed_quotes` to apply the same check manually. Fixture timestamps represent
+when the seed dataset was prepared, rather than when it was loaded.
+
 ## User signup
 
 The React signup page is available at `/signup/`. It submits to the Django
