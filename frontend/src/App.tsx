@@ -78,12 +78,12 @@ function HomepageApp() {
     setError("");
     setQuote(null);
     try {
-      const response = await fetch("/quotes/random", {
+      const response = await fetch("/api/v1/quotes/random/", {
         headers: { "X-API-Key": apiKey.trim() },
       });
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.error ?? `Request failed (${response.status}).`);
+        throw new Error(data.error?.message ?? `Request failed (${response.status}).`);
       }
       setQuote(data as Quote);
     } catch (requestError) {

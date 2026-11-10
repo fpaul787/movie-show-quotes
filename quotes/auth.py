@@ -1,8 +1,8 @@
 from functools import wraps
 
-from django.http import JsonResponse
 from django.utils import timezone
 
+from .errors import api_error
 from .models import APIKey
 
 
@@ -17,11 +17,16 @@ def _extract_key(request):
 def api_key_required(view):
     @wraps(view)
     def wrapper(request, *args, **kwargs):
-        key = APIKey.authenticate(_extract_key(request))
+        raw_key = _extract_key(request)
+        if not raw_key:
+            return api_error("missing_api_key", "An API key is required.", 401)
+        key = APIKey.authenticate(raw_key)
         if key is None:
-            return JsonResponse({"error": "Invalid or missing API key"}, status=401)
+            return api_error("invalid_api_key", "The provided API key is invalid.", 401)
         if not key.is_usable():
-            return JsonResponse({"error": "API key is revoked or expired"}, status=403)
+            if not key.is_active:
+                return api_error("revoked_api_key", "This API key has been revoked.", 403)
+            return api_error("expired_api_key", "This API key has expired.", 403)
         APIKey.objects.filter(pk=key.pk).update(last_used_at=timezone.now())
         return view(request, *args, **kwargs)
 

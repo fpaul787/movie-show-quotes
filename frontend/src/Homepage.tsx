@@ -28,7 +28,7 @@ function Homepage({
 }: HomepageProps) {
   const [copied, setCopied] = useState(false);
   const curlExample = [
-    `curl ${window.location.origin}/quotes/random \\`,
+    `curl ${window.location.origin}/api/v1/quotes/random/ \\`,
     '  -H "X-API-Key: YOUR_API_KEY"',
   ].join("\n");
 
@@ -116,7 +116,7 @@ function Homepage({
           <div className="try-grid">
             <form className="try-card" onSubmit={onFetchQuote}>
               <div className="card-topline"><span className="card-label">LIVE REQUEST</span><span className="request-method">GET</span></div>
-              <div className="endpoint-line"><span className="endpoint-lock" aria-hidden="true">⌘</span><code>/quotes/random</code><span className="endpoint-ready">● ready</span></div>
+              <div className="endpoint-line"><span className="endpoint-lock" aria-hidden="true">⌘</span><code>/api/v1/quotes/random/</code><span className="endpoint-ready">● ready</span></div>
               <label className="key-label" htmlFor="api-key">Your API key</label>
               <div className="key-row">
                 <input
@@ -148,7 +148,7 @@ function Homepage({
 
             <div className="code-card" id="quick-start">
               <div className="code-card-head"><span className="card-label">QUICK START</span><button type="button" className="copy-button" onClick={copyExample} aria-label="Copy curl example">{copied ? "Copied ✓" : "Copy ↗"}</button></div>
-              <div className="code-window"><div className="window-dots" aria-hidden="true"><i /><i /><i /></div><pre><span className="code-muted">$</span> curl <span className="code-url">{window.location.origin}</span>/quotes/random \
+              <div className="code-window"><div className="window-dots" aria-hidden="true"><i /><i /><i /></div><pre><span className="code-muted">$</span> curl <span className="code-url">{window.location.origin}</span>/api/v1/quotes/random/ \
   -H <span className="code-value">"X-API-Key: YOUR_API_KEY"</span></pre></div>
               <div className="code-foot"><span className="response-dot" /> Returns a random quote as JSON</div>
             </div>
