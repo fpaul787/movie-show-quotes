@@ -12,8 +12,10 @@ class APIKeyAdmin(admin.ModelAdmin):
     readonly_fields = ("prefix", "created_at", "last_used_at")
 
     def save_model(self, request, obj, form, change):
-        raw_key = None if change else obj.set_new_key()
-        super().save_model(request, obj, form, change)
+        if change:
+            super().save_model(request, obj, form, change)
+            return
+        raw_key = obj.save_with_new_key()
         if raw_key:
             self.message_user(
                 request,

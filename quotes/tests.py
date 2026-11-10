@@ -210,14 +210,17 @@ class APIKeyTests(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.json()["error"]["code"], "revoked_api_key")
 
-    def test_new_key_prefix_avoids_collisions(self):
+    def test_save_retries_when_prefix_is_taken_at_insert_time(self):
+        # The prefix looked free when generated but is taken at save time (race).
         with patch(
             "quotes.models.secrets.token_hex", side_effect=[self.apikey.prefix, "abcd1234"]
         ):
             key = APIKey(name="other")
-            key.set_new_key()
+            raw_key = key.save_with_new_key()
         self.assertEqual(key.prefix, "abcd1234")
-        key.save()
+        self.assertTrue(raw_key.startswith("abcd1234."))
+        self.assertEqual(APIKey.objects.count(), 2)
+        self.assertEqual(APIKey.authenticate(raw_key), key)
 
 
 class UserAPIKeyEndpointTests(TestCase):

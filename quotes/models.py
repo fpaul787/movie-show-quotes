@@ -5,7 +5,7 @@ import secrets
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
-from django.db import models
+from django.db import IntegrityError, models, transaction
 from django.utils import timezone
 
 
@@ -30,13 +30,29 @@ class APIKey(models.Model):
 
     def set_new_key(self):
         """Generate a key, store its hash, and return the raw key (shown once)."""
-        while True:
-            self.prefix = secrets.token_hex(4)
-            if not APIKey.objects.filter(prefix=self.prefix).exists():
-                break
+        self.prefix = secrets.token_hex(4)
         raw_key = f"{self.prefix}.{secrets.token_urlsafe(32)}"
         self.hashed_key = self._hash(raw_key)
         return raw_key
+
+    def save_with_new_key(self, attempts=5):
+        """Generate and save a key, retrying if the random prefix is already taken.
+
+        The unique constraint is the only race-free check, so retry on it.
+        """
+        for attempt in range(attempts):
+            raw_key = self.set_new_key()
+            try:
+                with transaction.atomic():
+                    self.save()
+            except IntegrityError:
+                prefix_taken = (
+                    APIKey.objects.filter(prefix=self.prefix).exists()
+                )
+                if not prefix_taken or attempt == attempts - 1:
+                    raise
+                continue
+            return raw_key
 
     @classmethod
     def authenticate(cls, raw_key):
