@@ -16,8 +16,10 @@ from django.utils import timezone
 from .models import APIKey, Character, Media, Quote
 
 RANDOM_URL = "/api/v1/quotes/random/"
+LIST_URL = "/api/v1/quotes/"
+DETAIL_URL = "/api/v1/quotes/1/"
 # Add each new data endpoint here so it is covered by the auth tests.
-DATA_URLS = [RANDOM_URL]
+DATA_URLS = [RANDOM_URL, LIST_URL, DETAIL_URL]
 
 class SeedQuotesTests(TestCase):
     def test_seed_loads_fixture_and_skips_on_repeat(self):
@@ -149,16 +151,20 @@ class APIKeyTests(TestCase):
         headers = {"X-API-Key": self.raw_key}
         self.apikey.is_active = False
         self.apikey.save()
-        response = self.client.get(RANDOM_URL, headers=headers)
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.json()["error"]["code"], "revoked_api_key")
+        for url in DATA_URLS:
+            with self.subTest(url=url, state="revoked"):
+                response = self.client.get(url, headers=headers)
+                self.assertEqual(response.status_code, 403)
+                self.assertEqual(response.json()["error"]["code"], "revoked_api_key")
 
         self.apikey.is_active = True
         self.apikey.expires_at = timezone.now() - timedelta(days=1)
         self.apikey.save()
-        response = self.client.get(RANDOM_URL, headers=headers)
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(response.json()["error"]["code"], "expired_api_key")
+        for url in DATA_URLS:
+            with self.subTest(url=url, state="expired"):
+                response = self.client.get(url, headers=headers)
+                self.assertEqual(response.status_code, 403)
+                self.assertEqual(response.json()["error"]["code"], "expired_api_key")
 
     def test_v1_endpoint_uses_the_same_authentication(self):
         url = reverse("api_v1:random-quote")
