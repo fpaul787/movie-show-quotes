@@ -5,7 +5,7 @@ import secrets
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
-from django.db import models
+from django.db import IntegrityError, models, transaction
 from django.utils import timezone
 
 
@@ -35,19 +35,44 @@ class APIKey(models.Model):
         self.hashed_key = self._hash(raw_key)
         return raw_key
 
+    def save_with_new_key(self, attempts=5):
+        """Generate and save a key, retrying if the random prefix is already taken.
+
+        The unique constraint is the only race-free check, so retry on it.
+        """
+        for attempt in range(attempts):
+            raw_key = self.set_new_key()
+            try:
+                with transaction.atomic():
+                    self.save()
+            except IntegrityError:
+                prefix_taken = (
+                    APIKey.objects.filter(prefix=self.prefix).exists()
+                )
+                if not prefix_taken or attempt == attempts - 1:
+                    raise
+                continue
+            return raw_key
+
     @classmethod
     def authenticate(cls, raw_key):
         """Return the matching usable APIKey, or None."""
         prefix, sep, _ = (raw_key or "").partition(".")
         if not sep:
             return None
-        key = cls.objects.filter(prefix=prefix).first()
+        key = cls.objects.select_related("owner").filter(prefix=prefix).first()
         if key is None or not hmac.compare_digest(key.hashed_key, cls._hash(raw_key)):
             return None
         return key
 
+    def is_revoked(self):
+        # Keys of deactivated users are treated as revoked.
+        return not self.is_active or (
+            self.owner_id is not None and not self.owner.is_active
+        )
+
     def is_usable(self):
-        if not self.is_active:
+        if self.is_revoked():
             return False
         return self.expires_at is None or self.expires_at > timezone.now()
 

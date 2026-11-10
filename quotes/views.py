@@ -47,8 +47,7 @@ def api_key(request):
                 name=f"{request.user.username[:max_username_length]}{suffix}",
                 owner=request.user,
             )
-            raw_key = key.set_new_key()
-            key.save()
+            raw_key = key.save_with_new_key()
         return JsonResponse({"api_key": _key_payload(key, raw_key)}, status=201)
 
     key = APIKey.objects.filter(owner=request.user).order_by("created_at").first()
