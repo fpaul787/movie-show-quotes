@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
 from .auth import api_key_required
+from .errors import api_error
 from .models import APIKey, Quote
 
 
@@ -59,11 +60,16 @@ def react_homepage(request):
     return render(request, "quotes/homepage.html", {"username": username})
 
 
+def api_not_found(request, *args, **kwargs):
+    return api_error("resource_not_found", "The requested resource does not exist.", 404)
+
+
 @api_key_required
 def random_quote(request):
+    """Served at /api/v1/quotes/random/."""
     quote = Quote.objects.select_related("media", "character").order_by("?").first()
     if quote is None:
-        return JsonResponse({"error": "No quotes available"}, status=404)
+        return api_error("no_quotes_available", "No quotes available.", 404)
     return JsonResponse(
         {
             "text": quote.text,

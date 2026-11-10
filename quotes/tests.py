@@ -15,6 +15,7 @@ from django.utils import timezone
 
 from .models import APIKey, Character, Media, Quote
 
+RANDOM_URL = "/api/v1/quotes/random/"
 
 class SeedQuotesTests(TestCase):
     def test_seed_loads_fixture_and_skips_on_repeat(self):
@@ -117,11 +118,14 @@ class APIKeyTests(TestCase):
         self.apikey.save()
 
     def test_missing_or_wrong_key_returns_401(self):
-        self.assertEqual(self.client.get("/quotes/random").status_code, 401)
+        response = self.client.get(RANDOM_URL)
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.json()["error"]["code"], "missing_api_key")
         response = self.client.get(
-            "/quotes/random", headers={"Authorization": "Api-Key wrong.key"}
+            RANDOM_URL, headers={"Authorization": "Api-Key wrong.key"}
         )
         self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.json()["error"]["code"], "invalid_api_key")
 
     def test_raw_key_is_not_stored(self):
         self.assertNotIn(self.raw_key, self.apikey.hashed_key)
@@ -134,7 +138,7 @@ class APIKeyTests(TestCase):
             {"X-API-Key": f"  {self.raw_key}  "},
         ):
             self.assertEqual(
-                self.client.get("/quotes/random", headers=headers).status_code, 404
+                self.client.get(RANDOM_URL, headers=headers).status_code, 404
             )
         self.apikey.refresh_from_db()
         self.assertIsNotNone(self.apikey.last_used_at)
@@ -143,12 +147,31 @@ class APIKeyTests(TestCase):
         headers = {"X-API-Key": self.raw_key}
         self.apikey.is_active = False
         self.apikey.save()
-        self.assertEqual(self.client.get("/quotes/random", headers=headers).status_code, 403)
+        response = self.client.get(RANDOM_URL, headers=headers)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json()["error"]["code"], "revoked_api_key")
 
         self.apikey.is_active = True
         self.apikey.expires_at = timezone.now() - timedelta(days=1)
         self.apikey.save()
-        self.assertEqual(self.client.get("/quotes/random", headers=headers).status_code, 403)
+        response = self.client.get(RANDOM_URL, headers=headers)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json()["error"]["code"], "expired_api_key")
+
+    def test_v1_endpoint_uses_the_same_authentication(self):
+        url = reverse("api_v1:random-quote")
+        self.assertEqual(url, "/api/v1/quotes/random/")
+        self.assertEqual(self.client.get(url).status_code, 401)
+        headers = {"X-API-Key": self.raw_key}
+        self.assertEqual(self.client.get(url, headers=headers).status_code, 404)
+        self.apikey.is_active = False
+        self.apikey.save()
+        self.assertEqual(self.client.get(url, headers=headers).status_code, 403)
+
+    def test_unknown_v1_path_returns_json_404(self):
+        response = self.client.get("/api/v1/nope/")
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["error"]["code"], "resource_not_found")
 
 
 class UserAPIKeyEndpointTests(TestCase):
@@ -201,7 +224,7 @@ class UserAPIKeyEndpointTests(TestCase):
         self.assertTrue(listed["is_active"])
         self.assertEqual(listed["prefix"], raw.split(".")[0])
         self.client.logout()
-        response = self.client.get("/quotes/random", headers={"X-API-Key": raw})
+        response = self.client.get(RANDOM_URL, headers={"X-API-Key": raw})
         self.assertEqual(response.status_code, 404)
 
     def test_key_status_matches_usability(self):
@@ -228,7 +251,7 @@ class UserAPIKeyEndpointTests(TestCase):
                 self.assertIs(response.json()["api_key"]["is_active"], expected_status)
                 self.assertEqual(
                     self.client.get(
-                        "/quotes/random", headers={"X-API-Key": raw_key}
+                        RANDOM_URL, headers={"X-API-Key": raw_key}
                     ).status_code,
                     expected_quote_status,
                 )
@@ -265,7 +288,7 @@ class UserAPIKeyEndpointTests(TestCase):
         self.assertEqual(deleted.json(), {"deleted": True})
         self.assertFalse(APIKey.objects.filter(owner=self.user).exists())
         self.assertEqual(
-            self.client.get("/quotes/random", headers={"X-API-Key": raw_key}).status_code,
+            self.client.get(RANDOM_URL, headers={"X-API-Key": raw_key}).status_code,
             401,
         )
         self.assertEqual(self.client.post("/api/keys").status_code, 201)
@@ -312,7 +335,7 @@ class QuoteEndpointTests(TestCase):
             original_date="1977-05-25",
         )
 
-        response = self.client.get("/quotes/random")
+        response = self.client.get(RANDOM_URL)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -335,7 +358,7 @@ class QuoteEndpointTests(TestCase):
         )
         Quote.objects.create(text="Hi", media=media, language="en")
 
-        data = self.client.get("/quotes/random").json()
+        data = self.client.get(RANDOM_URL).json()
 
         self.assertEqual(data["character"], "")
         self.assertIsNone(data["created_at"])
@@ -354,18 +377,24 @@ class QuoteEndpointTests(TestCase):
 
         texts = {f"Quote {i}" for i in range(5)}
         for _ in range(10):
-            self.assertIn(self.client.get("/quotes/random").json()["text"], texts)
+            self.assertIn(self.client.get(RANDOM_URL).json()["text"], texts)
 
     def test_quote_does_not_create_quotes(self):
-        self.client.get("/quotes/random")
+        self.client.get(RANDOM_URL)
 
         self.assertEqual(Quote.objects.count(), 0)
 
     def test_quote_returns_404_when_no_quotes_exist(self):
-        response = self.client.get("/quotes/random")
+        response = self.client.get(RANDOM_URL)
 
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json(), {"error": "No quotes available"})
+        self.assertEqual(
+            response.json(),
+            {"error": {"code": "no_quotes_available", "message": "No quotes available."}},
+        )
+
+    def test_legacy_random_quote_route_is_removed(self):
+        self.assertEqual(self.client.get("/quotes/random").status_code, 404)
 
 
 class QuoteFixtureTests(TestCase):
