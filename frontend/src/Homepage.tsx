@@ -137,9 +137,9 @@ function Homepage({
                 {error && <><span aria-hidden="true">!</span> {error}</>}
                 {quote && (
                   <div className="quote-result">
-                    <span className="result-kicker">{quote.source} · {quote.year}</span>
+                    <span className="result-kicker">{quote.media.media_type === "MOVIE" ? "Movie" : "TV Show"} · {quote.media.release_year}</span>
                     <blockquote>“{quote.text}”</blockquote>
-                    <span className="result-credit">{quote.character} <span>—</span> {quote.title}</span>
+                    <span className="result-credit">{quote.character?.name} <span>—</span> {quote.media.title}</span>
                     {quote.tags.length > 0 && <div className="tag-list">{quote.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>}
                   </div>
                 )}
