@@ -1,3 +1,4 @@
+import logging
 from functools import wraps
 
 from django.utils import timezone
@@ -6,7 +7,7 @@ from .errors import api_error
 from .models import APIKey
 
 
-READ_ONLY_METHODS = ("GET", "HEAD", "OPTIONS")
+logger = logging.getLogger(__name__)
 
 
 def _extract_key(request):
@@ -30,13 +31,19 @@ def api_key_required(view):
             if key.is_revoked():
                 return api_error("revoked_api_key", "This API key has been revoked.", 403)
             return api_error("expired_api_key", "This API key has expired.", 403)
-        if request.method not in READ_ONLY_METHODS:
+        if request.method not in ("GET", "HEAD"):
             response = api_error(
                 "method_not_allowed", "This endpoint is read-only.", 405
             )
-            response["Allow"] = "GET, HEAD, OPTIONS"
+            response["Allow"] = "GET, HEAD"
             return response
         APIKey.objects.filter(pk=key.pk).update(last_used_at=timezone.now())
-        return view(request, *args, **kwargs)
+        try:
+            return view(request, *args, **kwargs)
+        except Exception:
+            logger.exception("Unhandled error in API view %s", view.__name__)
+            return api_error(
+                "internal_error", "An unexpected error occurred.", 500
+            )
 
     return wrapper
