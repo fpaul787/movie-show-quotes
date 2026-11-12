@@ -3,6 +3,7 @@ import hmac
 import secrets
 
 from django.conf import settings
+from django.contrib.postgres.indexes import GinIndex
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import IntegrityError, models, transaction
@@ -99,6 +100,9 @@ class Media(models.Model):
         verbose_name_plural = "media"
         indexes = [
             models.Index(fields=["title"]),
+            GinIndex(
+                fields=["title"], name="media_title_trgm_idx", opclasses=["gin_trgm_ops"]
+            ),
             models.Index(fields=["media_type", "release_year"]),
         ]
         constraints = [
@@ -141,7 +145,12 @@ class Character(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        indexes = [models.Index(fields=["name"])]
+        indexes = [
+            models.Index(fields=["name"]),
+            GinIndex(
+                fields=["name"], name="character_name_trgm_idx", opclasses=["gin_trgm_ops"]
+            ),
+        ]
         constraints = [
             models.UniqueConstraint(
                 fields=["media", "name"], name="unique_character_name_per_media"
@@ -177,6 +186,10 @@ class Quote(models.Model):
         indexes = [
             models.Index(fields=["language"]),
             models.Index(fields=["media", "character"]),
+            GinIndex(fields=["tags"], name="quote_tags_gin_idx"),
+            GinIndex(
+                fields=["text"], name="quote_text_trgm_idx", opclasses=["gin_trgm_ops"]
+            ),
         ]
 
     def clean(self):
