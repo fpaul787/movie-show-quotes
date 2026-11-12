@@ -19,8 +19,7 @@ def _extract_key(request):
 
 
 def api_key_required(view):
-    @wraps(view)
-    def wrapper(request, *args, **kwargs):
+    def authorize_and_call(request, *args, **kwargs):
         raw_key = _extract_key(request)
         if not raw_key:
             return api_error("missing_api_key", "An API key is required.", 401)
@@ -38,8 +37,12 @@ def api_key_required(view):
             response["Allow"] = "GET, HEAD"
             return response
         APIKey.objects.filter(pk=key.pk).update(last_used_at=timezone.now())
+        return view(request, *args, **kwargs)
+
+    @wraps(view)
+    def wrapper(request, *args, **kwargs):
         try:
-            return view(request, *args, **kwargs)
+            return authorize_and_call(request, *args, **kwargs)
         except Exception:
             logger.exception("Unhandled error in API view %s", view.__name__)
             return api_error(

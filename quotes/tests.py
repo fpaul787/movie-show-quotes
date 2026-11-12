@@ -1,3 +1,4 @@
+import random
 from datetime import timedelta
 from io import StringIO
 from unittest.mock import patch
@@ -485,11 +486,32 @@ class ErrorAndPerformanceTests(TestCase):
             )
         self.assertEqual(response.status_code, 200)
 
+    def test_random_quote_survives_deletion_between_count_and_fetch(self):
+        real_randrange = random.randrange
+
+        def delete_then_pick(n):
+            Quote.objects.all().delete()
+            return real_randrange(n)
+
+        with patch("quotes.views.random.randrange", side_effect=delete_then_pick):
+            response = self.client.get(RANDOM_URL)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["error"]["code"], "no_quotes_available")
+
     def test_unsupported_method_returns_json_error(self):
         for method in ("post", "put", "delete", "options"):
             response = getattr(self.client, method)(LIST_URL)
             self.assertEqual(response.status_code, 405)
             self.assertEqual(response.json()["error"]["code"], "method_not_allowed")
+
+    def test_auth_path_failure_returns_json_500(self):
+        with patch.object(APIKey, "authenticate", side_effect=RuntimeError("db down")):
+            response = self.client.get(LIST_URL)
+
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.json()["error"]["code"], "internal_error")
+        self.assertNotIn("db down", response.content.decode())
 
     def test_unhandled_exception_returns_json_500_without_details(self):
         with patch("quotes.views.serialize_quote", side_effect=RuntimeError("secret")):

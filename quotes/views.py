@@ -177,8 +177,13 @@ def random_quote(request):
     """Served at /api/v1/quotes/random/."""
     # A random offset over the primary-key order avoids sorting the whole table.
     quotes = _quotes().order_by("id")
-    count = quotes.count()
-    if count == 0:
-        return api_error("no_quotes_available", "No quotes available.", 404)
-    quote = quotes[random.randrange(count)]
-    return JsonResponse(serialize_quote(quote))
+    # Retry in case quotes are deleted between the count and the offset lookup.
+    for _ in range(3):
+        count = quotes.count()
+        if count == 0:
+            break
+        quote = quotes[random.randrange(count):][:1]
+        quote = next(iter(quote), None)
+        if quote is not None:
+            return JsonResponse(serialize_quote(quote))
+    return api_error("no_quotes_available", "No quotes available.", 404)
