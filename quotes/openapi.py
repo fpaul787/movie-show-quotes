@@ -122,6 +122,7 @@ AUTH_RESPONSES = {
     "401": {"$ref": "#/components/responses/Unauthorized"},
     "403": {"$ref": "#/components/responses/Forbidden"},
     "405": {"$ref": "#/components/responses/MethodNotAllowed"},
+    "500": {"$ref": "#/components/responses/InternalError"},
 }
 
 
@@ -441,8 +442,12 @@ def build_openapi_spec():
                     [("resource_not_found", "The requested quote does not exist.")],
                 ),
                 "MethodNotAllowed": _error_response(
-                    "The API is read-only; only GET, HEAD and OPTIONS are allowed.",
+                    "The API is read-only; only GET and HEAD are allowed.",
                     [("method_not_allowed", "This endpoint is read-only.")],
+                ),
+                "InternalError": _error_response(
+                    "An unexpected server error occurred.",
+                    [("internal_error", "An unexpected error occurred.")],
                 ),
             },
         },
