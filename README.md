@@ -2,6 +2,51 @@
 
 An API for retrieving quotes from various movies and shows.
 
+## API
+
+Full documentation:
+
+- Interactive docs (Swagger UI): `/api/v1/docs/`
+- OpenAPI 3.1 description: `/api/v1/openapi.json`
+
+Both are public. Every data endpoint requires an API key.
+
+### Quick start
+
+1. Sign up, then create your API key at `/profile/api-keys/`. The full key is
+   shown once.
+2. Send the key in the `X-API-Key` header (or `Authorization: Api-Key <key>`):
+
+```sh
+curl -H "X-API-Key: <your-key>" https://<host>/api/v1/quotes/random/
+```
+
+```json
+{
+  "id": 123,
+  "text": "Why so serious?",
+  "language": "en",
+  "tags": ["villain", "classic"],
+  "character": {"id": 10, "name": "The Joker"},
+  "media": {"id": 5, "title": "The Dark Knight", "media_type": "MOVIE", "release_year": 2008}
+}
+```
+
+### Endpoints
+
+| Endpoint | Description |
+|---|---|
+| `GET /api/v1/quotes/` | Paginated list. Supports `page`, `page_size`, `search`, `media`, `character`, `year`, `language`, `tag` |
+| `GET /api/v1/quotes/random/` | One random quote |
+| `GET /api/v1/quotes/<id>/` | One quote by ID |
+
+Errors always look like
+`{"error": {"code": "invalid_api_key", "message": "..."}}`. See the docs for
+every code and status.
+
+The spec lives in `quotes/openapi.py`. Update it whenever an endpoint changes.
+The tests fail if a `/api/v1/` route isn't documented.
+
 ## Homepage
 
 The React/TypeScript homepage is served at `/`. The former `/homepage` URL
