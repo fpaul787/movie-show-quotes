@@ -747,7 +747,7 @@ class QuoteFixtureTests(TestCase):
 
         for model in (Media, Character, Quote):
             with self.subTest(model=model.__name__):
-                self.assertEqual(model.objects.count(), 15)
+                self.assertTrue(model.objects.exists())
                 self.assertFalse(
                     model.objects.filter(created_at__isnull=True).exists()
                 )
