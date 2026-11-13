@@ -1,10 +1,12 @@
+import random
+
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.shortcuts import render
-from django.views.decorators.http import require_GET, require_http_methods
+from django.views.decorators.http import require_http_methods
 
 from .auth import api_key_required
 from .errors import api_error
@@ -143,7 +145,6 @@ def _filter_quotes(params):
 
 
 @api_key_required
-@require_GET
 def quote_list(request):
     """Served at /api/v1/quotes/."""
     try:
@@ -176,7 +177,6 @@ def quote_list(request):
 
 
 @api_key_required
-@require_GET
 def quote_detail(request, pk):
     """Served at /api/v1/quotes/<pk>/."""
     quote = _quotes().filter(pk=pk).first()
@@ -188,7 +188,15 @@ def quote_detail(request, pk):
 @api_key_required
 def random_quote(request):
     """Served at /api/v1/quotes/random/."""
-    quote = _quotes().order_by("?").first()
-    if quote is None:
-        return api_error("no_quotes_available", "No quotes available.", 404)
-    return JsonResponse(serialize_quote(quote))
+    # A random offset over the primary-key order avoids sorting the whole table.
+    quotes = _quotes().order_by("id")
+    # Retry in case quotes are deleted between the count and the offset lookup.
+    for _ in range(3):
+        count = quotes.count()
+        if count == 0:
+            break
+        quote = quotes[random.randrange(count):][:1]
+        quote = next(iter(quote), None)
+        if quote is not None:
+            return JsonResponse(serialize_quote(quote))
+    return api_error("no_quotes_available", "No quotes available.", 404)
