@@ -3,398 +3,338 @@
     "model": "quotes.media",
     "pk": 1,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "title": "The Far Meridian",
       "media_type": "MOVIE",
       "release_year": 2021,
-      "external_id": null,
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "external_id": null
     }
   },
   {
     "model": "quotes.media",
     "pk": 2,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "title": "Northbound",
       "media_type": "TV_SHOW",
       "release_year": 2020,
-      "external_id": null,
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "external_id": null
     }
   },
   {
     "model": "quotes.media",
     "pk": 3,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "title": "Quiet Orbit",
       "media_type": "MOVIE",
       "release_year": 2023,
-      "external_id": null,
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "external_id": null
     }
   },
   {
     "model": "quotes.media",
     "pk": 4,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "title": "The Glass Archive",
       "media_type": "TV_SHOW",
       "release_year": 2022,
-      "external_id": null,
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "external_id": null
     }
   },
   {
     "model": "quotes.media",
     "pk": 5,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "title": "Red Valley Road",
       "media_type": "MOVIE",
       "release_year": 2019,
-      "external_id": null,
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "external_id": null
     }
   },
   {
     "model": "quotes.media",
     "pk": 6,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "title": "Room for One More",
       "media_type": "TV_SHOW",
       "release_year": 2024,
-      "external_id": null,
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "external_id": null
     }
   },
   {
     "model": "quotes.media",
     "pk": 7,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "title": "Copper Skies",
       "media_type": "MOVIE",
       "release_year": 2022,
-      "external_id": null,
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "external_id": null
     }
   },
   {
     "model": "quotes.media",
     "pk": 8,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "title": "Second Shift",
       "media_type": "TV_SHOW",
       "release_year": 2021,
-      "external_id": null,
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "external_id": null
     }
   },
   {
     "model": "quotes.media",
     "pk": 9,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "title": "Saltwater Letters",
       "media_type": "MOVIE",
       "release_year": 2020,
-      "external_id": null,
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "external_id": null
     }
   },
   {
     "model": "quotes.media",
     "pk": 10,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "title": "Juniper Street",
       "media_type": "TV_SHOW",
       "release_year": 2023,
-      "external_id": null,
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "external_id": null
     }
   },
   {
     "model": "quotes.media",
     "pk": 11,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "title": "Last Train to Bellweather",
       "media_type": "MOVIE",
       "release_year": 2018,
-      "external_id": null,
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "external_id": null
     }
   },
   {
     "model": "quotes.media",
     "pk": 12,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "title": "Common Ground",
       "media_type": "TV_SHOW",
       "release_year": 2024,
-      "external_id": null,
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "external_id": null
     }
   },
   {
     "model": "quotes.media",
     "pk": 13,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "title": "Beacon Hill",
       "media_type": "MOVIE",
       "release_year": 2019,
-      "external_id": null,
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "external_id": null
     }
   },
   {
     "model": "quotes.media",
     "pk": 14,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "title": "After the Applause",
       "media_type": "TV_SHOW",
       "release_year": 2022,
-      "external_id": null,
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "external_id": null
     }
   },
   {
     "model": "quotes.media",
     "pk": 15,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "title": "The Cartographer's Night",
       "media_type": "MOVIE",
       "release_year": 2021,
-      "external_id": null,
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "external_id": null
     }
   },
   {
     "model": "quotes.character",
     "pk": 1,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
-      "name": "Mara Venn",
-      "media": 1,
       "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "updated_at": "2026-11-07T00:00:00Z",
+      "name": "Mara Venn",
+      "media": 1
     }
   },
   {
     "model": "quotes.character",
     "pk": 2,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
-      "name": "Eli Mercer",
-      "media": 2,
       "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "updated_at": "2026-11-07T00:00:00Z",
+      "name": "Eli Mercer",
+      "media": 2
     }
   },
   {
     "model": "quotes.character",
     "pk": 3,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
-      "name": "Dr. Sanaa Bell",
-      "media": 3,
       "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "updated_at": "2026-11-07T00:00:00Z",
+      "name": "Dr. Sanaa Bell",
+      "media": 3
     }
   },
   {
     "model": "quotes.character",
     "pk": 4,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
-      "name": "Ivo Chen",
-      "media": 4,
       "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "updated_at": "2026-11-07T00:00:00Z",
+      "name": "Ivo Chen",
+      "media": 4
     }
   },
   {
     "model": "quotes.character",
     "pk": 5,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
-      "name": "June Calder",
-      "media": 5,
       "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "updated_at": "2026-11-07T00:00:00Z",
+      "name": "June Calder",
+      "media": 5
     }
   },
   {
     "model": "quotes.character",
     "pk": 6,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
-      "name": "Tess Rowan",
-      "media": 6,
       "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "updated_at": "2026-11-07T00:00:00Z",
+      "name": "Tess Rowan",
+      "media": 6
     }
   },
   {
     "model": "quotes.character",
     "pk": 7,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
-      "name": "Niko Vale",
-      "media": 7,
       "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "updated_at": "2026-11-07T00:00:00Z",
+      "name": "Niko Vale",
+      "media": 7
     }
   },
   {
     "model": "quotes.character",
     "pk": 8,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
-      "name": "Rae Okafor",
-      "media": 8,
       "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "updated_at": "2026-11-07T00:00:00Z",
+      "name": "Rae Okafor",
+      "media": 8
     }
   },
   {
     "model": "quotes.character",
     "pk": 9,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
-      "name": "Noah Pike",
-      "media": 9,
       "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "updated_at": "2026-11-07T00:00:00Z",
+      "name": "Noah Pike",
+      "media": 9
     }
   },
   {
     "model": "quotes.character",
     "pk": 10,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
-      "name": "Mina Flores",
-      "media": 10,
       "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "updated_at": "2026-11-07T00:00:00Z",
+      "name": "Mina Flores",
+      "media": 10
     }
   },
   {
     "model": "quotes.character",
     "pk": 11,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
-      "name": "Cal Rusk",
-      "media": 11,
       "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "updated_at": "2026-11-07T00:00:00Z",
+      "name": "Cal Rusk",
+      "media": 11
     }
   },
   {
     "model": "quotes.character",
     "pk": 12,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
-      "name": "Leah Park",
-      "media": 12,
       "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "updated_at": "2026-11-07T00:00:00Z",
+      "name": "Leah Park",
+      "media": 12
     }
   },
   {
     "model": "quotes.character",
     "pk": 13,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
-      "name": "Oren Bell",
-      "media": 13,
       "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "updated_at": "2026-11-07T00:00:00Z",
+      "name": "Oren Bell",
+      "media": 13
     }
   },
   {
     "model": "quotes.character",
     "pk": 14,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
-      "name": "Dara Quinn",
-      "media": 14,
       "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "updated_at": "2026-11-07T00:00:00Z",
+      "name": "Dara Quinn",
+      "media": 14
     }
   },
   {
     "model": "quotes.character",
     "pk": 15,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
-      "name": "Amir Sol",
-      "media": 15,
       "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "updated_at": "2026-11-07T00:00:00Z",
+      "name": "Amir Sol",
+      "media": 15
     }
   },
   {
     "model": "quotes.quote",
     "pk": 2,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "text": "Every map is a promise that the world is smaller than it looks.",
       "media": 1,
       "character": 1,
@@ -403,17 +343,15 @@
         "adventure",
         "hope"
       ],
-      "original_date": "2021-04-16",
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "original_date": "2021-04-16"
     }
   },
   {
     "model": "quotes.quote",
     "pk": 3,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "text": "You can be afraid and still be the one who opens the door.",
       "media": 2,
       "character": 2,
@@ -422,17 +360,15 @@
         "courage",
         "family"
       ],
-      "original_date": "2020-09-08",
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "original_date": "2020-09-08"
     }
   },
   {
     "model": "quotes.quote",
     "pk": 4,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "text": "The stars don't give directions. They just remind us to look up.",
       "media": 3,
       "character": 3,
@@ -441,17 +377,15 @@
         "science-fiction",
         "wonder"
       ],
-      "original_date": "2023-02-24",
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "original_date": "2023-02-24"
     }
   },
   {
     "model": "quotes.quote",
     "pk": 5,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "text": "A good secret is just a truth waiting for the right company.",
       "media": 4,
       "character": 4,
@@ -460,17 +394,15 @@
         "mystery",
         "friendship"
       ],
-      "original_date": "2022-06-03",
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "original_date": "2022-06-03"
     }
   },
   {
     "model": "quotes.quote",
     "pk": 6,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "text": "We didn't come this far to let a locked gate have the last word.",
       "media": 5,
       "character": 5,
@@ -479,17 +411,15 @@
         "determination",
         "adventure"
       ],
-      "original_date": "2019-11-15",
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "original_date": "2019-11-15"
     }
   },
   {
     "model": "quotes.quote",
     "pk": 7,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "text": "Maybe home is less a place than the people who save you a seat.",
       "media": 6,
       "character": 6,
@@ -498,17 +428,15 @@
         "belonging",
         "warmth"
       ],
-      "original_date": "2024-01-19",
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "original_date": "2024-01-19"
     }
   },
   {
     "model": "quotes.quote",
     "pk": 8,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "text": "If the machine can dream, someone has to teach it kindness.",
       "media": 7,
       "character": 7,
@@ -517,17 +445,15 @@
         "technology",
         "ethics"
       ],
-      "original_date": "2022-08-12",
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "original_date": "2022-08-12"
     }
   },
   {
     "model": "quotes.quote",
     "pk": 9,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "text": "I know the plan changed. I also know we're still here.",
       "media": 8,
       "character": 8,
@@ -536,17 +462,15 @@
         "resilience",
         "teamwork"
       ],
-      "original_date": "2021-10-01",
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "original_date": "2021-10-01"
     }
   },
   {
     "model": "quotes.quote",
     "pk": 10,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "text": "Somewhere between the storm and the shore, I stopped running.",
       "media": 9,
       "character": 9,
@@ -555,17 +479,15 @@
         "growth",
         "drama"
       ],
-      "original_date": "2020-05-22",
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "original_date": "2020-05-22"
     }
   },
   {
     "model": "quotes.quote",
     "pk": 11,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "text": "A little wonder is a perfectly practical thing to carry.",
       "media": 10,
       "character": 10,
@@ -574,17 +496,15 @@
         "optimism",
         "comedy"
       ],
-      "original_date": "2023-07-14",
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "original_date": "2023-07-14"
     }
   },
   {
     "model": "quotes.quote",
     "pk": 12,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "text": "The past can ride along, but it doesn't get to steer.",
       "media": 11,
       "character": 11,
@@ -593,17 +513,15 @@
         "redemption",
         "journey"
       ],
-      "original_date": "2018-03-30",
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "original_date": "2018-03-30"
     }
   },
   {
     "model": "quotes.quote",
     "pk": 13,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "text": "You don't have to win the argument to understand the person.",
       "media": 12,
       "character": 12,
@@ -612,17 +530,15 @@
         "empathy",
         "relationships"
       ],
-      "original_date": "2024-03-08",
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "original_date": "2024-03-08"
     }
   },
   {
     "model": "quotes.quote",
     "pk": 14,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "text": "We built a lighthouse because the dark deserved an answer.",
       "media": 13,
       "character": 13,
@@ -631,17 +547,15 @@
         "community",
         "hope"
       ],
-      "original_date": "2019-08-23",
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "original_date": "2019-08-23"
     }
   },
   {
     "model": "quotes.quote",
     "pk": 15,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "text": "One honest minute is a better start than a perfect year.",
       "media": 14,
       "character": 14,
@@ -650,17 +564,15 @@
         "honesty",
         "new-beginnings"
       ],
-      "original_date": "2022-12-02",
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "original_date": "2022-12-02"
     }
   },
   {
     "model": "quotes.quote",
     "pk": 16,
     "fields": {
-      "created_at": "2026-11-07T22:40:22Z",
-      "updated_at": "2026-11-07T22:40:22Z",
+      "created_at": "2026-11-07T00:00:00Z",
+      "updated_at": "2026-11-07T00:00:00Z",
       "text": "When the road disappears, we get to decide what counts as forward.",
       "media": 15,
       "character": 15,
@@ -669,9 +581,2607 @@
         "choice",
         "adventure"
       ],
-      "original_date": "2021-01-29",
-      "created_at": "2026-11-07T00:00:00Z",
-      "updated_at": "2026-11-07T00:00:00Z"
+      "original_date": "2021-01-29"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 16,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Harbor Lights",
+      "media_type": "MOVIE",
+      "release_year": 2017,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 16,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Wren Castellan",
+      "media": 16
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 17,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Joss Abernathy",
+      "media": 16
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 17,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "A lighthouse doesn't chase the ships. It just refuses to go dark.",
+      "media": 16,
+      "character": 16,
+      "language": "en",
+      "tags": [
+        "steadfast",
+        "hope"
+      ],
+      "original_date": "2017-06-05"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 18,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Everyone leaves the harbor eventually. The brave ones leave a lamp on.",
+      "media": 16,
+      "character": 17,
+      "language": "en",
+      "tags": [
+        "loss",
+        "hope"
+      ],
+      "original_date": "2017-07-21"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 19,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "I counted every wave tonight and not one of them was in a hurry.",
+      "media": 16,
+      "character": 16,
+      "language": "en",
+      "tags": [
+        "patience",
+        "reflection"
+      ],
+      "original_date": "2017-01-03"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 20,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "You can't borrow courage, but you can inherit it from the right people.",
+      "media": 16,
+      "character": 17,
+      "language": "en",
+      "tags": [
+        "courage",
+        "family"
+      ],
+      "original_date": "2017-09-04"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 17,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "The Paper Orchard",
+      "media_type": "TV_SHOW",
+      "release_year": 2019,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 18,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Imogen Tarr",
+      "media": 17
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 19,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Basil Okonkwo",
+      "media": 17
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 21,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Plant it anyway. Some things only grow because someone was stubborn.",
+      "media": 17,
+      "character": 18,
+      "language": "en",
+      "tags": [
+        "determination",
+        "growth"
+      ],
+      "original_date": "2019-06-19"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 22,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Fruit is just patience that finally got a chance to be sweet.",
+      "media": 17,
+      "character": 19,
+      "language": "en",
+      "tags": [
+        "patience",
+        "wisdom"
+      ],
+      "original_date": "2019-01-17"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 23,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "I used to apologize for taking up space. Then I planted a tree there.",
+      "media": 17,
+      "character": 18,
+      "language": "en",
+      "tags": [
+        "self-worth",
+        "growth"
+      ],
+      "original_date": "2019-04-02"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 24,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "A garden remembers everyone who ever knelt in it.",
+      "media": 17,
+      "character": 19,
+      "language": "en",
+      "tags": [
+        "memory",
+        "warmth"
+      ],
+      "original_date": "2019-02-14"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 18,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Static Bloom",
+      "media_type": "MOVIE",
+      "release_year": 2022,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 20,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Kestrel Vaughn",
+      "media": 18
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 21,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Pia Lindqvist",
+      "media": 18
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 25,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "The signal was never lost. We just stopped knowing how to listen.",
+      "media": 18,
+      "character": 20,
+      "language": "en",
+      "tags": [
+        "technology",
+        "connection"
+      ],
+      "original_date": "2022-07-03"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 26,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Noise is only music nobody has translated yet.",
+      "media": 18,
+      "character": 21,
+      "language": "en",
+      "tags": [
+        "wonder",
+        "science-fiction"
+      ],
+      "original_date": "2022-04-03"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 27,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Whatever is out there is probably as lonely as we are.",
+      "media": 18,
+      "character": 20,
+      "language": "en",
+      "tags": [
+        "loneliness",
+        "wonder"
+      ],
+      "original_date": "2022-09-14"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 28,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Turn it up. If we're going to be wrong, let's be wrong loudly.",
+      "media": 18,
+      "character": 21,
+      "language": "en",
+      "tags": [
+        "courage",
+        "humor"
+      ],
+      "original_date": "2022-01-27"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 19,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Midnight Ledger",
+      "media_type": "TV_SHOW",
+      "release_year": 2020,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 22,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Augustin Reyes",
+      "media": 19
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 23,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Hollis Drake",
+      "media": 19
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 29,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Numbers don't lie. People just ask them the wrong questions.",
+      "media": 19,
+      "character": 22,
+      "language": "en",
+      "tags": [
+        "mystery",
+        "truth"
+      ],
+      "original_date": "2020-10-04"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 30,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Every fortune has a first page that somebody tore out.",
+      "media": 19,
+      "character": 23,
+      "language": "en",
+      "tags": [
+        "mystery",
+        "secrets"
+      ],
+      "original_date": "2020-04-21"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 31,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "I trust a balanced book more than a clear conscience.",
+      "media": 19,
+      "character": 22,
+      "language": "en",
+      "tags": [
+        "irony",
+        "ethics"
+      ],
+      "original_date": "2020-11-19"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 32,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Follow the money long enough and it will introduce you to the guilty.",
+      "media": 19,
+      "character": 23,
+      "language": "en",
+      "tags": [
+        "crime",
+        "truth"
+      ],
+      "original_date": "2020-01-19"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 20,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Fathom & Flame",
+      "media_type": "MOVIE",
+      "release_year": 2016,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 24,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Captain Odalys Rook",
+      "media": 20
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 25,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Silas Wren",
+      "media": 20
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 33,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "The sea takes what it's given and gives back what it chooses.",
+      "media": 20,
+      "character": 24,
+      "language": "en",
+      "tags": [
+        "adventure",
+        "fate"
+      ],
+      "original_date": "2016-10-13"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 34,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Fire taught me to respect water, and water taught me to respect fear.",
+      "media": 20,
+      "character": 25,
+      "language": "en",
+      "tags": [
+        "fear",
+        "wisdom"
+      ],
+      "original_date": "2016-01-08"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 35,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Chart the stars if you like. I'll chart the people who sail beside me.",
+      "media": 20,
+      "character": 24,
+      "language": "en",
+      "tags": [
+        "loyalty",
+        "adventure"
+      ],
+      "original_date": "2016-01-18"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 36,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "We don't win storms. We outlast them.",
+      "media": 20,
+      "character": 25,
+      "language": "en",
+      "tags": [
+        "resilience",
+        "determination"
+      ],
+      "original_date": "2016-03-10"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 21,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "The Understudy",
+      "media_type": "TV_SHOW",
+      "release_year": 2023,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 26,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Calliope Marsh",
+      "media": 21
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 27,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Dev Anand Rao",
+      "media": 21
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 37,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Waiting in the wings is its own kind of performance.",
+      "media": 21,
+      "character": 26,
+      "language": "en",
+      "tags": [
+        "ambition",
+        "patience"
+      ],
+      "original_date": "2023-07-05"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 38,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Nobody remembers the rehearsal, but the rehearsal remembers everything.",
+      "media": 21,
+      "character": 27,
+      "language": "en",
+      "tags": [
+        "effort",
+        "memory"
+      ],
+      "original_date": "2023-09-04"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 39,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "I know every line but my own.",
+      "media": 21,
+      "character": 26,
+      "language": "en",
+      "tags": [
+        "identity",
+        "drama"
+      ],
+      "original_date": "2023-10-10"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 40,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "The spotlight is just a very hot lamp. Don't mistake it for love.",
+      "media": 21,
+      "character": 27,
+      "language": "en",
+      "tags": [
+        "fame",
+        "wisdom"
+      ],
+      "original_date": "2023-09-27"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 22,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Glasshouse Summer",
+      "media_type": "MOVIE",
+      "release_year": 2015,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 28,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Nell Aldous",
+      "media": 22
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 29,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Tobias Fenn",
+      "media": 22
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 41,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "That was the summer everything we said sounded like a promise.",
+      "media": 22,
+      "character": 28,
+      "language": "en",
+      "tags": [
+        "nostalgia",
+        "youth"
+      ],
+      "original_date": "2015-11-06"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 42,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "You don't notice a perfect day until it's already behind you.",
+      "media": 22,
+      "character": 29,
+      "language": "en",
+      "tags": [
+        "nostalgia",
+        "reflection"
+      ],
+      "original_date": "2015-02-19"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 43,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "We were fragile, sure. But the light looked incredible on us.",
+      "media": 22,
+      "character": 28,
+      "language": "en",
+      "tags": [
+        "youth",
+        "beauty"
+      ],
+      "original_date": "2015-10-21"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 44,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Grow up if you have to. Just leave a window open for who you were.",
+      "media": 22,
+      "character": 29,
+      "language": "en",
+      "tags": [
+        "growth",
+        "memory"
+      ],
+      "original_date": "2015-04-12"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 23,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Saint Mercy General",
+      "media_type": "TV_SHOW",
+      "release_year": 2018,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 30,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Dr. Priya Nambiar",
+      "media": 23
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 31,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Nurse Walt Gallagher",
+      "media": 23
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 45,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Hope is a clinical decision I make again every morning.",
+      "media": 23,
+      "character": 30,
+      "language": "en",
+      "tags": [
+        "hope",
+        "medicine"
+      ],
+      "original_date": "2018-02-18"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 46,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "You can't fix everyone. You can sit with them while they hurt.",
+      "media": 23,
+      "character": 31,
+      "language": "en",
+      "tags": [
+        "compassion",
+        "wisdom"
+      ],
+      "original_date": "2018-12-03"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 47,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Sleep is a rumor. Coffee is a lifestyle.",
+      "media": 23,
+      "character": 30,
+      "language": "en",
+      "tags": [
+        "humor",
+        "work"
+      ],
+      "original_date": "2018-10-02"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 48,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "In this building, the quiet hours are when the truth shows up.",
+      "media": 23,
+      "character": 31,
+      "language": "en",
+      "tags": [
+        "truth",
+        "reflection"
+      ],
+      "original_date": "2018-10-07"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 24,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Ashfall Protocol",
+      "media_type": "MOVIE",
+      "release_year": 2024,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 32,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Commander Lena Okoye",
+      "media": 24
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 33,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Teo Marchetti",
+      "media": 24
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 49,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Rules are written for the world that was. We're improvising for the one that is.",
+      "media": 24,
+      "character": 32,
+      "language": "en",
+      "tags": [
+        "survival",
+        "leadership"
+      ],
+      "original_date": "2024-08-22"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 50,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "I didn't survive the ash to be afraid of a little dust.",
+      "media": 24,
+      "character": 33,
+      "language": "en",
+      "tags": [
+        "courage",
+        "humor"
+      ],
+      "original_date": "2024-09-14"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 51,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Count the ones we saved, not the ones we lost. It's the only math that lets you sleep.",
+      "media": 24,
+      "character": 32,
+      "language": "en",
+      "tags": [
+        "leadership",
+        "grief"
+      ],
+      "original_date": "2024-06-15"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 52,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Hope isn't a plan. But it's what you carry the plan in.",
+      "media": 24,
+      "character": 33,
+      "language": "en",
+      "tags": [
+        "hope",
+        "survival"
+      ],
+      "original_date": "2024-10-15"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 25,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Lanternfish",
+      "media_type": "MOVIE",
+      "release_year": 2014,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 34,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Odette Brisk",
+      "media": 25
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 35,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Marlowe Quill",
+      "media": 25
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 53,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Down where it's darkest, you make your own light or you go without.",
+      "media": 25,
+      "character": 34,
+      "language": "en",
+      "tags": [
+        "resilience",
+        "self-reliance"
+      ],
+      "original_date": "2014-06-10"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 54,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Funny thing about the deep. It makes the small things look enormous.",
+      "media": 25,
+      "character": 35,
+      "language": "en",
+      "tags": [
+        "wonder",
+        "perspective"
+      ],
+      "original_date": "2014-04-26"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 55,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "I'm not lost. I'm just taking the scenic route through the dark.",
+      "media": 25,
+      "character": 34,
+      "language": "en",
+      "tags": [
+        "humor",
+        "adventure"
+      ],
+      "original_date": "2014-03-23"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 56,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Be bright enough to be found and humble enough to be followed.",
+      "media": 25,
+      "character": 35,
+      "language": "en",
+      "tags": [
+        "leadership",
+        "wisdom"
+      ],
+      "original_date": "2014-04-03"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 26,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Borrowed Time",
+      "media_type": "TV_SHOW",
+      "release_year": 2021,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 36,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Gideon Marsh",
+      "media": 26
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 37,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Vesper Lang",
+      "media": 26
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 57,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Every minute is a loan. Spend it like you intend to pay it back.",
+      "media": 26,
+      "character": 36,
+      "language": "en",
+      "tags": [
+        "time",
+        "wisdom"
+      ],
+      "original_date": "2021-10-10"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 58,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "The clock isn't your enemy. It's just honest.",
+      "media": 26,
+      "character": 37,
+      "language": "en",
+      "tags": [
+        "time",
+        "truth"
+      ],
+      "original_date": "2021-09-16"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 59,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "If I could rewind one hour I'd spend it doing nothing, beautifully.",
+      "media": 26,
+      "character": 36,
+      "language": "en",
+      "tags": [
+        "nostalgia",
+        "humor"
+      ],
+      "original_date": "2021-06-24"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 60,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "We keep asking for more time when we haven't used what we have.",
+      "media": 26,
+      "character": 37,
+      "language": "en",
+      "tags": [
+        "time",
+        "regret"
+      ],
+      "original_date": "2021-08-10"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 27,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "The Velvet Gambit",
+      "media_type": "MOVIE",
+      "release_year": 2013,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 38,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Rosalind Fairweather",
+      "media": 27
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 39,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Anton Kessler",
+      "media": 27
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 61,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "A bluff is just a story you tell with a straight face.",
+      "media": 27,
+      "character": 38,
+      "language": "en",
+      "tags": [
+        "strategy",
+        "wit"
+      ],
+      "original_date": "2013-10-03"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 62,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Never play the hand you're dealt. Play the person who dealt it.",
+      "media": 27,
+      "character": 39,
+      "language": "en",
+      "tags": [
+        "strategy",
+        "cunning"
+      ],
+      "original_date": "2013-02-17"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 63,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Elegance is knowing exactly when to walk away from the table.",
+      "media": 27,
+      "character": 38,
+      "language": "en",
+      "tags": [
+        "elegance",
+        "wisdom"
+      ],
+      "original_date": "2013-07-06"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 64,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "I lose gracefully. It's winning that I find vulgar.",
+      "media": 27,
+      "character": 39,
+      "language": "en",
+      "tags": [
+        "wit",
+        "irony"
+      ],
+      "original_date": "2013-06-05"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 28,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Moss & Marrow",
+      "media_type": "TV_SHOW",
+      "release_year": 2022,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 40,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Hazel Brightwater",
+      "media": 28
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 41,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Fitz Oduya",
+      "media": 28
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 65,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "The forest doesn't hurry, and yet nothing is ever late.",
+      "media": 28,
+      "character": 40,
+      "language": "en",
+      "tags": [
+        "nature",
+        "patience"
+      ],
+      "original_date": "2022-08-14"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 66,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Rot feeds the roots. Don't be so quick to call things ruined.",
+      "media": 28,
+      "character": 41,
+      "language": "en",
+      "tags": [
+        "growth",
+        "wisdom"
+      ],
+      "original_date": "2022-01-22"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 67,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Listen closely. The woods are always telling you who's been here.",
+      "media": 28,
+      "character": 40,
+      "language": "en",
+      "tags": [
+        "nature",
+        "mystery"
+      ],
+      "original_date": "2022-02-25"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 68,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "We're guests here. The trees are just too polite to say so.",
+      "media": 28,
+      "character": 41,
+      "language": "en",
+      "tags": [
+        "nature",
+        "humility"
+      ],
+      "original_date": "2022-09-19"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 29,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Neon Parish",
+      "media_type": "MOVIE",
+      "release_year": 2020,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 42,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Father Ezra Quint",
+      "media": 29
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 43,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Lux Montrose",
+      "media": 29
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 69,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Faith is just a flashlight you point at the next step.",
+      "media": 29,
+      "character": 42,
+      "language": "en",
+      "tags": [
+        "faith",
+        "hope"
+      ],
+      "original_date": "2020-06-11"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 70,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "In this city, everybody's praying. Most just call it hustling.",
+      "media": 29,
+      "character": 43,
+      "language": "en",
+      "tags": [
+        "irony",
+        "city"
+      ],
+      "original_date": "2020-12-12"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 71,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Forgiveness doesn't erase the neon. It just makes it bearable.",
+      "media": 29,
+      "character": 42,
+      "language": "en",
+      "tags": [
+        "forgiveness",
+        "redemption"
+      ],
+      "original_date": "2020-10-16"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 72,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "I'm not a saint. I'm a night shift with good intentions.",
+      "media": 29,
+      "character": 43,
+      "language": "en",
+      "tags": [
+        "humor",
+        "identity"
+      ],
+      "original_date": "2020-10-26"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 30,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Kite Season",
+      "media_type": "MOVIE",
+      "release_year": 2012,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 44,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Bram Holloway",
+      "media": 30
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 45,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Suki Tanabe",
+      "media": 30
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 73,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "You have to run into the wind before it lifts you.",
+      "media": 30,
+      "character": 44,
+      "language": "en",
+      "tags": [
+        "courage",
+        "growth"
+      ],
+      "original_date": "2012-08-03"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 74,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Hold the string loosely. Things that want to stay don't need a grip.",
+      "media": 30,
+      "character": 45,
+      "language": "en",
+      "tags": [
+        "love",
+        "wisdom"
+      ],
+      "original_date": "2012-02-09"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 75,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Dad said the sky was big enough for everyone's mistakes.",
+      "media": 30,
+      "character": 44,
+      "language": "en",
+      "tags": [
+        "family",
+        "forgiveness"
+      ],
+      "original_date": "2012-08-23"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 76,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Look how high it goes when nobody's afraid of the fall.",
+      "media": 30,
+      "character": 45,
+      "language": "en",
+      "tags": [
+        "joy",
+        "courage"
+      ],
+      "original_date": "2012-11-03"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 31,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Zero Hour Diner",
+      "media_type": "TV_SHOW",
+      "release_year": 2017,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 46,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Roxanne Dufresne",
+      "media": 31
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 47,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Cyrus Bell",
+      "media": 31
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 77,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Everybody tells the truth at three a.m. over bad pie.",
+      "media": 31,
+      "character": 46,
+      "language": "en",
+      "tags": [
+        "truth",
+        "humor"
+      ],
+      "original_date": "2017-01-24"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 78,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "This booth has heard more confessions than any church.",
+      "media": 31,
+      "character": 47,
+      "language": "en",
+      "tags": [
+        "secrets",
+        "humor"
+      ],
+      "original_date": "2017-12-10"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 79,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Refills are free. Advice costs extra.",
+      "media": 31,
+      "character": 46,
+      "language": "en",
+      "tags": [
+        "humor",
+        "wisdom"
+      ],
+      "original_date": "2017-11-19"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 80,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "The night shift keeps the world's secrets and its coffee warm.",
+      "media": 31,
+      "character": 47,
+      "language": "en",
+      "tags": [
+        "warmth",
+        "secrets"
+      ],
+      "original_date": "2017-11-27"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 32,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "The Long Thaw",
+      "media_type": "MOVIE",
+      "release_year": 2023,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 48,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Ingrid Solheim",
+      "media": 32
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 49,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Pavel Dragan",
+      "media": 32
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 81,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Winter ends the same way grief does. Slowly, and then all at once.",
+      "media": 32,
+      "character": 48,
+      "language": "en",
+      "tags": [
+        "grief",
+        "hope"
+      ],
+      "original_date": "2023-08-10"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 82,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Ice remembers everything it has held.",
+      "media": 32,
+      "character": 49,
+      "language": "en",
+      "tags": [
+        "memory",
+        "nature"
+      ],
+      "original_date": "2023-12-13"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 83,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "I kept the fire going for someone who never came back. I'd do it again.",
+      "media": 32,
+      "character": 48,
+      "language": "en",
+      "tags": [
+        "loyalty",
+        "love"
+      ],
+      "original_date": "2023-11-12"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 84,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Spring doesn't ask permission. It just insists.",
+      "media": 32,
+      "character": 49,
+      "language": "en",
+      "tags": [
+        "hope",
+        "nature"
+      ],
+      "original_date": "2023-01-15"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 33,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Tin Crown",
+      "media_type": "TV_SHOW",
+      "release_year": 2016,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 50,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Queen Marguerite Ashby",
+      "media": 33
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 51,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Jasper Pell",
+      "media": 33
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 85,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "A crown is only heavy if you forget who put it there.",
+      "media": 33,
+      "character": 50,
+      "language": "en",
+      "tags": [
+        "power",
+        "wisdom"
+      ],
+      "original_date": "2016-06-06"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 86,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Loyalty is cheaper than gold and twice as rare.",
+      "media": 33,
+      "character": 51,
+      "language": "en",
+      "tags": [
+        "loyalty",
+        "politics"
+      ],
+      "original_date": "2016-10-04"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 87,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "I rule because someone has to, not because I'm right.",
+      "media": 33,
+      "character": 50,
+      "language": "en",
+      "tags": [
+        "leadership",
+        "humility"
+      ],
+      "original_date": "2016-08-02"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 88,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Every throne is a chair somebody was afraid to leave.",
+      "media": 33,
+      "character": 51,
+      "language": "en",
+      "tags": [
+        "power",
+        "irony"
+      ],
+      "original_date": "2016-04-25"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 34,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Echo Valley",
+      "media_type": "MOVIE",
+      "release_year": 2019,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 52,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Sloane Merritt",
+      "media": 34
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 53,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Barnaby Teague",
+      "media": 34
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 89,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Shout your name into the canyon. See who answers.",
+      "media": 34,
+      "character": 52,
+      "language": "en",
+      "tags": [
+        "identity",
+        "adventure"
+      ],
+      "original_date": "2019-05-05"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 90,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "An echo is just the world agreeing with you, a little late.",
+      "media": 34,
+      "character": 53,
+      "language": "en",
+      "tags": [
+        "wit",
+        "reflection"
+      ],
+      "original_date": "2019-12-08"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 91,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Home sounds different when you've been gone long enough.",
+      "media": 34,
+      "character": 52,
+      "language": "en",
+      "tags": [
+        "home",
+        "nostalgia"
+      ],
+      "original_date": "2019-07-13"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 92,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Some silences are louder than any shout.",
+      "media": 34,
+      "character": 53,
+      "language": "en",
+      "tags": [
+        "silence",
+        "wisdom"
+      ],
+      "original_date": "2019-08-03"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 35,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Pocket Universe",
+      "media_type": "TV_SHOW",
+      "release_year": 2024,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 54,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Nadia Kowalczyk",
+      "media": 35
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 55,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Mr. Fitzgibbon",
+      "media": 35
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 93,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Everything vast started out small and curious.",
+      "media": 35,
+      "character": 54,
+      "language": "en",
+      "tags": [
+        "wonder",
+        "science-fiction"
+      ],
+      "original_date": "2024-03-15"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 94,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Physics is just the universe's terms and conditions.",
+      "media": 35,
+      "character": 55,
+      "language": "en",
+      "tags": [
+        "humor",
+        "science"
+      ],
+      "original_date": "2024-07-18"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 95,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "If I fit the cosmos in my pocket, will you stop calling me small?",
+      "media": 35,
+      "character": 54,
+      "language": "en",
+      "tags": [
+        "self-worth",
+        "wonder"
+      ],
+      "original_date": "2024-05-05"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 96,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Curiosity isn't a phase. It's the whole point.",
+      "media": 35,
+      "character": 55,
+      "language": "en",
+      "tags": [
+        "curiosity",
+        "wisdom"
+      ],
+      "original_date": "2024-07-28"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 36,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "The Salt Road",
+      "media_type": "MOVIE",
+      "release_year": 2011,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 56,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Amara Diallo",
+      "media": 36
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 57,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Hugo Brandt",
+      "media": 36
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 97,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "We walked because staying meant forgetting who we were.",
+      "media": 36,
+      "character": 56,
+      "language": "en",
+      "tags": [
+        "determination",
+        "identity"
+      ],
+      "original_date": "2011-09-09"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 98,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "A long road is just a short one repeated by the stubborn.",
+      "media": 36,
+      "character": 57,
+      "language": "en",
+      "tags": [
+        "perseverance",
+        "humor"
+      ],
+      "original_date": "2011-12-14"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 99,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "The desert keeps no secrets, only footprints.",
+      "media": 36,
+      "character": 56,
+      "language": "en",
+      "tags": [
+        "mystery",
+        "nature"
+      ],
+      "original_date": "2011-06-22"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 100,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Carry water. Carry hope. Know which one weighs less.",
+      "media": 36,
+      "character": 57,
+      "language": "en",
+      "tags": [
+        "survival",
+        "hope"
+      ],
+      "original_date": "2011-07-08"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 37,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Ironwood Academy",
+      "media_type": "TV_SHOW",
+      "release_year": 2015,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 58,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Headmistress Delphine Crane",
+      "media": 37
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 59,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Felix Aurelio",
+      "media": 37
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 101,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Discipline is just love wearing a stricter coat.",
+      "media": 37,
+      "character": 58,
+      "language": "en",
+      "tags": [
+        "discipline",
+        "wisdom"
+      ],
+      "original_date": "2015-03-03"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 102,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "I didn't break the rule. I discovered it was optional.",
+      "media": 37,
+      "character": 59,
+      "language": "en",
+      "tags": [
+        "humor",
+        "rebellion"
+      ],
+      "original_date": "2015-03-05"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 103,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Education is lighting a fire and then trusting it not to burn the school down.",
+      "media": 37,
+      "character": 58,
+      "language": "en",
+      "tags": [
+        "education",
+        "humor"
+      ],
+      "original_date": "2015-04-22"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 104,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "The best lessons are the ones you weren't supposed to learn.",
+      "media": 37,
+      "character": 59,
+      "language": "en",
+      "tags": [
+        "education",
+        "rebellion"
+      ],
+      "original_date": "2015-04-01"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 38,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Carousel Heist",
+      "media_type": "MOVIE",
+      "release_year": 2018,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 60,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Poppy Valentine",
+      "media": 38
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 61,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Dutch Lorimer",
+      "media": 38
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 105,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "The trick is to go in circles until everyone else gets dizzy.",
+      "media": 38,
+      "character": 60,
+      "language": "en",
+      "tags": [
+        "cunning",
+        "humor"
+      ],
+      "original_date": "2018-08-27"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 106,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "A good plan has three parts: confidence, timing, and an exit.",
+      "media": 38,
+      "character": 61,
+      "language": "en",
+      "tags": [
+        "strategy",
+        "wit"
+      ],
+      "original_date": "2018-10-06"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 107,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "We're not stealing. We're redistributing wonder.",
+      "media": 38,
+      "character": 60,
+      "language": "en",
+      "tags": [
+        "humor",
+        "crime"
+      ],
+      "original_date": "2018-05-10"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 108,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "If it all goes wrong, at least we'll have a great story.",
+      "media": 38,
+      "character": 61,
+      "language": "en",
+      "tags": [
+        "adventure",
+        "humor"
+      ],
+      "original_date": "2018-01-05"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 39,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Wavelength",
+      "media_type": "TV_SHOW",
+      "release_year": 2020,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 62,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Dr. Ines Calloway",
+      "media": 39
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 63,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Jonah Strand",
+      "media": 39
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 109,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Two people on the same wavelength don't need to finish each other's sentences.",
+      "media": 39,
+      "character": 62,
+      "language": "en",
+      "tags": [
+        "connection",
+        "love"
+      ],
+      "original_date": "2020-07-18"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 110,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "I don't believe in coincidence. I believe in frequency.",
+      "media": 39,
+      "character": 63,
+      "language": "en",
+      "tags": [
+        "science",
+        "fate"
+      ],
+      "original_date": "2020-06-20"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 111,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Listen long enough and even static starts to sound like a voice.",
+      "media": 39,
+      "character": 62,
+      "language": "en",
+      "tags": [
+        "patience",
+        "mystery"
+      ],
+      "original_date": "2020-10-11"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 112,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "The universe is broadcasting. Most of us are tuned to ourselves.",
+      "media": 39,
+      "character": 63,
+      "language": "en",
+      "tags": [
+        "perspective",
+        "wisdom"
+      ],
+      "original_date": "2020-03-23"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 40,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "A Quiet Mutiny",
+      "media_type": "MOVIE",
+      "release_year": 2010,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 64,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "First Mate Delia Okamoto",
+      "media": 40
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 65,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Captain Edmund Voss",
+      "media": 40
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 113,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Rebellion doesn't begin with a shout. It begins with a refusal.",
+      "media": 40,
+      "character": 64,
+      "language": "en",
+      "tags": [
+        "rebellion",
+        "courage"
+      ],
+      "original_date": "2010-09-20"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 114,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Command is a thin rope. Pull it too hard and it snaps.",
+      "media": 40,
+      "character": 65,
+      "language": "en",
+      "tags": [
+        "leadership",
+        "power"
+      ],
+      "original_date": "2010-11-22"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 115,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "I followed orders until the orders stopped following reason.",
+      "media": 40,
+      "character": 64,
+      "language": "en",
+      "tags": [
+        "ethics",
+        "choice"
+      ],
+      "original_date": "2010-12-02"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 116,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "A crew forgives many things, but not being treated as cargo.",
+      "media": 40,
+      "character": 65,
+      "language": "en",
+      "tags": [
+        "respect",
+        "leadership"
+      ],
+      "original_date": "2010-08-28"
+    }
+  },
+  {
+    "model": "quotes.media",
+    "pk": 41,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "title": "Thistle & Thorn",
+      "media_type": "TV_SHOW",
+      "release_year": 2019,
+      "external_id": null
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 66,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Morwenna Pryce",
+      "media": 41
+    }
+  },
+  {
+    "model": "quotes.character",
+    "pk": 67,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "name": "Alaric Dunmore",
+      "media": 41
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 117,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Pretty things have defenses for a reason.",
+      "media": 41,
+      "character": 66,
+      "language": "en",
+      "tags": [
+        "wisdom",
+        "nature"
+      ],
+      "original_date": "2019-11-26"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 118,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "I was told to bloom. Nobody mentioned the weather.",
+      "media": 41,
+      "character": 67,
+      "language": "en",
+      "tags": [
+        "humor",
+        "growth"
+      ],
+      "original_date": "2019-09-13"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 119,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Kindness is sharper than cruelty when it's aimed correctly.",
+      "media": 41,
+      "character": 66,
+      "language": "en",
+      "tags": [
+        "kindness",
+        "wit"
+      ],
+      "original_date": "2019-07-13"
+    }
+  },
+  {
+    "model": "quotes.quote",
+    "pk": 120,
+    "fields": {
+      "created_at": "2026-11-13T00:00:00Z",
+      "updated_at": "2026-11-13T00:00:00Z",
+      "text": "Even the wildest garden has someone who loved it first.",
+      "media": 41,
+      "character": 67,
+      "language": "en",
+      "tags": [
+        "love",
+        "nature"
+      ],
+      "original_date": "2019-07-04"
     }
   }
 ]

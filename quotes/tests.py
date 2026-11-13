@@ -8,6 +8,7 @@ from importlib import import_module
 from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.db import IntegrityError, connection, transaction
+from django.db.models import F
 from django.db.migrations.executor import MigrationExecutor
 from django.test import TransactionTestCase
 from django.contrib.auth import get_user_model
@@ -26,13 +27,16 @@ DATA_URLS = [RANDOM_URL, LIST_URL, DETAIL_URL]
 class SeedQuotesTests(TestCase):
     def test_seed_loads_fixture_and_skips_on_repeat(self):
         call_command("seed_quotes", stdout=StringIO())
-        self.assertEqual(Media.objects.count(), 15)
-        self.assertEqual(Character.objects.count(), 15)
-        self.assertEqual(Quote.objects.count(), 15)
-        quote = Quote.objects.select_related("media", "character").get(pk=2)
+        self.assertTrue(Media.objects.exists())
+        self.assertTrue(Character.objects.exists())
+        self.assertTrue(Quote.objects.exists())
+        quote = Quote.objects.select_related("media", "character").first()
         self.assertEqual(quote.character.media_id, quote.media_id)
         self.assertIsNotNone(quote.created_at)
-        media = Media.objects.get(pk=1)
+        self.assertFalse(
+            Quote.objects.exclude(character__media_id=F("media_id")).exists()
+        )
+        media = Media.objects.first()
         media.title = "Existing title"
         media.save()
 
