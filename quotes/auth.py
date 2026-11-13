@@ -40,8 +40,6 @@ def api_key_required(view):
         APIKey.objects.filter(pk=key.pk).update(last_used_at=timezone.now())
         return view(request, *args, **kwargs)
 
-    # Header-key auth (no cookies), so CSRF doesn't apply; this lets write
-    # methods reach the JSON 405 instead of Django's HTML 403.
     @csrf_exempt
     @wraps(view)
     def wrapper(request, *args, **kwargs):
