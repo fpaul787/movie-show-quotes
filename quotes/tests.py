@@ -588,6 +588,10 @@ class APIDocumentationTests(TestCase):
         self.assertContains(response, f'data-schema-url="{self.SCHEMA_URL}"')
         self.assertContains(response, 'integrity="sha384-')
 
+    def test_docs_without_trailing_slash_redirects(self):
+        response = self.client.get(self.DOCS_URL.rstrip("/"))
+        self.assertRedirects(response, self.DOCS_URL, status_code=301)
+
     def test_docs_endpoints_are_read_only(self):
         for url in (self.SCHEMA_URL, self.DOCS_URL):
             self.assertEqual(self.client.post(url).status_code, 405)
@@ -595,7 +599,7 @@ class APIDocumentationTests(TestCase):
     def test_every_v1_route_is_documented(self):
         from . import api_urls
 
-        undocumented_routes = {"not-found", "docs", "openapi"}
+        undocumented_routes = {"not-found", "docs", "docs-redirect", "openapi"}
         documented = {self.normalize(path) for path in self.spec()["paths"]}
         routes = [
             p for p in api_urls.urlpatterns if p.name not in undocumented_routes
