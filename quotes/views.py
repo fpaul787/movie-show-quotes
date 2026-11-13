@@ -9,6 +9,7 @@ from django.views.decorators.http import require_GET, require_http_methods
 from .auth import api_key_required
 from .errors import api_error
 from .models import LANGUAGE_CODE_VALIDATOR, APIKey, Quote
+from .openapi import build_openapi_spec
 
 
 def _key_payload(key, raw_key=None):
@@ -63,6 +64,18 @@ def react_homepage(request):
 
 def api_not_found(request, *args, **kwargs):
     return api_error("resource_not_found", "The requested resource does not exist.", 404)
+
+
+@require_GET
+def openapi_schema(request):
+    """Public OpenAPI description of the v1 API, served at /api/v1/openapi.json."""
+    return JsonResponse(build_openapi_spec())
+
+
+@require_GET
+def api_docs(request):
+    """Public interactive API documentation, served at /api/v1/docs/."""
+    return render(request, "quotes/api_docs.html")
 
 
 DEFAULT_PAGE_SIZE = 20
