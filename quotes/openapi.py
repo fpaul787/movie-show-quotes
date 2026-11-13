@@ -373,7 +373,6 @@ def build_openapi_spec():
                     {
                         "type": "integer",
                         "minimum": 1,
-                        "maximum": MAX_PAGE_SIZE,
                         "default": DEFAULT_PAGE_SIZE,
                     },
                 ),

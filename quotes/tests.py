@@ -702,9 +702,12 @@ class APIDocumentationTests(TestCase):
     def test_documented_page_size_matches_code(self):
         from .views import DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE
 
-        schema = self.spec()["components"]["parameters"]["page_size"]["schema"]
-        self.assertEqual(schema["default"], DEFAULT_PAGE_SIZE)
-        self.assertEqual(schema["maximum"], MAX_PAGE_SIZE)
+        param = self.spec()["components"]["parameters"]["page_size"]
+        self.assertEqual(param["schema"]["default"], DEFAULT_PAGE_SIZE)
+        # Larger values are reduced, not rejected, so the cap must not be a
+        # schema maximum that client-side validation would enforce.
+        self.assertNotIn("maximum", param["schema"])
+        self.assertIn(f"reduced to {MAX_PAGE_SIZE}", param["description"])
 
     def test_documented_filters_match_list_endpoint(self):
         spec = self.spec()
