@@ -2,6 +2,7 @@ import logging
 from functools import wraps
 
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
 
 from .errors import api_error
 from .models import APIKey
@@ -39,6 +40,7 @@ def api_key_required(view):
         APIKey.objects.filter(pk=key.pk).update(last_used_at=timezone.now())
         return view(request, *args, **kwargs)
 
+    @csrf_exempt
     @wraps(view)
     def wrapper(request, *args, **kwargs):
         try:

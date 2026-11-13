@@ -132,11 +132,12 @@ def _filter_quotes(params):
         year = _positive_int(params, "year", None)
         quotes = quotes.filter(media__release_year=year)
     if value("language"):
+        language = value("language").lower()
         try:
-            LANGUAGE_CODE_VALIDATOR(value("language"))
+            LANGUAGE_CODE_VALIDATOR(language)
         except ValidationError:
             raise ValueError("'language' must be a valid language code, e.g. 'en'.")
-        quotes = quotes.filter(language__iexact=value("language"))
+        quotes = quotes.filter(language__iexact=language)
     if value("tag"):
         quotes = quotes.filter(tags__contains=[value("tag")])
     if value("search"):

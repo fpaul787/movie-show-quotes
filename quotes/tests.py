@@ -197,6 +197,16 @@ class APIKeyTests(TestCase):
                     self.assertEqual(response.json()["error"]["code"], "method_not_allowed")
                     self.assertIn("GET", response["Allow"])
 
+    def test_write_methods_return_json_405_with_csrf_enforced(self):
+        client = Client(enforce_csrf_checks=True)
+        headers = {"X-API-Key": self.raw_key}
+        for url in DATA_URLS:
+            for method in ("post", "put", "patch", "delete"):
+                with self.subTest(url=url, method=method):
+                    response = getattr(client, method)(url, headers=headers)
+                    self.assertEqual(response.status_code, 405)
+                    self.assertEqual(response["Content-Type"], "application/json")
+
     def test_unauthenticated_write_requests_return_401(self):
         for url in DATA_URLS:
             self.assertEqual(self.client.post(url).status_code, 401)
@@ -611,6 +621,7 @@ class QuoteListAndDetailTests(TestCase):
         self.assertEqual(self.ids("?character=JOKER"), [self.q1.id])
         self.assertEqual(self.ids("?year=1999"), [self.q2.id])
         self.assertEqual(self.ids("?language=fr"), [self.q2.id])
+        self.assertEqual(self.ids("?language=FR"), [self.q2.id])
         self.assertEqual(self.ids("?tag=classic"), [self.q1.id])
         self.assertEqual(self.ids("?search=SERIOUS"), [self.q1.id])
         self.assertEqual(self.ids("?search=the&media=matrix"), [self.q2.id])
