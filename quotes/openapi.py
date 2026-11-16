@@ -118,12 +118,48 @@ EXAMPLE_QUOTE_NO_CHARACTER = {
     },
 }
 
+EXAMPLE_MEDIA_DETAIL = {
+    **EXAMPLE_QUOTE["media"],
+    "characters": [{"id": 10, "name": "The Joker"}],
+}
+
 AUTH_RESPONSES = {
     "401": {"$ref": "#/components/responses/Unauthorized"},
     "403": {"$ref": "#/components/responses/Forbidden"},
     "405": {"$ref": "#/components/responses/MethodNotAllowed"},
     "500": {"$ref": "#/components/responses/InternalError"},
 }
+
+
+def _media_list_path(tag, operation_id, summary, media_type):
+    kind = "movies" if media_type == "MOVIE" else "TV shows"
+    return {
+        "get": {
+            "tags": [tag],
+            "operationId": operation_id,
+            "summary": summary,
+            "description": (
+                f"Returns a paginated collection of {kind} ordered by `id`. "
+                "Filter by title with `search` and by `year`; they are ANDed together."
+            ),
+            "parameters": [
+                {"$ref": f"#/components/parameters/{name}"}
+                for name in ("page", "page_size", "media_search", "year")
+            ],
+            "responses": {
+                "200": {
+                    "description": f"A page of {kind}.",
+                    "content": {
+                        "application/json": {
+                            "schema": {"$ref": "#/components/schemas/MediaPage"},
+                        }
+                    },
+                },
+                "400": {"$ref": "#/components/responses/BadRequest"},
+                **AUTH_RESPONSES,
+            },
+        }
+    }
 
 
 def build_openapi_spec():
@@ -143,7 +179,10 @@ def build_openapi_spec():
         },
         "servers": [{"url": "/api/v1"}],
         "security": [{"ApiKeyHeader": []}, {"ApiKeyAuthorization": []}],
-        "tags": [{"name": "Quotes", "description": "Retrieve, filter and search quotes."}],
+        "tags": [
+            {"name": "Quotes", "description": "Retrieve, filter and search quotes."},
+            {"name": "Media", "description": "Retrieve movies and TV shows."},
+        ],
         "paths": {
             "/quotes/": {
                 "get": {
@@ -257,6 +296,44 @@ def build_openapi_spec():
                     },
                 }
             },
+            "/media/movies/": _media_list_path("Media", "listMovies", "List movies", "MOVIE"),
+            "/media/tv-shows/": _media_list_path(
+                "Media", "listTvShows", "List TV shows", "TV_SHOW"
+            ),
+            "/media/{id}/": {
+                "get": {
+                    "tags": ["Media"],
+                    "operationId": "getMedia",
+                    "summary": "Get a movie or TV show by ID",
+                    "description": (
+                        "Returns one movie or TV show with its characters. "
+                        "Quotes are not included; use `GET /quotes/?media=<title>`."
+                    ),
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "in": "path",
+                            "required": True,
+                            "description": "The media's `id`.",
+                            "schema": {"type": "integer", "minimum": 0},
+                            "example": 5,
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "The movie or TV show.",
+                            "content": {
+                                "application/json": {
+                                    "schema": {"$ref": "#/components/schemas/MediaDetail"},
+                                    "example": EXAMPLE_MEDIA_DETAIL,
+                                }
+                            },
+                        },
+                        "404": {"$ref": "#/components/responses/NotFound"},
+                        **AUTH_RESPONSES,
+                    },
+                }
+            },
         },
         "components": {
             "securitySchemes": {
@@ -340,6 +417,36 @@ def build_openapi_spec():
                         "results": {"type": "array", "items": quote_ref},
                     },
                 },
+                "MediaDetail": {
+                    "description": "A movie or TV show with its characters.",
+                    "allOf": [
+                        {"$ref": "#/components/schemas/Media"},
+                        {
+                            "type": "object",
+                            "required": ["characters"],
+                            "properties": {
+                                "characters": {
+                                    "type": "array",
+                                    "items": {"$ref": "#/components/schemas/Character"},
+                                }
+                            },
+                        },
+                    ],
+                    "example": EXAMPLE_MEDIA_DETAIL,
+                },
+                "MediaPage": {
+                    "type": "object",
+                    "required": ["count", "next", "previous", "results"],
+                    "properties": {
+                        "count": {"type": "integer"},
+                        "next": {"type": ["string", "null"]},
+                        "previous": {"type": ["string", "null"]},
+                        "results": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/Media"},
+                        },
+                    },
+                },
                 "Error": {
                     "type": "object",
                     "required": ["error"],
@@ -369,7 +476,7 @@ def build_openapi_spec():
                 ),
                 "page_size": _query_param(
                     "page_size",
-                    f"Quotes per page. Values above {MAX_PAGE_SIZE} are reduced to {MAX_PAGE_SIZE}.",
+                    f"Items per page. Values above {MAX_PAGE_SIZE} are reduced to {MAX_PAGE_SIZE}.",
                     {
                         "type": "integer",
                         "minimum": 1,
@@ -381,6 +488,12 @@ def build_openapi_spec():
                     "Case-insensitive search for this text anywhere in the quote text.",
                     {"type": "string"},
                     "why so serious",
+                ),
+                "media_search": _query_param(
+                    "search",
+                    "Case-insensitive partial match on the title.",
+                    {"type": "string"},
+                    "dark knight",
                 ),
                 "media": _query_param(
                     "media",
@@ -438,7 +551,7 @@ def build_openapi_spec():
                 ),
                 "NotFound": _error_response(
                     "The requested resource does not exist.",
-                    [("resource_not_found", "The requested quote does not exist.")],
+                    [("resource_not_found", "The requested resource does not exist.")],
                 ),
                 "MethodNotAllowed": _error_response(
                     "The API is read-only; only GET and HEAD are allowed.",

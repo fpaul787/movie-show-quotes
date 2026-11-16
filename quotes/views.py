@@ -10,7 +10,7 @@ from django.views.decorators.http import require_GET, require_http_methods
 
 from .auth import api_key_required
 from .errors import api_error
-from .models import LANGUAGE_CODE_VALIDATOR, APIKey, Quote
+from .models import LANGUAGE_CODE_VALIDATOR, APIKey, Media, Quote
 from .openapi import build_openapi_spec
 
 
@@ -148,16 +148,20 @@ def _filter_quotes(params):
 @api_key_required
 def quote_list(request):
     """Served at /api/v1/quotes/."""
+    return _paginated_response(request, _filter_quotes, serialize_quote)
+
+
+def _paginated_response(request, build_queryset, serialize):
     try:
         page_number = _positive_int(request.GET, "page", 1)
         page_size = min(
             _positive_int(request.GET, "page_size", DEFAULT_PAGE_SIZE), MAX_PAGE_SIZE
         )
-        quotes = _filter_quotes(request.GET)
+        queryset = build_queryset(request.GET)
     except ValueError as exc:
         return _invalid(str(exc))
 
-    paginator = Paginator(quotes, page_size)
+    paginator = Paginator(queryset, page_size)
     if page_number > paginator.num_pages:
         return _invalid(f"'page' must be between 1 and {paginator.num_pages}.")
     page = paginator.page(page_number)
@@ -172,9 +176,62 @@ def quote_list(request):
             "count": paginator.count,
             "next": page_url(page.next_page_number()) if page.has_next() else None,
             "previous": page_url(page.previous_page_number()) if page.has_previous() else None,
-            "results": [serialize_quote(q) for q in page.object_list],
+            "results": [serialize(item) for item in page.object_list],
         }
     )
+
+
+def serialize_media(media, include_characters=False):
+    data = {
+        "id": media.id,
+        "title": media.title,
+        "media_type": media.media_type,
+        "release_year": media.release_year,
+    }
+    if include_characters:
+        data["characters"] = [
+            {"id": c.id, "name": c.name}
+            for c in sorted(media.characters.all(), key=lambda c: (c.name, c.id))
+        ]
+    return data
+
+
+def _filter_media(params, media_type):
+    media = Media.objects.filter(media_type=media_type)
+    if params.get("search", "").strip():
+        media = media.filter(title__icontains=params["search"].strip())
+    if params.get("year", "").strip():
+        media = media.filter(release_year=_positive_int(params, "year", None))
+    return media.order_by("id")
+
+
+@api_key_required
+def movie_list(request):
+    """Served at /api/v1/media/movies/."""
+    return _paginated_response(
+        request,
+        lambda params: _filter_media(params, Media.MediaType.MOVIE),
+        serialize_media,
+    )
+
+
+@api_key_required
+def tv_show_list(request):
+    """Served at /api/v1/media/tv-shows/."""
+    return _paginated_response(
+        request,
+        lambda params: _filter_media(params, Media.MediaType.TV_SHOW),
+        serialize_media,
+    )
+
+
+@api_key_required
+def media_detail(request, pk):
+    """Served at /api/v1/media/<pk>/."""
+    media = Media.objects.prefetch_related("characters").filter(pk=pk).first()
+    if media is None:
+        return api_error("resource_not_found", "The requested media does not exist.", 404)
+    return JsonResponse(serialize_media(media, include_characters=True))
 
 
 @api_key_required
