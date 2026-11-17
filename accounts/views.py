@@ -7,6 +7,7 @@ from django.middleware.csrf import get_token
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
+from . import throttle
 from .forms import EMAIL_TAKEN, EmailUpdateForm, SignupForm
 
 EMAIL_CONSTRAINT = "unique_user_email_ci"
@@ -115,10 +116,18 @@ def login_view(request):
         )
 
     username = SignupForm.base_fields["username"].to_python(username)
+    throttle_username = throttle.normalize_username(username)
+    ip = throttle.client_ip(request)
+    if throttle.is_throttled(throttle_username, ip):
+        return JsonResponse(
+            {"error": "Too many login attempts. Try again later."}, status=429
+        )
     user = authenticate(request, username=username, password=password)
     if user is None:
+        throttle.record_failure(throttle_username, ip)
         return JsonResponse({"error": "Invalid username or password"}, status=401)
 
+    throttle.clear_username(throttle_username)
     login(request, user)
     return JsonResponse({"id": user.pk, "username": user.username})
 
