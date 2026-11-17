@@ -78,6 +78,34 @@ class APIKey(models.Model):
         return self.expires_at is None or self.expires_at > timezone.now()
 
 
+class APIUsage(models.Model):
+    """Requests counted per API key in a fixed UTC window."""
+
+    class Window(models.TextChoices):
+        MINUTE = "MINUTE", "Minute"
+        DAY = "DAY", "Day"
+
+    api_key = models.ForeignKey(
+        APIKey, on_delete=models.CASCADE, related_name="usage"
+    )
+    window = models.CharField(max_length=6, choices=Window.choices)
+    window_start = models.DateTimeField()
+    count = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        verbose_name_plural = "API usage"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["api_key", "window", "window_start"],
+                name="unique_api_usage_window",
+            ),
+        ]
+        indexes = [models.Index(fields=["window_start"])]
+
+    def __str__(self):
+        return f"{self.api_key_id} {self.window} {self.window_start:%Y-%m-%d %H:%M}: {self.count}"
+
+
 LANGUAGE_CODE_VALIDATOR = RegexValidator(
     r"^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$",
     "Enter a lowercase ISO 639 language code, e.g. 'en' or 'pt-BR'.",
