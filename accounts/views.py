@@ -118,16 +118,15 @@ def login_view(request):
     username = SignupForm.base_fields["username"].to_python(username)
     throttle_username = throttle.normalize_username(username)
     ip = throttle.client_ip(request)
-    if throttle.is_throttled(throttle_username, ip):
+    if throttle.reserve_attempt(throttle_username, ip):
         return JsonResponse(
             {"error": "Too many login attempts. Try again later."}, status=429
         )
     user = authenticate(request, username=username, password=password)
     if user is None:
-        throttle.record_failure(throttle_username, ip)
         return JsonResponse({"error": "Invalid username or password"}, status=401)
 
-    throttle.clear_username(throttle_username)
+    throttle.release_success(throttle_username, ip)
     login(request, user)
     return JsonResponse({"id": user.pk, "username": user.username})
 

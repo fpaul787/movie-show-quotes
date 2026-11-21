@@ -2,6 +2,7 @@ from datetime import datetime, timezone as dt_timezone
 
 from django.conf import settings
 from django.db import connection
+from django.db.models import F
 from django.utils import timezone
 
 from .models import LoginAttempt
@@ -31,36 +32,24 @@ def _thresholds(username, ip):
     )
 
 
-def is_throttled(username, ip):
+def reserve_attempt(username, ip):
+    """Count this attempt for the username and IP, and return True if throttled.
+
+    The increment and the decision are one atomic statement, so concurrent
+    attempts cannot all slip under the threshold. Attempts rejected here stay
+    counted. Call release_success() after a successful login so the IP counter
+    keeps reflecting failures only.
+    """
     if settings.LOGIN_THROTTLE_WINDOW_SECONDS <= 0:
         return False
-    window_start = _window_start(timezone.now())
-    for scope, identifier, limit in _thresholds(username, ip):
-        if limit <= 0:
-            continue
-        count = (
-            LoginAttempt.objects.filter(
-                scope=scope, identifier=identifier, window_start=window_start
-            )
-            .values_list("count", flat=True)
-            .first()
-        )
-        if count is not None and count >= limit:
-            return True
-    return False
-
-
-def record_failure(username, ip):
-    """Atomically count a failed attempt for the username and the IP."""
-    if settings.LOGIN_THROTTLE_WINDOW_SECONDS <= 0:
-        return
     window_start = _window_start(timezone.now())
     table = connection.ops.quote_name(LoginAttempt._meta.db_table)
     sql = (
         f"INSERT INTO {table} (scope, identifier, window_start, count) "
         "VALUES (%s, %s, %s, 1), (%s, %s, %s, 1) "
         "ON CONFLICT (scope, identifier, window_start) "
-        f"DO UPDATE SET count = {table}.count + 1"
+        f"DO UPDATE SET count = {table}.count + 1 "
+        "RETURNING scope, count"
     )
     with connection.cursor() as cursor:
         cursor.execute(
@@ -70,9 +59,23 @@ def record_failure(username, ip):
                 LoginAttempt.Scope.IP, ip, window_start,
             ],
         )
+        counts = dict(cursor.fetchall())
+    return any(
+        limit > 0 and counts[scope] > limit
+        for scope, _, limit in _thresholds(username, ip)
+    )
 
 
-def clear_username(username):
+def release_success(username, ip):
+    """After a successful login, clear the username counter and refund the IP."""
+    if settings.LOGIN_THROTTLE_WINDOW_SECONDS <= 0:
+        return
     LoginAttempt.objects.filter(
         scope=LoginAttempt.Scope.USERNAME, identifier=username
     ).delete()
+    LoginAttempt.objects.filter(
+        scope=LoginAttempt.Scope.IP,
+        identifier=ip,
+        window_start=_window_start(timezone.now()),
+        count__gt=0,
+    ).update(count=F("count") - 1)

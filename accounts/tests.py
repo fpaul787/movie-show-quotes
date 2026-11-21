@@ -1,10 +1,12 @@
+from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
 from io import StringIO
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
-from django.test import Client, TestCase, override_settings
+from django.db import connections
+from django.test import Client, TestCase, TransactionTestCase, override_settings
 from django.utils import timezone
 
 from accounts.models import LoginAttempt
@@ -307,6 +309,33 @@ class LoginThrottleTests(TestCase):
         call_command("prune_api_usage", stdout=StringIO())
         self.assertEqual(LoginAttempt.objects.filter(window_start__lt=old).count(), 0)
         self.assertEqual(LoginAttempt.objects.count(), 2)
+
+
+class LoginThrottleConcurrencyTests(TransactionTestCase):
+    @override_settings(
+        LOGIN_MAX_FAILURES_PER_USERNAME=3,
+        LOGIN_MAX_FAILURES_PER_IP=0,
+        LOGIN_THROTTLE_WINDOW_SECONDS=900,
+    )
+    def test_parallel_attempts_cannot_exceed_the_threshold(self):
+        threads = 12
+
+        def attempt(_):
+            try:
+                return Client().post(
+                    "/api/auth/login",
+                    data={"username": "victim", "password": "wrong"},
+                    content_type="application/json",
+                    REMOTE_ADDR="10.0.0.1",
+                ).status_code
+            finally:
+                connections.close_all()
+
+        with ThreadPoolExecutor(max_workers=threads) as pool:
+            statuses = list(pool.map(attempt, range(threads)))
+
+        self.assertEqual(statuses.count(401), 3)
+        self.assertEqual(statuses.count(429), threads - 3)
 
 
 class CurrentUserApiTests(TestCase):
