@@ -119,6 +119,29 @@ def _positive_int(params, name, default):
     return int(raw)
 
 
+QUOTE_ORDERING = {"id": "id", "title": "media__title", "year": "media__release_year"}
+MEDIA_ORDERING = {"id": "id", "title": "title", "year": "release_year"}
+
+
+def _apply_ordering(queryset, params, allowed):
+    """Order by a friendly `ordering` value mapped through an explicit allowlist."""
+    raw = params.get("ordering", "").strip()
+    descending = raw.startswith("-")
+    name = raw[1:] if descending else raw
+    if not raw:
+        name = "id"
+    if name not in allowed:
+        raise ValueError(
+            f"'ordering' must be one of: {', '.join(allowed)} "
+            "(prefix with '-' for descending)."
+        )
+    prefix = "-" if descending else ""
+    fields = [f"{prefix}{allowed[name]}"]
+    if name != "id":
+        fields.append(f"{prefix}id")
+    return queryset.order_by(*fields)
+
+
 def _filter_quotes(params):
     """Apply the optional filters and search; blank values are ignored."""
     quotes = _quotes()
@@ -126,6 +149,8 @@ def _filter_quotes(params):
 
     if value("media"):
         quotes = quotes.filter(media__title__icontains=value("media"))
+    if value("media_id"):
+        quotes = quotes.filter(media_id=_positive_int(params, "media_id", None))
     if value("character"):
         quotes = quotes.filter(character__name__icontains=value("character"))
     if value("year"):
@@ -139,16 +164,20 @@ def _filter_quotes(params):
             raise ValueError("'language' must be a valid language code, e.g. 'en'.")
         quotes = quotes.filter(language__iexact=language)
     if value("tag"):
-        quotes = quotes.filter(tags__contains=[value("tag")])
+        quotes = quotes.filter(tags__contains=[value("tag").lower()])
     if value("search"):
         quotes = quotes.filter(text__icontains=value("search"))
-    return quotes.order_by("id")
+    return quotes
 
 
 @api_key_required
 def quote_list(request):
     """Served at /api/v1/quotes/."""
-    return _paginated_response(request, _filter_quotes, serialize_quote)
+    return _paginated_response(
+        request,
+        lambda params: _apply_ordering(_filter_quotes(params), params, QUOTE_ORDERING),
+        serialize_quote,
+    )
 
 
 def _paginated_response(request, build_queryset, serialize):
@@ -202,7 +231,7 @@ def _filter_media(params, media_type):
         media = media.filter(title__icontains=params["search"].strip())
     if params.get("year", "").strip():
         media = media.filter(release_year=_positive_int(params, "year", None))
-    return media.order_by("id")
+    return _apply_ordering(media, params, MEDIA_ORDERING)
 
 
 @api_key_required
@@ -247,7 +276,10 @@ def quote_detail(request, pk):
 def random_quote(request):
     """Served at /api/v1/quotes/random/."""
     # A random offset over the primary-key order avoids sorting the whole table.
-    quotes = _quotes().order_by("id")
+    try:
+        quotes = _filter_quotes(request.GET).order_by("id")
+    except ValueError as exc:
+        return _invalid(str(exc))
     # Retry in case quotes are deleted between the count and the offset lookup.
     for _ in range(3):
         count = quotes.count()
