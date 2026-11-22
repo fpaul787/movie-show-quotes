@@ -150,6 +150,8 @@ EXAMPLE_MEDIA_DETAIL = {
     "characters": [{"id": 10, "name": "The Joker"}],
 }
 
+EXAMPLE_CHARACTER = {"id": 10, "name": "The Joker", "media": EXAMPLE_QUOTE["media"]}
+
 AUTH_RESPONSES = {
     "401": {"$ref": "#/components/responses/Unauthorized"},
     "403": {"$ref": "#/components/responses/Forbidden"},
@@ -222,6 +224,7 @@ def build_openapi_spec():
         "tags": [
             {"name": "Quotes", "description": "Retrieve, filter and search quotes."},
             {"name": "Media", "description": "Retrieve movies and TV shows."},
+            {"name": "Characters", "description": "Retrieve characters."},
         ],
         "paths": {
             "/quotes/": {
@@ -391,6 +394,116 @@ def build_openapi_spec():
                     },
                 }
             },
+            "/media/{id}/quotes/": {
+                "get": {
+                    "tags": ["Media"],
+                    "operationId": "listMediaQuotes",
+                    "summary": "List quotes for a movie or TV show",
+                    "description": (
+                        "Returns the same paginated quotes as `GET /quotes/`, limited to this "
+                        "media item. Supports the same filters except `media` and `media_id`, "
+                        "plus `ordering`."
+                    ),
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "in": "path",
+                            "required": True,
+                            "description": "The media's `id`.",
+                            "schema": {"type": "integer", "minimum": 0},
+                            "example": 5,
+                        },
+                        *(
+                            {"$ref": f"#/components/parameters/{name}"}
+                            for name in (
+                                "page", "page_size", "ordering", "search", "character",
+                                "year", "language", "tag",
+                            )
+                        ),
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "A page of quotes.",
+                            "headers": RATE_LIMIT_HEADERS,
+                            "content": {
+                                "application/json": {
+                                    "schema": {"$ref": "#/components/schemas/QuotePage"},
+                                }
+                            },
+                        },
+                        "400": {"$ref": "#/components/responses/BadRequest"},
+                        "404": {"$ref": "#/components/responses/NotFound"},
+                        **AUTH_RESPONSES,
+                    },
+                }
+            },
+            "/characters/": {
+                "get": {
+                    "tags": ["Characters"],
+                    "operationId": "listCharacters",
+                    "summary": "List characters",
+                    "description": (
+                        "Returns a paginated collection of characters, ordered by `id` unless "
+                        "`ordering` is given. Filter by name with `search` and by `media_id`; "
+                        "they are ANDed together."
+                    ),
+                    "parameters": [
+                        {"$ref": f"#/components/parameters/{name}"}
+                        for name in (
+                            "page", "page_size", "character_ordering", "character_search",
+                            "media_id",
+                        )
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "A page of characters.",
+                            "headers": RATE_LIMIT_HEADERS,
+                            "content": {
+                                "application/json": {
+                                    "schema": {"$ref": "#/components/schemas/CharacterPage"},
+                                }
+                            },
+                        },
+                        "400": {"$ref": "#/components/responses/BadRequest"},
+                        **AUTH_RESPONSES,
+                    },
+                }
+            },
+            "/characters/{id}/": {
+                "get": {
+                    "tags": ["Characters"],
+                    "operationId": "getCharacter",
+                    "summary": "Get a character by ID",
+                    "description": (
+                        "Returns one character with its media and `quote_count`. Quotes are not "
+                        "included; use `GET /quotes/?character=<name>` or `GET /media/{id}/quotes/`."
+                    ),
+                    "parameters": [
+                        {
+                            "name": "id",
+                            "in": "path",
+                            "required": True,
+                            "description": "The character's `id`.",
+                            "schema": {"type": "integer", "minimum": 0},
+                            "example": 10,
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "description": "The character.",
+                            "headers": RATE_LIMIT_HEADERS,
+                            "content": {
+                                "application/json": {
+                                    "schema": {"$ref": "#/components/schemas/CharacterDetail"},
+                                    "example": {**EXAMPLE_CHARACTER, "quote_count": 3},
+                                }
+                            },
+                        },
+                        "404": {"$ref": "#/components/responses/NotFound"},
+                        **AUTH_RESPONSES,
+                    },
+                }
+            },
         },
         "components": {
             "securitySchemes": {
@@ -490,6 +603,34 @@ def build_openapi_spec():
                         },
                     ],
                     "example": EXAMPLE_MEDIA_DETAIL,
+                },
+                "CharacterDetail": {
+                    "type": "object",
+                    "description": "A character and the media item they appear in.",
+                    "required": ["id", "name", "media"],
+                    "properties": {
+                        "id": {"type": "integer"},
+                        "name": {"type": "string"},
+                        "media": {"$ref": "#/components/schemas/Media"},
+                        "quote_count": {
+                            "type": "integer",
+                            "description": "Number of quotes by this character. Only on the detail endpoint.",
+                        },
+                    },
+                    "example": EXAMPLE_CHARACTER,
+                },
+                "CharacterPage": {
+                    "type": "object",
+                    "required": ["count", "next", "previous", "results"],
+                    "properties": {
+                        "count": {"type": "integer"},
+                        "next": {"type": ["string", "null"]},
+                        "previous": {"type": ["string", "null"]},
+                        "results": {
+                            "type": "array",
+                            "items": {"$ref": "#/components/schemas/CharacterDetail"},
+                        },
+                    },
                 },
                 "MediaPage": {
                     "type": "object",
@@ -591,6 +732,20 @@ def build_openapi_spec():
                     "Can be combined with `media` and every other filter.",
                     {"type": "integer", "minimum": 1},
                     1,
+                ),
+                "character_search": _query_param(
+                    "search",
+                    "Case-insensitive partial match on the character name.",
+                    {"type": "string"},
+                    "joker",
+                ),
+                "character_ordering": _query_param(
+                    "ordering",
+                    "Sort field: `id` (default) or `name`. Prefix with `-` for descending "
+                    "(e.g. `-name`). `id` is always the final tie-breaker. "
+                    "Unknown values return `400`.",
+                    {"type": "string", "enum": ["id", "name", "-id", "-name"]},
+                    "name",
                 ),
                 "ordering": _query_param(
                     "ordering",

@@ -12,6 +12,9 @@ urlpatterns = [
     path("media/movies/", views.movie_list, name="movie-list"),
     path("media/tv-shows/", views.tv_show_list, name="tv-show-list"),
     path("media/<int:pk>/", views.media_detail, name="media-detail"),
+    path("media/<int:pk>/quotes/", views.media_quote_list, name="media-quote-list"),
+    path("characters/", views.character_list, name="character-list"),
+    path("characters/<int:pk>/", views.character_detail, name="character-detail"),
     path("openapi.json", views.openapi_schema, name="openapi"),
     path("docs/", views.api_docs, name="docs"),
     path(
