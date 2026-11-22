@@ -36,8 +36,8 @@ curl -H "X-API-Key: <your-key>" https://<host>/api/v1/quotes/random/
 
 | Endpoint | Description |
 |---|---|
-| `GET /api/v1/quotes/` | Paginated list. Supports `page`, `page_size`, `search`, `media`, `character`, `year`, `language`, `tag` |
-| `GET /api/v1/quotes/random/` | One random quote |
+| `GET /api/v1/quotes/` | Paginated list. Supports `page`, `page_size`, `ordering` (`id`, `title`, `year`; prefix `-` for descending), `search`, `media`, `media_id`, `character`, `year`, `language`, `tag` (case-insensitive) |
+| `GET /api/v1/quotes/random/` | One random quote. Accepts the same filters as the list (`search`, `media`, `media_id`, `character`, `year`, `language`, `tag`); pagination and `ordering` are ignored |
 | `GET /api/v1/quotes/<id>/` | One quote by ID |
 
 Errors always look like
