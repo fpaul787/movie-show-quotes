@@ -18,6 +18,31 @@ class NormalizedModelTests(TestCase):
         media = Media.objects.create(title="Fargo", media_type="tv-show", release_year=2014)
         self.assertEqual(media.media_type, Media.MediaType.TV_SHOW)
 
+    def test_tags_are_normalized_on_save(self):
+        quote = Quote.objects.create(
+            text="x", media=self.media, language="en",
+            tags=[" Classic ", "SCI-FI", "classic", "Sci-Fi"],
+        )
+        quote.refresh_from_db()
+        self.assertEqual(quote.tags, ["classic", "sci-fi"])
+
+    def test_tags_are_normalized_on_clean(self):
+        quote = Quote(text="x", media=self.media, language="en", tags=["A", "a", "B"])
+        quote.clean()
+        self.assertEqual(quote.tags, ["a", "b"])
+
+    def test_fixture_tags_are_normalized(self):
+        import json
+        from pathlib import Path
+
+        import quotes
+
+        path = Path(quotes.__file__).parent / "fixtures" / "quotes.json"
+        for entry in json.loads(path.read_text(encoding="utf-8")):
+            tags = entry.get("fields", {}).get("tags")
+            if isinstance(tags, list):
+                self.assertEqual(tags, Quote.normalize_tags(tags), entry)
+
     def test_media_duplicate_title_type_year_rejected(self):
         with self.assertRaises(IntegrityError), transaction.atomic():
             Media.objects.create(title="Dune", media_type="MOVIE", release_year=2021)

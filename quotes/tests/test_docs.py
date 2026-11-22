@@ -89,7 +89,10 @@ class APIDocumentationTests(TestCase):
         }
         self.assertEqual(
             params,
-            {"page", "page_size", "search", "media", "character", "year", "language", "tag"},
+            {
+                "page", "page_size", "ordering", "search", "media", "media_id",
+                "character", "year", "language", "tag",
+            },
         )
 
     def test_every_emitted_error_code_is_documented(self):
