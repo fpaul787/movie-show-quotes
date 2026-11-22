@@ -5,12 +5,13 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db import transaction
+from django.db.models import Count
 from django.shortcuts import render
 from django.views.decorators.http import require_GET, require_http_methods
 
 from .auth import api_key_required
 from .errors import api_error
-from .models import LANGUAGE_CODE_VALIDATOR, APIKey, Media, Quote
+from .models import LANGUAGE_CODE_VALIDATOR, APIKey, Character, Media, Quote
 from .openapi import build_openapi_spec
 
 
@@ -121,6 +122,7 @@ def _positive_int(params, name, default):
 
 QUOTE_ORDERING = {"id": "id", "title": "media__title", "year": "media__release_year"}
 MEDIA_ORDERING = {"id": "id", "title": "title", "year": "release_year"}
+CHARACTER_ORDERING = {"id": "id", "name": "name"}
 
 
 def _apply_ordering(queryset, params, allowed):
@@ -261,6 +263,63 @@ def media_detail(request, pk):
     if media is None:
         return api_error("resource_not_found", "The requested media does not exist.", 404)
     return JsonResponse(serialize_media(media, include_characters=True))
+
+
+def serialize_character(character, include_quote_count=False):
+    data = {
+        "id": character.id,
+        "name": character.name,
+        "media": serialize_media(character.media),
+    }
+    if include_quote_count:
+        data["quote_count"] = character.quote_count
+    return data
+
+
+def _filter_characters(params):
+    characters = Character.objects.select_related("media")
+    if params.get("search", "").strip():
+        characters = characters.filter(name__icontains=params["search"].strip())
+    if params.get("media_id", "").strip():
+        characters = characters.filter(media_id=_positive_int(params, "media_id", None))
+    return _apply_ordering(characters, params, CHARACTER_ORDERING)
+
+
+@api_key_required
+def character_list(request):
+    """Served at /api/v1/characters/."""
+    return _paginated_response(request, _filter_characters, serialize_character)
+
+
+@api_key_required
+def character_detail(request, pk):
+    """Served at /api/v1/characters/<pk>/."""
+    character = (
+        Character.objects.select_related("media")
+        .annotate(quote_count=Count("quotes"))
+        .filter(pk=pk)
+        .first()
+    )
+    if character is None:
+        return api_error("resource_not_found", "The requested character does not exist.", 404)
+    return JsonResponse(serialize_character(character, include_quote_count=True))
+
+
+@api_key_required
+def media_quote_list(request, pk):
+    """Served at /api/v1/media/<pk>/quotes/."""
+    if not Media.objects.filter(pk=pk).exists():
+        return api_error("resource_not_found", "The requested media does not exist.", 404)
+
+    def build_queryset(params):
+        # The media is fixed by the URL, so these filters don't apply.
+        params = params.copy()
+        params.pop("media", None)
+        params.pop("media_id", None)
+        quotes = _filter_quotes(params).filter(media_id=pk)
+        return _apply_ordering(quotes, params, QUOTE_ORDERING)
+
+    return _paginated_response(request, build_queryset, serialize_quote)
 
 
 @api_key_required
