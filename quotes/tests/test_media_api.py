@@ -58,6 +58,38 @@ class MediaEndpointTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["error"]["code"], "invalid_parameters")
 
+    def test_ordering(self):
+        dk, mx = self.dark_knight.id, self.matrix.id
+        self.assertEqual(self.ids(MOVIES_URL, "?ordering=-id"), [mx, dk])
+        self.assertEqual(self.ids(MOVIES_URL, "?ordering=title"), [dk, mx])
+        self.assertEqual(self.ids(MOVIES_URL, "?ordering=-title"), [mx, dk])
+        self.assertEqual(self.ids(MOVIES_URL, "?ordering=year"), [mx, dk])
+        self.assertEqual(self.ids(MOVIES_URL, "?ordering=-year"), [dk, mx])
+        self.assertEqual(self.ids(TV_SHOWS_URL, "?ordering=-year"), [self.show.id])
+
+    def test_ordering_tie_breaker(self):
+        other = Media.objects.create(title="Other", media_type="MOVIE", release_year=2008)
+        self.assertEqual(
+            self.ids(MOVIES_URL, "?ordering=year"), [self.matrix.id, self.dark_knight.id, other.id]
+        )
+        self.assertEqual(
+            self.ids(MOVIES_URL, "?ordering=-year"), [other.id, self.dark_knight.id, self.matrix.id]
+        )
+
+    def test_unknown_ordering(self):
+        response = self.client.get(f"{MOVIES_URL}?ordering=name")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["error"]["code"], "invalid_parameters")
+        self.assertIn("title", response.json()["error"]["message"])
+
+    def test_query_count_is_constant(self):
+        with self.assertNumQueries(5):
+            self.client.get(f"{MOVIES_URL}?ordering=-year")
+        for i in range(10):
+            Media.objects.create(title=f"M{i}", media_type="MOVIE", release_year=2010)
+        with self.assertNumQueries(5):
+            self.client.get(f"{MOVIES_URL}?ordering=-year")
+
     def test_pagination(self):
         data = self.client.get(f"{MOVIES_URL}?page_size=1").json()
         self.assertEqual(data["count"], 2)

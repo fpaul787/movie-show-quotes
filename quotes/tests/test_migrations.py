@@ -37,6 +37,40 @@ class LegacyLanguageConversionTests(TestCase):
                 convert(value)
 
 
+class TagNormalizationMigrationTests(TransactionTestCase):
+    before = [("quotes", "0007_rate_limiting")]
+    after = [("quotes", "0008_normalize_quote_tags")]
+
+    def tearDown(self):
+        call_command("migrate", verbosity=0)
+
+    def test_tags_are_normalized_without_losing_data(self):
+        executor = MigrationExecutor(connection)
+        executor.migrate(self.before)
+        apps = executor.loader.project_state(self.before).apps
+        Media_, Quote_ = apps.get_model("quotes", "Media"), apps.get_model("quotes", "Quote")
+        media = Media_.objects.create(title="Dune", media_type="MOVIE", release_year=2021)
+        make = lambda text, tags: Quote_.objects.create(  # noqa: E731
+            text=text, media=media, language="en", tags=tags
+        )
+        make("a", [" Classic ", "classic", "Sci-Fi", "CLASSIC"])
+        make("b", ["already", "fine"])
+        make("c", [])
+
+        executor = MigrationExecutor(connection)
+        executor.migrate(self.after)
+        apps = executor.loader.project_state(self.after).apps
+        Quote_ = apps.get_model("quotes", "Quote")
+        self.assertEqual(Quote_.objects.get(text="a").tags, ["classic", "sci-fi"])
+        self.assertEqual(Quote_.objects.get(text="b").tags, ["already", "fine"])
+        self.assertEqual(Quote_.objects.get(text="c").tags, [])
+
+        executor = MigrationExecutor(connection)
+        executor.migrate(self.before)
+        apps = executor.loader.project_state(self.before).apps
+        self.assertEqual(apps.get_model("quotes", "Quote").objects.count(), 3)
+
+
 class LegacyDataMigrationTests(TransactionTestCase):
     migrate_from = [("quotes", "0003_media_character_quote_relations")]
     migrate_to = [("quotes", "0005_remove_legacy_quote_fields")]

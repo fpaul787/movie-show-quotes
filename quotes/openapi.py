@@ -68,7 +68,9 @@ the `X-RateLimit-*` headers. The documentation endpoints are not rate limited.
 
 Collection endpoints are paginated with `page` (starting at 1) and
 `page_size` (default __DEFAULT_PAGE_SIZE__, maximum __MAX_PAGE_SIZE__; larger values
-are reduced to __MAX_PAGE_SIZE__). Results are ordered by `id`, so pages are stable.
+are reduced to __MAX_PAGE_SIZE__). Results are ordered by `id` by default, or by
+`ordering` (`id`, `title`, `year`; prefix `-` for descending), always with `id` as
+the final tie-breaker, so pages are stable.
 Responses include the total `count` and `next` / `previous` links (relative URLs,
 or `null`). Requesting a page past the last one returns `400`.
 
@@ -171,12 +173,12 @@ def _media_list_path(tag, operation_id, summary, media_type):
             "operationId": operation_id,
             "summary": summary,
             "description": (
-                f"Returns a paginated collection of {kind} ordered by `id`. "
+                f"Returns a paginated collection of {kind}, ordered by `id` unless `ordering` is given. "
                 "Filter by title with `search` and by `year`; they are ANDed together."
             ),
             "parameters": [
                 {"$ref": f"#/components/parameters/{name}"}
-                for name in ("page", "page_size", "media_search", "year")
+                for name in ("page", "page_size", "ordering", "media_search", "year")
             ],
             "responses": {
                 "200": {
@@ -228,15 +230,16 @@ def build_openapi_spec():
                     "operationId": "listQuotes",
                     "summary": "List quotes",
                     "description": (
-                        "Returns a paginated collection of quotes ordered by `id`. "
+                        "Returns a paginated collection of quotes, ordered by `id` unless "
+                        "`ordering` is given. "
                         "Combine any of the filters and `search`; they are ANDed together.\n\n"
                         "Example: `GET /api/v1/quotes/?search=serious&year=2008&page_size=10`"
                     ),
                     "parameters": [
                         {"$ref": f"#/components/parameters/{name}"}
                         for name in (
-                            "page", "page_size", "search", "media", "character",
-                            "year", "language", "tag",
+                            "page", "page_size", "ordering", "search", "media", "media_id",
+                            "character", "year", "language", "tag",
                         )
                     ],
                     "responses": {
@@ -279,7 +282,18 @@ def build_openapi_spec():
                     "tags": ["Quotes"],
                     "operationId": "getRandomQuote",
                     "summary": "Get a random quote",
-                    "description": "Returns one quote chosen at random.",
+                    "description": (
+                        "Returns one quote chosen at random. Accepts the same filters as the "
+                        "list endpoint (`media`, `media_id`, `character`, `year`, `language`, "
+                        "`tag`, `search`). `page`, `page_size` and `ordering` are ignored."
+                    ),
+                    "parameters": [
+                        {"$ref": f"#/components/parameters/{name}"}
+                        for name in (
+                            "search", "media", "media_id", "character", "year",
+                            "language", "tag",
+                        )
+                    ],
                     "responses": {
                         "200": {
                             "description": "A random quote.",
@@ -297,8 +311,9 @@ def build_openapi_spec():
                                 }
                             },
                         },
+                        "400": {"$ref": "#/components/responses/BadRequest"},
                         "404": _error_response(
-                            "There are no quotes in the database.",
+                            "No quote matches the filters, or there are no quotes.",
                             [("no_quotes_available", "No quotes available.")],
                         ),
                         **AUTH_RESPONSES,
@@ -565,9 +580,25 @@ def build_openapi_spec():
                 ),
                 "tag": _query_param(
                     "tag",
-                    "Return quotes that have this tag. Exact, case-sensitive match on one tag.",
+                    "Return quotes that have this tag. Case-insensitive match on one tag "
+                    "(tags are stored in lowercase).",
                     {"type": "string"},
                     "classic",
+                ),
+                "media_id": _query_param(
+                    "media_id",
+                    "Exact `id` of the movie or show. Must be a positive integer. "
+                    "Can be combined with `media` and every other filter.",
+                    {"type": "integer", "minimum": 1},
+                    1,
+                ),
+                "ordering": _query_param(
+                    "ordering",
+                    "Sort field: `id` (default), `title` or `year`. Prefix with `-` for "
+                    "descending (e.g. `-year`). `id` is always the final tie-breaker. "
+                    "Unknown values return `400`. Not applicable to `/quotes/random/`.",
+                    {"type": "string", "enum": ["id", "title", "year", "-id", "-title", "-year"]},
+                    "-year",
                 ),
             },
             "responses": {

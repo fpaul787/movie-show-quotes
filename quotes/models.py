@@ -220,6 +220,16 @@ class Quote(models.Model):
             ),
         ]
 
+    @staticmethod
+    def normalize_tags(tags):
+        """Lowercase and strip tags, dropping duplicates while keeping order."""
+        return list(dict.fromkeys(t.strip().lower() for t in tags))
+
+    def save(self, *args, **kwargs):
+        if isinstance(self.tags, list) and all(isinstance(t, str) for t in self.tags):
+            self.tags = self.normalize_tags(self.tags)
+        super().save(*args, **kwargs)
+
     def clean(self):
         super().clean()
         if (
@@ -234,6 +244,7 @@ class Quote(models.Model):
             isinstance(t, str) for t in self.tags
         ):
             raise ValidationError({"tags": "Tags must be a list of strings."})
+        self.tags = self.normalize_tags(self.tags)
 
     def __str__(self):
         speaker = self.character.name if self.character_id else "Unknown"

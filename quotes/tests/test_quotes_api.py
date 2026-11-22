@@ -87,6 +87,45 @@ class QuoteEndpointTests(TestCase):
     def test_legacy_random_quote_route_is_removed(self):
         self.assertEqual(self.client.get("/quotes/random").status_code, 404)
 
+    def _two_quotes(self):
+        dk = Media.objects.create(title="The Dark Knight", media_type="MOVIE", release_year=2008)
+        joker = Character.objects.create(name="The Joker", media=dk)
+        mx = Media.objects.create(title="The Matrix", media_type="MOVIE", release_year=1999)
+        q1 = Quote.objects.create(
+            text="Why so serious?", media=dk, character=joker, language="en", tags=["classic"]
+        )
+        q2 = Quote.objects.create(text="There is no spoon.", media=mx, language="fr", tags=["sci-fi"])
+        return dk, mx, q1, q2
+
+    def test_random_filters_narrow_results(self):
+        dk, mx, q1, q2 = self._two_quotes()
+        for query, expected in (
+            ("media=matrix", q2), (f"media_id={dk.id}", q1), ("character=joker", q1),
+            ("year=1999", q2), ("language=fr", q2), ("tag=CLASSIC", q1), ("search=spoon", q2),
+        ):
+            for _ in range(5):
+                response = self.client.get(f"{RANDOM_URL}?{query}")
+                self.assertEqual(response.status_code, 200, query)
+                self.assertEqual(response.json()["id"], expected.id, query)
+
+    def test_random_invalid_filters_return_400(self):
+        self._two_quotes()
+        for query in ("year=abc", "media_id=0", "language=NOT_A_CODE!"):
+            response = self.client.get(f"{RANDOM_URL}?{query}")
+            self.assertEqual(response.status_code, 400, query)
+            self.assertEqual(response.json()["error"]["code"], "invalid_parameters")
+
+    def test_random_no_match_returns_no_quotes_available(self):
+        self._two_quotes()
+        response = self.client.get(f"{RANDOM_URL}?year=1800")
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["error"]["code"], "no_quotes_available")
+
+    def test_random_ignores_pagination_and_ordering(self):
+        self._two_quotes()
+        response = self.client.get(f"{RANDOM_URL}?page=99&page_size=abc&ordering=bogus")
+        self.assertEqual(response.status_code, 200)
+
 
 class QuoteListAndDetailTests(TestCase):
     LIST_URL = "/api/v1/quotes/"
@@ -166,16 +205,61 @@ class QuoteListAndDetailTests(TestCase):
         self.assertEqual(self.ids("?language=fr"), [self.q2.id])
         self.assertEqual(self.ids("?language=FR"), [self.q2.id])
         self.assertEqual(self.ids("?tag=classic"), [self.q1.id])
+        self.assertEqual(self.ids("?tag=Classic"), [self.q1.id])
+        self.assertEqual(self.ids(f"?media_id={self.matrix.id}"), [self.q2.id])
+        self.assertEqual(self.ids(f"?media_id={self.matrix.id}&media=matrix"), [self.q2.id])
+        self.assertEqual(self.ids(f"?media_id={self.matrix.id}&media=dark"), [])
+        self.assertEqual(self.ids("?media_id="), [self.q1.id, self.q2.id])
         self.assertEqual(self.ids("?search=SERIOUS"), [self.q1.id])
         self.assertEqual(self.ids("?search=the&media=matrix"), [self.q2.id])
         self.assertEqual(self.ids("?search=the&year=2008&language=fr"), [])
         self.assertEqual(self.ids("?year=&tag="), [self.q1.id, self.q2.id])
 
     def test_invalid_filter_values(self):
-        for query in ["?year=abc", "?language=NOT_A_CODE!"]:
+        for query in ["?year=abc", "?language=NOT_A_CODE!", "?media_id=abc", "?media_id=0",
+                      "?ordering=bogus", "?ordering=-"]:
             response = self.client.get(f"{self.LIST_URL}{query}")
             self.assertEqual(response.status_code, 400, query)
             self.assertEqual(response.json()["error"]["code"], "invalid_parameters")
+
+    def test_ordering(self):
+        a, b = self.q1.id, self.q2.id  # q1: Dark Knight 2008, q2: Matrix 1999
+        self.assertEqual(self.ids("?ordering=id"), [a, b])
+        self.assertEqual(self.ids("?ordering=-id"), [b, a])
+        self.assertEqual(self.ids("?ordering=title"), [a, b])
+        self.assertEqual(self.ids("?ordering=-title"), [b, a])
+        self.assertEqual(self.ids("?ordering=year"), [b, a])
+        self.assertEqual(self.ids("?ordering=-year"), [a, b])
+
+    def test_ordering_unknown_value_lists_allowed_values(self):
+        message = self.client.get(f"{self.LIST_URL}?ordering=text").json()["error"]["message"]
+        for name in ("id", "title", "year"):
+            self.assertIn(name, message)
+
+    def test_ordering_tie_breaker_keeps_pages_stable(self):
+        extra = [
+            Quote.objects.create(text=f"x{i}", media=self.matrix, language="en")
+            for i in range(4)
+        ]
+        expected = sorted([self.q2.id] + [q.id for q in extra], reverse=True) + [self.q1.id]
+        expected = [i for i in expected if i != self.q1.id]
+        collected = []
+        url = f"{self.LIST_URL}?ordering=-year&page_size=2"
+        # -year puts the Dark Knight quote first, then Matrix quotes by descending id.
+        data = self.client.get(url).json()
+        collected += [q["id"] for q in data["results"]]
+        while data["next"]:
+            data = self.client.get(data["next"]).json()
+            collected += [q["id"] for q in data["results"]]
+        self.assertEqual(collected, [self.q1.id] + expected)
+
+    def test_query_count_is_constant(self):
+        with self.assertNumQueries(5):
+            self.client.get(f"{self.LIST_URL}?ordering=-title")
+        for i in range(10):
+            Quote.objects.create(text=f"y{i}", media=self.matrix, language="en")
+        with self.assertNumQueries(5):
+            self.client.get(f"{self.LIST_URL}?ordering=-title")
 
     def test_detail(self):
         response = self.client.get(f"{self.LIST_URL}{self.q1.id}/")
