@@ -117,3 +117,80 @@ class MediaEndpointTests(TestCase):
         response = self.client.get("/api/v1/media/99999/")
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json()["error"]["code"], "resource_not_found")
+
+
+class MediaQuotesEndpointTests(TestCase):
+    def setUp(self):
+        key = APIKey(name="test")
+        raw_key = key.set_new_key()
+        key.save()
+        self.client.defaults["HTTP_X_API_KEY"] = raw_key
+
+        self.dark_knight = Media.objects.create(
+            title="The Dark Knight", media_type="MOVIE", release_year=2008
+        )
+        self.matrix = Media.objects.create(
+            title="The Matrix", media_type="MOVIE", release_year=1999
+        )
+        self.joker = Character.objects.create(name="The Joker", media=self.dark_knight)
+        self.q1 = Quote.objects.create(
+            text="Why so serious?", media=self.dark_knight, character=self.joker,
+            language="en", tags=["classic"],
+        )
+        self.q2 = Quote.objects.create(
+            text="I'm Batman.", media=self.dark_knight, language="fr"
+        )
+        self.q3 = Quote.objects.create(
+            text="There is no spoon.", media=self.matrix, language="en"
+        )
+        self.url = f"/api/v1/media/{self.dark_knight.id}/quotes/"
+
+    def ids(self, query=""):
+        response = self.client.get(f"{self.url}{query}")
+        self.assertEqual(response.status_code, 200)
+        return [q["id"] for q in response.json()["results"]]
+
+    def test_auth_required(self):
+        self.assertEqual(Client().get(self.url).status_code, 401)
+
+    def test_only_that_media_quotes(self):
+        data = self.client.get(self.url).json()
+        self.assertEqual(data["count"], 2)
+        self.assertEqual([q["id"] for q in data["results"]], [self.q1.id, self.q2.id])
+        self.assertEqual(data["results"][0]["character"]["name"], "The Joker")
+        self.assertEqual(data["results"][0]["media"]["id"], self.dark_knight.id)
+
+    def test_unknown_media(self):
+        response = self.client.get("/api/v1/media/99999/quotes/")
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.json()["error"]["code"], "resource_not_found")
+
+    def test_filters_apply(self):
+        self.assertEqual(self.ids("?language=fr"), [self.q2.id])
+        self.assertEqual(self.ids("?tag=Classic"), [self.q1.id])
+        self.assertEqual(self.ids("?search=batman"), [self.q2.id])
+        self.assertEqual(self.ids("?character=joker"), [self.q1.id])
+        self.assertEqual(self.ids("?year=1999"), [])
+
+    def test_media_filters_do_not_widen_scope(self):
+        self.assertEqual(
+            self.ids(f"?media_id={self.matrix.id}&media=matrix"), [self.q1.id, self.q2.id]
+        )
+
+    def test_invalid_filter(self):
+        response = self.client.get(f"{self.url}?year=abc")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["error"]["code"], "invalid_parameters")
+
+    def test_ordering_and_pagination(self):
+        self.assertEqual(self.ids("?ordering=-id"), [self.q2.id, self.q1.id])
+        data = self.client.get(f"{self.url}?page_size=1").json()
+        self.assertEqual(data["next"], f"{self.url}?page_size=1&page=2")
+
+    def test_query_count_is_constant(self):
+        with self.assertNumQueries(6):
+            self.client.get(self.url)
+        for i in range(10):
+            Quote.objects.create(text=f"Q{i}", media=self.dark_knight, language="en")
+        with self.assertNumQueries(6):
+            self.client.get(self.url)
