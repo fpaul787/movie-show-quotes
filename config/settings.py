@@ -117,6 +117,18 @@ DATABASES = {
 }
 
 
+# API rate limiting (fixed UTC windows, per API key). A value <= 0 disables a limit.
+API_RATE_LIMIT_PER_MINUTE = env.int("API_RATE_LIMIT_PER_MINUTE", default=60)
+API_RATE_LIMIT_PER_DAY = env.int("API_RATE_LIMIT_PER_DAY", default=5000)
+
+# Login throttling: failed attempts per fixed window. A threshold <= 0 disables it.
+# The client IP is REMOTE_ADDR; X-Forwarded-For is deliberately not trusted
+# because any client can forge it.
+LOGIN_THROTTLE_WINDOW_SECONDS = env.int("LOGIN_THROTTLE_WINDOW_SECONDS", default=900)
+LOGIN_MAX_FAILURES_PER_USERNAME = env.int("LOGIN_MAX_FAILURES_PER_USERNAME", default=10)
+LOGIN_MAX_FAILURES_PER_IP = env.int("LOGIN_MAX_FAILURES_PER_IP", default=50)
+
+
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
 

@@ -23,16 +23,17 @@ class ErrorAndPerformanceTests(TestCase):
             )
 
     def test_random_quote_uses_constant_queries(self):
-        # One auth lookup, one last_used update, count, and the quote itself.
-        with self.assertNumQueries(4):
+        # One auth lookup, one rate-limit upsert, one last_used update, count,
+        # and the quote itself.
+        with self.assertNumQueries(5):
             self.assertEqual(self.client.get(RANDOM_URL).status_code, 200)
 
     def test_list_query_count_does_not_grow_with_results(self):
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(5):
             self.assertEqual(self.client.get(LIST_URL).status_code, 200)
 
     def test_filtered_list_query_count_is_constant(self):
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(5):
             response = self.client.get(
                 LIST_URL, {"search": "quote", "media": "M", "language": "en"}
             )

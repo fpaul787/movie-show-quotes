@@ -1,8 +1,15 @@
+from concurrent.futures import ThreadPoolExecutor
+from datetime import timedelta
+from io import StringIO
 from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
+from django.core.management import call_command
+from django.db import connections
+from django.test import Client, TestCase, TransactionTestCase, override_settings
+from django.utils import timezone
 
+from accounts.models import LoginAttempt
 from quotes.models import APIKey
 
 
@@ -187,6 +194,148 @@ class LoginApiTests(TestCase):
         self.assertEqual(
             client.session["_auth_user_id"], str(self.user.pk)
         )
+
+
+@override_settings(
+    LOGIN_MAX_FAILURES_PER_USERNAME=3,
+    LOGIN_MAX_FAILURES_PER_IP=5,
+    LOGIN_THROTTLE_WINDOW_SECONDS=900,
+)
+class LoginThrottleTests(TestCase):
+    username = "Throttled-User"
+    password = "a-Long-unusual-pass-123"
+    throttled = {"error": "Too many login attempts. Try again later."}
+
+    def setUp(self):
+        get_user_model().objects.create_user(self.username, password=self.password)
+
+    def attempt(self, username=None, password="wrong", ip="10.0.0.1"):
+        return self.client.post(
+            "/api/auth/login",
+            data={"username": username or self.username, "password": password},
+            content_type="application/json",
+            REMOTE_ADDR=ip,
+        )
+
+    def test_username_is_locked_out_after_the_threshold(self):
+        for _ in range(3):
+            self.assertEqual(self.attempt().status_code, 401)
+
+        response = self.attempt()
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(response.json(), self.throttled)
+        # Even the correct password is rejected while locked out.
+        response = self.attempt(password=self.password)
+        self.assertEqual(response.status_code, 429)
+        self.assertNotIn("_auth_user_id", self.client.session)
+
+    def test_username_is_normalized_and_counted_across_ips(self):
+        self.attempt(self.username.upper(), ip="10.0.0.1")
+        self.attempt(f"  {self.username.lower()} ", ip="10.0.0.2")
+        self.attempt(self.username, ip="10.0.0.3")
+        self.assertEqual(self.attempt(ip="10.0.0.4").status_code, 429)
+
+    def test_lockout_does_not_affect_other_users(self):
+        get_user_model().objects.create_user("other-user", password=self.password)
+        for _ in range(4):
+            self.attempt()
+        response = self.attempt("other-user", self.password, ip="10.0.0.2")
+        self.assertEqual(response.status_code, 200)
+
+    def test_ip_is_locked_out_across_usernames(self):
+        for index in range(5):
+            self.assertEqual(self.attempt(f"user-{index}").status_code, 401)
+        response = self.attempt("user-new")
+        self.assertEqual(response.status_code, 429)
+        self.assertEqual(response.json(), self.throttled)
+        self.assertEqual(self.attempt("user-new", ip="10.0.0.9").status_code, 401)
+
+    def test_success_clears_the_username_counter_but_not_the_ip_counter(self):
+        self.attempt()
+        self.attempt()
+        self.assertEqual(self.attempt(password=self.password).status_code, 200)
+        self.assertFalse(
+            LoginAttempt.objects.filter(scope="USERNAME").exists()
+        )
+        self.assertEqual(
+            LoginAttempt.objects.get(scope="IP", identifier="10.0.0.1").count, 2
+        )
+        # The username has a fresh budget of three failures.
+        for _ in range(3):
+            self.assertEqual(self.attempt().status_code, 401)
+        self.assertEqual(self.attempt().status_code, 429)
+
+    def test_counters_reset_in_the_next_window(self):
+        for _ in range(3):
+            self.attempt()
+        self.assertEqual(self.attempt().status_code, 429)
+        later = timezone.now() + timedelta(seconds=900)
+        with patch("django.utils.timezone.now", return_value=later):
+            self.assertEqual(self.attempt(password=self.password).status_code, 200)
+
+    def test_x_forwarded_for_is_ignored(self):
+        for index in range(5):
+            self.client.post(
+                "/api/auth/login",
+                data={"username": f"user-{index}", "password": "wrong"},
+                content_type="application/json",
+                REMOTE_ADDR="10.0.0.1",
+                HTTP_X_FORWARDED_FOR=f"203.0.113.{index}",
+            )
+        self.assertEqual(self.attempt("user-new").status_code, 429)
+
+    def test_invalid_requests_do_not_count(self):
+        for _ in range(6):
+            self.client.post(
+                "/api/auth/login",
+                data={"username": self.username},
+                content_type="application/json",
+                REMOTE_ADDR="10.0.0.1",
+            )
+        self.assertFalse(LoginAttempt.objects.exists())
+
+    @override_settings(LOGIN_MAX_FAILURES_PER_USERNAME=0, LOGIN_MAX_FAILURES_PER_IP=0)
+    def test_zero_thresholds_disable_throttling(self):
+        for _ in range(10):
+            self.assertEqual(self.attempt().status_code, 401)
+        self.assertEqual(self.attempt(password=self.password).status_code, 200)
+
+    def test_prune_removes_old_login_attempts(self):
+        old = timezone.now() - timedelta(days=3)
+        LoginAttempt.objects.create(
+            scope="IP", identifier="10.0.0.1", window_start=old, count=1
+        )
+        self.attempt()
+        call_command("prune_api_usage", stdout=StringIO())
+        self.assertEqual(LoginAttempt.objects.filter(window_start__lt=old).count(), 0)
+        self.assertEqual(LoginAttempt.objects.count(), 2)
+
+
+class LoginThrottleConcurrencyTests(TransactionTestCase):
+    @override_settings(
+        LOGIN_MAX_FAILURES_PER_USERNAME=3,
+        LOGIN_MAX_FAILURES_PER_IP=0,
+        LOGIN_THROTTLE_WINDOW_SECONDS=900,
+    )
+    def test_parallel_attempts_cannot_exceed_the_threshold(self):
+        threads = 12
+
+        def attempt(_):
+            try:
+                return Client().post(
+                    "/api/auth/login",
+                    data={"username": "victim", "password": "wrong"},
+                    content_type="application/json",
+                    REMOTE_ADDR="10.0.0.1",
+                ).status_code
+            finally:
+                connections.close_all()
+
+        with ThreadPoolExecutor(max_workers=threads) as pool:
+            statuses = list(pool.map(attempt, range(threads)))
+
+        self.assertEqual(statuses.count(401), 3)
+        self.assertEqual(statuses.count(429), threads - 3)
 
 
 class CurrentUserApiTests(TestCase):

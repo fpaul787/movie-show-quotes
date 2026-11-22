@@ -42,6 +42,27 @@ Errors always use this shape, with a stable machine-readable `code`:
 | 403 | `revoked_api_key`, `expired_api_key` |
 | 404 | `resource_not_found`, `no_quotes_available` |
 | 405 | `method_not_allowed` |
+| 429 | `rate_limit_exceeded` |
+
+## Rate limits
+
+Each API key is limited to __RATE_LIMIT_PER_MINUTE__ per calendar minute and
+__RATE_LIMIT_PER_DAY__ per calendar day (both UTC, fixed windows). Requests with
+a missing, invalid, revoked or expired key are not counted; every other request
+is, including ones rejected with `429` or `405`. Over a limit, the API returns
+`429` with `Retry-After` (whole seconds until the exhausted window resets; the
+daily reset if the daily limit is exhausted).
+
+Authenticated responses include:
+
+| Header | Value |
+|---|---|
+| `X-RateLimit-Limit` | Requests allowed per minute |
+| `X-RateLimit-Remaining` | Requests left in the current minute |
+| `X-RateLimit-Reset` | Unix timestamp when the current minute resets |
+
+The limits are configurable per deployment; a disabled per-minute limit omits
+the `X-RateLimit-*` headers. The documentation endpoints are not rate limited.
 
 ## Pagination
 
@@ -56,6 +77,10 @@ or `null`). Requesting a page past the last one returns `400`.
 Filters are optional query parameters and are combined with AND. Blank values
 (e.g. `?year=`) are ignored, as are unknown parameters.
 """
+
+
+def _limit_text(limit):
+    return f"{limit} requests" if limit > 0 else "an unlimited number of requests"
 
 
 def _error(code, message):
@@ -127,7 +152,14 @@ AUTH_RESPONSES = {
     "401": {"$ref": "#/components/responses/Unauthorized"},
     "403": {"$ref": "#/components/responses/Forbidden"},
     "405": {"$ref": "#/components/responses/MethodNotAllowed"},
+    "429": {"$ref": "#/components/responses/RateLimited"},
     "500": {"$ref": "#/components/responses/InternalError"},
+}
+
+RATE_LIMIT_HEADERS = {
+    "X-RateLimit-Limit": {"$ref": "#/components/headers/X-RateLimit-Limit"},
+    "X-RateLimit-Remaining": {"$ref": "#/components/headers/X-RateLimit-Remaining"},
+    "X-RateLimit-Reset": {"$ref": "#/components/headers/X-RateLimit-Reset"},
 }
 
 
@@ -149,6 +181,7 @@ def _media_list_path(tag, operation_id, summary, media_type):
             "responses": {
                 "200": {
                     "description": f"A page of {kind}.",
+                    "headers": RATE_LIMIT_HEADERS,
                     "content": {
                         "application/json": {
                             "schema": {"$ref": "#/components/schemas/MediaPage"},
@@ -163,6 +196,8 @@ def _media_list_path(tag, operation_id, summary, media_type):
 
 
 def build_openapi_spec():
+    from django.conf import settings
+
     # Imported here to avoid a circular import (views serves this spec).
     from .views import DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE
 
@@ -175,7 +210,10 @@ def build_openapi_spec():
             "version": "1.0.0",
             "description": DESCRIPTION.replace(
                 "__DEFAULT_PAGE_SIZE__", str(DEFAULT_PAGE_SIZE)
-            ).replace("__MAX_PAGE_SIZE__", str(MAX_PAGE_SIZE)),
+            )
+            .replace("__MAX_PAGE_SIZE__", str(MAX_PAGE_SIZE))
+            .replace("__RATE_LIMIT_PER_MINUTE__", _limit_text(settings.API_RATE_LIMIT_PER_MINUTE))
+            .replace("__RATE_LIMIT_PER_DAY__", _limit_text(settings.API_RATE_LIMIT_PER_DAY)),
         },
         "servers": [{"url": "/api/v1"}],
         "security": [{"ApiKeyHeader": []}, {"ApiKeyAuthorization": []}],
@@ -204,6 +242,7 @@ def build_openapi_spec():
                     "responses": {
                         "200": {
                             "description": "A page of quotes.",
+                            "headers": RATE_LIMIT_HEADERS,
                             "content": {
                                 "application/json": {
                                     "schema": {"$ref": "#/components/schemas/QuotePage"},
@@ -244,6 +283,7 @@ def build_openapi_spec():
                     "responses": {
                         "200": {
                             "description": "A random quote.",
+                            "headers": RATE_LIMIT_HEADERS,
                             "content": {
                                 "application/json": {
                                     "schema": quote_ref,
@@ -284,6 +324,7 @@ def build_openapi_spec():
                     "responses": {
                         "200": {
                             "description": "The quote.",
+                            "headers": RATE_LIMIT_HEADERS,
                             "content": {
                                 "application/json": {
                                     "schema": quote_ref,
@@ -322,6 +363,7 @@ def build_openapi_spec():
                     "responses": {
                         "200": {
                             "description": "The movie or TV show.",
+                            "headers": RATE_LIMIT_HEADERS,
                             "content": {
                                 "application/json": {
                                     "schema": {"$ref": "#/components/schemas/MediaDetail"},
@@ -561,6 +603,38 @@ def build_openapi_spec():
                     "An unexpected server error occurred.",
                     [("internal_error", "An unexpected error occurred.")],
                 ),
+                "RateLimited": {
+                    **_error_response(
+                        "The key exceeded its per-minute or per-day rate limit.",
+                        [
+                            (
+                                "rate_limit_exceeded",
+                                "Rate limit exceeded. Try again later.",
+                            )
+                        ],
+                    ),
+                    "headers": {
+                        "Retry-After": {
+                            "description": "Seconds until the exhausted window resets.",
+                            "schema": {"type": "integer", "minimum": 1},
+                        },
+                        **RATE_LIMIT_HEADERS,
+                    },
+                },
+            },
+            "headers": {
+                "X-RateLimit-Limit": {
+                    "description": "Requests allowed per minute for this key.",
+                    "schema": {"type": "integer"},
+                },
+                "X-RateLimit-Remaining": {
+                    "description": "Requests left in the current minute (never negative).",
+                    "schema": {"type": "integer", "minimum": 0},
+                },
+                "X-RateLimit-Reset": {
+                    "description": "Unix timestamp when the current minute window resets.",
+                    "schema": {"type": "integer"},
+                },
             },
         },
     }
