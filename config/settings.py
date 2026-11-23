@@ -164,3 +164,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = "static/"
+# Hard caps on total signups and API keys (across all users)
+MAX_USERS = 100
+MAX_API_KEYS = 50

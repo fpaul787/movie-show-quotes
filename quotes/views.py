@@ -1,5 +1,6 @@
 import random
 
+from django.conf import settings
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -47,6 +48,8 @@ def api_key(request):
             get_user_model().objects.select_for_update().get(pk=request.user.pk)
             if APIKey.objects.filter(owner=request.user).exists():
                 return JsonResponse({"error": "API key already exists"}, status=409)
+            if APIKey.objects.count() >= settings.MAX_API_KEYS:
+                return JsonResponse({"error": "Limit reached"}, status=403)
             suffix = " key"
             max_username_length = APIKey._meta.get_field("name").max_length - len(suffix)
             key = APIKey(

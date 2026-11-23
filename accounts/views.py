@@ -1,5 +1,7 @@
 import json
 
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout as django_logout
 from django.db import IntegrityError, transaction
 from django.http import JsonResponse
@@ -91,6 +93,8 @@ def signup(request):
 
     try:
         with transaction.atomic():
+            if get_user_model().objects.count() >= settings.MAX_USERS:
+                return JsonResponse({"error": "Limit reached"}, status=403)
             user = form.save()
     except IntegrityError as error:
         if not is_email_conflict(error):
