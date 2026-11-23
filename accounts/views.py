@@ -1,5 +1,7 @@
 import json
 
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout as django_logout
 from django.db import IntegrityError, transaction
 from django.http import JsonResponse
@@ -8,6 +10,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from . import throttle
+from .models import QuotaLock
 from .forms import EMAIL_TAKEN, EmailUpdateForm, SignupForm
 
 EMAIL_CONSTRAINT = "unique_user_email_ci"
@@ -91,6 +94,9 @@ def signup(request):
 
     try:
         with transaction.atomic():
+            QuotaLock.acquire()
+            if get_user_model().objects.count() >= settings.MAX_USERS:
+                return JsonResponse({"error": "Limit reached"}, status=403)
             user = form.save()
     except IntegrityError as error:
         if not is_email_conflict(error):

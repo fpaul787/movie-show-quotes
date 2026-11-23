@@ -30,6 +30,16 @@ class LoginAttempt(models.Model):
         return f"{self.scope} {self.identifier}: {self.count}"
 
 
+class QuotaLock(models.Model):
+    """Single row locked to serialize global quota checks (users, API keys)."""
+
+    @classmethod
+    def acquire(cls):
+        """Lock the row; must be called inside transaction.atomic()."""
+        cls.objects.get_or_create(pk=1)
+        return cls.objects.select_for_update().get(pk=1)
+
+
 class User(AbstractUser):
     class Meta(AbstractUser.Meta):
         constraints = [
