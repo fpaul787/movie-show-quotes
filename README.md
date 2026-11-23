@@ -1,89 +1,52 @@
 # Movie Show Quotes
 
-An API for retrieving quotes from various movies and shows.
+A REST API for retrieving quotes from movies and TV shows, built with Django.
+Live at **https://api.movie-quotes-api.com/**.
 
-## API
+## What it supports
 
-Full documentation:
+- List quotes with pagination and ordering
+- Get a random quote or a quote by ID
+- Filter by search text, media (title or ID), character, year, language and tag
+- API key authentication (`X-API-Key` header or `Authorization: Api-Key <key>`)
+- User signup and self-service API key management
+- Consistent JSON error responses
 
-- Interactive docs (Swagger UI): `/api/v1/docs/`
-- OpenAPI 3.1 description: `/api/v1/openapi.json`
+## Documentation
 
-Both are public. Every data endpoint requires an API key.
+Endpoint details are documented with OpenAPI:
 
-### Quick start
+- Interactive docs (Swagger UI): https://api.movie-quotes-api.com/api/v1/docs/
+- OpenAPI 3.1 spec: https://api.movie-quotes-api.com/api/v1/openapi.json
 
-1. Sign up, then create your API key at `/profile/api-keys/`. The full key is
-   shown once.
-2. Send the key in the `X-API-Key` header (or `Authorization: Api-Key <key>`):
+The spec lives in `quotes/openapi.py`. Update it whenever an endpoint changes;
+tests fail if a `/api/v1/` route isn't documented.
+
+## Quick start
+
+1. Sign up at https://api.movie-quotes-api.com/signup/, then create an API key
+   at `/profile/api-keys/`. The full key is shown once.
+2. Make a request:
 
 ```sh
-curl -H "X-API-Key: <your-key>" https://<host>/api/v1/quotes/random/
+curl -H "X-API-Key: <your-key>" https://api.movie-quotes-api.com/api/v1/quotes/random/
 ```
 
-```json
-{
-  "id": 123,
-  "text": "Why so serious?",
-  "language": "en",
-  "tags": ["villain", "classic"],
-  "character": {"id": 10, "name": "The Joker"},
-  "media": {"id": 5, "title": "The Dark Knight", "media_type": "MOVIE", "release_year": 2008}
-}
+## Development
+
+```sh
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py seed_quotes   # loads fixtures only if the tables are empty
+python manage.py runserver
 ```
 
-### Endpoints
-
-| Endpoint | Description |
-|---|---|
-| `GET /api/v1/quotes/` | Paginated list. Supports `page`, `page_size`, `ordering` (`id`, `title`, `year`; prefix `-` for descending), `search`, `media`, `media_id`, `character`, `year`, `language`, `tag` (case-insensitive) |
-| `GET /api/v1/quotes/random/` | One random quote. Accepts the same filters as the list (`search`, `media`, `media_id`, `character`, `year`, `language`, `tag`); pagination and `ordering` are ignored |
-| `GET /api/v1/quotes/<id>/` | One quote by ID |
-
-Errors always look like
-`{"error": {"code": "invalid_api_key", "message": "..."}}`. See the docs for
-every code and status.
-
-The spec lives in `quotes/openapi.py`. Update it whenever an endpoint changes.
-The tests fail if a `/api/v1/` route isn't documented.
-
-## Homepage
-
-The React/TypeScript homepage is served at `/`. The former `/homepage` URL
-redirects to `/`.
-
-The frontend source is in `frontend/`. It is built with Vite into Django's
-`quotes/static/quotes/homepage/` directory, where Django serves the compiled
-JavaScript and CSS.
-
-### Build the frontend
-
-Install Node.js and npm, then run:
+The React/TypeScript frontend (homepage and signup) lives in `frontend/` and is
+built with Vite into `quotes/static/quotes/homepage/`:
 
 ```sh
 npm --prefix frontend install
-npm --prefix frontend run build
+npm --prefix frontend run build   # or `run dev` for live editing
 ```
 
-Live editing
-```sh
-npm --prefix frontend run dev
-```
-
-After building, start Django as usual and open `/`. Rebuild the frontend
-after changing files under `frontend/src/`. The deployment script builds the
-frontend before running Django's `collectstatic`, so Node.js and npm must also be
-installed on the deployment host.
-
-### Seed data
-
-Deployment loads `quotes/fixtures/quotes.json` after migrations only when the
-Media, Character, and Quote tables are all empty. If any contain data, the seed
-is skipped to avoid overwriting existing records. Run
-`python manage.py seed_quotes` to apply the same check manually. Fixture timestamps represent
-when the seed dataset was prepared, rather than when it was loaded.
-
-## User signup
-
-The React signup page is available at `/signup/`. It submits to the Django
-signup API and uses the CSRF token endpoint automatically.
+Run tests with `python manage.py test`.
