@@ -10,6 +10,8 @@ from django.db.models import Count
 from django.shortcuts import render
 from django.views.decorators.http import require_GET, require_http_methods
 
+from accounts.models import QuotaLock
+
 from .auth import api_key_required
 from .errors import api_error
 from .models import LANGUAGE_CODE_VALIDATOR, APIKey, Character, Media, Quote
@@ -44,6 +46,7 @@ def api_key(request):
 
     if request.method == "POST":
         with transaction.atomic():
+            QuotaLock.acquire()
             # Lock the user row so concurrent requests can't create two keys.
             get_user_model().objects.select_for_update().get(pk=request.user.pk)
             if APIKey.objects.filter(owner=request.user).exists():
